@@ -1,5 +1,6 @@
 # [RSLang][]
 
+[![Build Status](https://travis-ci.com/aplatkouski/rslang.svg?branch=develop)](https://travis-ci.com/aplatkouski/rslang)
 [![dependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg)](https://david-dm.org/aplatkouski/rslang)
 [![devDependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg?type=dev)](https://david-dm.org/aplatkouski/rslang?type=dev)
 
