@@ -55,11 +55,7 @@ For answers to common questions about this code of conduct, see the
 [contributor-covenant.org][contributor-covenant translations].
 
 [homepage]: https://www.contributor-covenant.org
-
 [www.contributor-covenant.org]: https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
-
 [mozilla's code of conduct]: https://github.com/mozilla/diversity
-
 [contributor-covenant faq]: https://www.contributor-covenant.org/faq
-
 [contributor-covenant translations]: https://www.contributor-covenant.org/translations

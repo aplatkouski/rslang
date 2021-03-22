@@ -84,15 +84,9 @@ For details see [GitHub.com Help Documentation][]
 the [MIT License][].
 
 [code of conduct]: https://github.com/aplatkouski/rslang/blob/main/CODE_OF_CONDUCT.md
-
 [issue tracker]: https://github.com/aplatkouski/rslang/issues
-
 [pull requests]: https://github.com/aplatkouski/rslang/pulls
-
 [github docs fork-a-repo]: https://docs.github.com/en/github/getting-started-with-github/fork-a-repo
-
 [git]: https://git-scm.com/
-
 [github.com help documentation]: https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests
-
 [mit license]: https://github.com/aplatkouski/rslang/blob/main/LICENSE.md
