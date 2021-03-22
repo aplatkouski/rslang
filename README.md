@@ -1,5 +1,8 @@
 # [RSLang][]
 
+[![dependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg)](https://david-dm.org/aplatkouski/rslang)
+[![devDependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg?type=dev)](https://david-dm.org/aplatkouski/rslang?type=dev)
+
 RS Lang – приложение для изучения иностранных слов, включающее электронный учебник с базой слов для изучения, мини-игры
 для их повторения, страницу статистики для отслеживания индивидуального прогресса.
 
