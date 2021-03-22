@@ -1,0 +1,34 @@
+sudo: false
+
+language: node_js
+
+node_js:
+  - 14
+
+dist: focal
+
+branches:
+  only:
+    - develop
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - npm i -g npm@latest
+
+install:
+  - npm install --force
+
+script:
+  - npm run lint
+  - npm run build
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: build
+  on:
+    branch: develop
