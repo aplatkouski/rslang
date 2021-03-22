@@ -55,15 +55,17 @@
     "build": "react-scripts build",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
-    "lint:scss": "stylelint --syntax scss './src/**/*.scss' --ignore-path .gitignore",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --ignore-path .eslintignore",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:scss": "stylelint --syntax scss 'src/**/*.scss' --ignore-path .gitignore",
     "lint:scss:fix": "npm run lint:scss -- --fix",
     "predeploy": "npm run build",
+    "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
+    "prettier:write": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
     "start": "react-scripts start",
     "test": "react-scripts test",
-    "test:nowatch": "react-scripts test --watchAll=false"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "test:nowatch": "react-scripts test --watchAll=false",
+    "stylelint:check-conflicts": "stylelint-config-prettier-check"
   },
   "browserslist": {
     "production": [
@@ -76,8 +78,16 @@
     ]
   },
   "devDependencies": {
+    "eslint": "7.22.0",
+    "eslint-config-airbnb-typescript": "12.3.1",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-plugin-eslint-comments": "3.2.0",
+    "eslint-plugin-prettier": "3.3.1",
+    "eslint-plugin-promise": "4.3.1",
     "gh-pages": "3.1.0",
+    "prettier": "2.2.1",
     "stylelint": "13.12.0",
+    "stylelint-config-prettier": "8.0.2",
     "stylelint-config-twbs-bootstrap": "2.1.0",
     "typescript-eslint-language-service": "4.1.3"
   }
