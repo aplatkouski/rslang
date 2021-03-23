@@ -1,6 +1,6 @@
+import { Counter } from 'features/counter/Counter';
 import React from 'react';
 import './App.scss';
-import { Counter } from './features/counter/Counter';
 import { ReactComponent as Logo } from './logo.svg';
 
 const App = (): JSX.Element => (
