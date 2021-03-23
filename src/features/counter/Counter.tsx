@@ -9,7 +9,7 @@ import {
   selectCount,
 } from './counterSlice';
 
-export const Counter = (): JSX.Element => {
+const Counter = (): JSX.Element => {
   const count = useSelector(selectCount);
   const dispatch = useDispatch();
   const [incrementAmount, setIncrementAmount] = useState('2');
@@ -60,3 +60,5 @@ export const Counter = (): JSX.Element => {
     </div>
   );
 };
+
+export default Counter;

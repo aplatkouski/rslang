@@ -1,17 +1,20 @@
-import { Counter } from 'features/counter/Counter';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import { ReactComponent as Logo } from './logo.svg';
+
+const Counter = lazy(() => import('features/counter/Counter'));
 
 const App = (): JSX.Element => (
   <BrowserRouter basename="/rslang">
     <div className="app">
       <header className="app-header">
         <Logo className="app-logo" title="logo" />
-        <Switch>
-          <Route component={Counter} exact path="/" />
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route component={Counter} exact path="/" />
+          </Switch>
+        </Suspense>
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
