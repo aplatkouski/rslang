@@ -68,6 +68,7 @@
   },
   "scripts": {
     "build": "react-scripts build",
+    "build:profile": "npm run build -- --profile",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --ignore-path .eslintignore",
