@@ -87,6 +87,7 @@
     "stylelint:check-conflicts": "stylelint-config-prettier-check",
     "test": "react-scripts test",
     "test:coverage": "npm test -- --coverage --watchAll=false",
+    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache --watchAll=false",
     "test:nowatch": "npm test -- --watchAll=false"
   },
   "browserslist": {
