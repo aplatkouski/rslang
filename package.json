@@ -76,14 +76,16 @@
     "lint:scss:fix": "npm run lint:scss -- --fix",
     "postinstall": "husky install",
     "postpublish": "pinst --enable",
-    "prepublishOnly": "pinst --disable",
     "predeploy": "npm run build",
+    "prepublishOnly": "pinst --disable",
     "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
     "prettier:write": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
     "start": "react-scripts start",
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build",
+    "stylelint:check-conflicts": "stylelint-config-prettier-check",
     "test": "react-scripts test",
-    "test:nowatch": "react-scripts test --watchAll=false",
-    "stylelint:check-conflicts": "stylelint-config-prettier-check"
+    "test:nowatch": "react-scripts test --watchAll=false"
   },
   "browserslist": {
     "production": [
@@ -109,6 +111,7 @@
     "lint-staged": "10.5.4",
     "pinst": "2.1.6",
     "prettier": "2.2.1",
+    "react-styleguidist": "11.1.6",
     "stylelint": "13.12.0",
     "stylelint-config-prettier": "8.0.2",
     "stylelint-config-twbs-bootstrap": "2.1.0",
