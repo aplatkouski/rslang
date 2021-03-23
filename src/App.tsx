@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.scss';
 import { Counter } from './features/counter/Counter';
-import logo from './logo.svg';
+import { ReactComponent as Logo } from './logo.svg';
 
 const App = (): JSX.Element => (
   <div className="app">
     <header className="app-header">
-      <img alt="logo" className="app-logo" src={logo} />
+      <Logo className="app-logo" title="logo" />
       <Counter />
       <p>
         Edit <code>src/App.tsx</code> and save to reload.
