@@ -86,7 +86,8 @@
     "styleguide:build": "styleguidist build",
     "stylelint:check-conflicts": "stylelint-config-prettier-check",
     "test": "react-scripts test",
-    "test:nowatch": "react-scripts test --watchAll=false"
+    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "test:nowatch": "npm test -- --watchAll=false"
   },
   "browserslist": {
     "production": [
