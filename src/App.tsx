@@ -6,7 +6,7 @@ import { ReactComponent as Logo } from './logo.svg';
 const Counter = lazy(() => import('features/counter/Counter'));
 
 const App = (): JSX.Element => (
-  <BrowserRouter basename="/rslang">
+  <BrowserRouter>
     <div className="app">
       <header className="app-header">
         <Logo className="app-logo" title="logo" />
