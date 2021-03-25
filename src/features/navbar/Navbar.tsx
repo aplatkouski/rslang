@@ -31,7 +31,7 @@ export default function Navbar(): JSX.Element {
   const [drawerState, setDrawerState] = useState(false);
 
   const handleToggleSideMenu = () => {
-    setDrawerState(!drawerState);
+    setDrawerState((state: boolean) => !state);
   };
 
   return (
