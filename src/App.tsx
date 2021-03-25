@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import Navbar from 'features/navbar/Navbar';
-import MainPage from 'features/mainPage/MainPage';
+import Navbar from 'app/navbar/Navbar';
+import MainPage from 'app/mainPage/MainPage';
 import SectorsPage from 'features/sectorsPage/SectorsPage';
-import SectionPage from 'features/sectionPage/SectionPage';
+import SectionPage from 'app/sectionPage/SectionPage';
 
 const App = (): JSX.Element => {
   return (

@@ -2,29 +2,24 @@ import React from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ListItemText, Typography } from '@material-ui/core';
-import { selectAdjacentPages, Page } from 'app/sectors/sectorsSlice';
+import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import * as t from 'types';
 
 import './SectionPage.scss';
 
-type SectionPageParams = {
-  sector?: string;
-  page?: string;
-  color?: string;
-};
-
 export default function SectionPage(): JSX.Element {
-  const { sector, page, color } = useParams<SectionPageParams>();
+  const { sector, page, color } = useParams<t.SectionPageParams>();
   const bgColor: string = color || 'white';
 
-  const adjacentPages: Array<Page | undefined> = useSelector((state: any) =>
+  const adjacentPages: Array<t.Page | undefined> = useSelector((state: any) =>
     selectAdjacentPages(state, { sectorNum: Number(sector), pageNum: Number(page) })
   );
 
   return (
     <div style={{ backgroundColor: decodeURIComponent(bgColor) }}>
       <Typography className="page-header">
-        Раздел {Number(sector) + 1}, страница {page}
+        Раздел {Number(sector) + 1}, страница {Number(page) + 1}
       </Typography>
       <div className="pages-navigation">
         {adjacentPages && adjacentPages[0] && (

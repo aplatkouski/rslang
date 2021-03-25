@@ -10,9 +10,9 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { NavLink } from 'react-router-dom';
-import SideMenu from 'features/sidemenu/SideMenu';
+import SideMenu from 'app/sidemenu/SideMenu';
 
-import MainLogo from 'assets/img/MainPageLogo.jpg';
+import Logo from 'assets/img/MainPageLogo.jpg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +55,7 @@ export default function Navbar(): JSX.Element {
                 <IconButton className={classes.menuButton} color="inherit">
                   <img
                     alt="RSLang"
-                    src={MainLogo}
+                    src={Logo}
                     style={{ height: '50px', width: 'auto', borderRadius: '10px' }}
                   />
                 </IconButton>
