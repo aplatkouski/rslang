@@ -47,7 +47,9 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
       <List>
         {upperMenu.map((menuObj) => (
           <ListItem key={menuObj.key} button>
-            <ListItemIcon>{menuObj.icon}</ListItemIcon>
+            <NavLink to={menuObj.url}>
+              <ListItemIcon>{menuObj.icon}</ListItemIcon>
+            </NavLink>
             <NavLink to={menuObj.url}>
               <ListItemText primary={menuObj.title} />
             </NavLink>

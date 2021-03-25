@@ -3,9 +3,12 @@ import type { RootState } from 'app/store';
 
 import { PAGES_PER_SECTOR, SECTOR_COLORS } from '../../constants';
 
-export interface SectorPageVisibility {
+export interface SectorPage {
   sectorNum: number;
   pageNum: number;
+}
+
+export interface SectorPageVisibility extends SectorPage {
   visible: boolean;
 }
 
@@ -31,7 +34,7 @@ function generatePages(sectorNum: number, color: string): Array<Page> {
   const pages: Array<Page> = [];
   for (let i = 1; i <= PAGES_PER_SECTOR; i += 1) {
     pages.push({
-      key: +`${sectorNum}${i}`,
+      key: i,
       title: `Страница ${i}`,
       url: `/section/${sectorNum}/${i}/${encodeURIComponent(color)}`,
       show: true,
@@ -82,5 +85,27 @@ export const sectorsSlice = createSlice({
 // export const { setSectorPageVisibility } = sectorsSlice.actions;
 
 export const getSectors = (state: RootState) => state.sectors.sectors;
+
+export const getAdjacentPages = (
+  state: RootState,
+  requestData: SectorPage
+): Array<Page | undefined> => {
+  let prevPage;
+  let nextPage;
+  const sector = state.sectors.sectors.find((item) => item.key === requestData.sectorNum);
+  if (sector) {
+    for (let index = 0; index < sector.pages.length; index += 1) {
+      const page = sector.pages[index];
+      if (page.show && page.key < requestData.pageNum) {
+        prevPage = page;
+      } else if (nextPage) {
+        break;
+      } else if (page.show && page.key > requestData.pageNum) {
+        nextPage = page;
+      }
+    }
+  }
+  return [prevPage, nextPage];
+};
 
 export default sectorsSlice.reducer;
