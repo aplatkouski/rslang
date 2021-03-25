@@ -14,24 +14,24 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      margin: '3.5%',
+      margin: theme.spacing(2.25),
       '& a': {
-        marginTop: '10px',
-        'font-size': '20px',
+        marginTop: theme.spacing(1.25),
+        'font-size': theme.spacing(2.5),
         color: theme.palette.text.secondary,
       },
       '& div': {
         width: '100px',
         height: '100px',
       },
-      '& a img': {
-        color: theme.palette.text.secondary,
-        margin: '10%',
-      },
+    },
+    avatar: {
+      color: theme.palette.text.secondary,
+      margin: theme.spacing(5),
     },
     divider: {
       height: '2px',
-      margin: '4.5% 5% 0',
+      margin: '35px 30px 0',
     },
   });
 
