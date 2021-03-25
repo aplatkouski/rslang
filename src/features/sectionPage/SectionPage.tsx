@@ -2,9 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 type SectionPageParams = {
-  sector?: string | undefined;
-  page?: string | undefined;
-  color?: string | undefined;
+  sector?: string;
+  page?: string;
+  color?: string;
 };
 
 export default function SectionPage(): JSX.Element {

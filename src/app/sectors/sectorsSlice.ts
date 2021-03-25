@@ -1,9 +1,7 @@
 import { createSlice /* , PayloadAction */ } from '@reduxjs/toolkit';
 import type { RootState } from 'app/store';
 
-const PAGES_PER_SECTOR = 30;
-
-const SECTOR_COLORS = ['#D7F1B5', '#98CAB7', '#FFD3BF', '#E7ADC6', '#B59AC9', '#FFFDBF'];
+import { PAGES_PER_SECTOR, SECTOR_COLORS } from '../../constants';
 
 export interface SectorPageVisibility {
   sectorNum: number;
@@ -43,13 +41,13 @@ function generatePages(sectorNum: number, color: string): Array<Page> {
 }
 
 const initialState: SectorsState = {
-  sectors: [1, 2, 3, 4, 5, 6].map((el) => {
+  sectors: SECTOR_COLORS.map((color, index) => {
     return {
-      key: el,
-      title: `Раздел ${el}`,
-      color: SECTOR_COLORS[el - 1],
+      key: index,
+      title: `Раздел ${index + 1}`,
+      color,
       get pages() {
-        return generatePages(this.key, this.color);
+        return generatePages(index, color);
       },
     };
   }),
