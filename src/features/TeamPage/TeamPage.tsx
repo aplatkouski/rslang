@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { Avatar, Box, Container, Divider, Link, Typography } from '@material-ui/core';
+import { Avatar, Container, Divider, Link, Typography } from '@material-ui/core';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
@@ -9,10 +9,13 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
   return (
     <Container>
       <div className={classes.item}>
-        <Box className={classes.title}>
-          <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
+        <div className={classes.title}>
+          <Avatar
+            className={classes.avatar}
+            src="https://cdn.onlinewebfonts.com/svg/img_264570.png"
+          />
           <Link href="https://github.com/aplatkouski">Artsiom Platkouski</Link>
-        </Box>
+        </div>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Volutpat consequat mauris nunc
@@ -31,10 +34,10 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
       </div>
       <Divider className={classes.divider} variant="middle" />
       <div className={classes.item}>
-        <Box className={classes.title}>
+        <div className={classes.title}>
           <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
           <Link href="https://github.com/natallia-js">Natallia Fedartsova</Link>
-        </Box>
+        </div>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Volutpat consequat mauris nunc
@@ -53,10 +56,10 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
       </div>
       <Divider className={classes.divider} variant="middle" />
       <div className={classes.item}>
-        <Box className={classes.title}>
+        <div className={classes.title}>
           <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
           <Link href="https://github.com/RVitaly1978">Vital Raicheu</Link>
-        </Box>
+        </div>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Volutpat consequat mauris nunc
@@ -75,10 +78,10 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
       </div>
       <Divider className={classes.divider} variant="middle" />
       <div className={classes.item}>
-        <Box className={classes.title}>
+        <div className={classes.title}>
           <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
           <Link href="https://github.com/DmitryBogdan90">DmitryBogdan90</Link>
-        </Box>
+        </div>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Volutpat consequat mauris nunc
@@ -97,10 +100,10 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
       </div>
       <Divider className={classes.divider} variant="middle" />
       <div className={classes.item}>
-        <Box className={classes.title}>
+        <div className={classes.title}>
           <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
           <Link href="https://github.com/vzabavski">Vital Zabavski</Link>
-        </Box>
+        </div>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Volutpat consequat mauris nunc
