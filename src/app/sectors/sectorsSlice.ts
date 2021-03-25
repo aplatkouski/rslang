@@ -84,9 +84,9 @@ export const sectorsSlice = createSlice({
 
 // export const { setSectorPageVisibility } = sectorsSlice.actions;
 
-export const getSectors = (state: RootState) => state.sectors.sectors;
+export const selectSectors = (state: RootState) => state.sectors.sectors;
 
-export const getAdjacentPages = (
+export const selectAdjacentPages = (
   state: RootState,
   requestData: SectorPage
 ): Array<Page | undefined> => {

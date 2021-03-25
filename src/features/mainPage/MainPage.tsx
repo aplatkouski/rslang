@@ -7,7 +7,7 @@ import './MainPage.scss';
 const Counter = lazy(() => import('features/counter/Counter'));
 
 const MainPage = (): JSX.Element => (
-  <div className="app">
+  <main className="app">
     <header className="app-header">
       <Logo className="app-logo" title="logo" />
       <Suspense fallback={<div>Loading...</div>}>
@@ -57,7 +57,7 @@ const MainPage = (): JSX.Element => (
         </a>
       </span>
     </header>
-  </div>
+  </main>
 );
 
 export default MainPage;

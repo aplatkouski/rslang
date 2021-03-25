@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ListItemText, Typography } from '@material-ui/core';
-import { getAdjacentPages, Page } from 'app/sectors/sectorsSlice';
+import { selectAdjacentPages, Page } from 'app/sectors/sectorsSlice';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 
 import './SectionPage.scss';
@@ -18,7 +18,7 @@ export default function SectionPage(): JSX.Element {
   const bgColor: string = color || 'white';
 
   const adjacentPages: Array<Page | undefined> = useSelector((state: any) =>
-    getAdjacentPages(state, { sectorNum: Number(sector), pageNum: Number(page) })
+    selectAdjacentPages(state, { sectorNum: Number(sector), pageNum: Number(page) })
   );
 
   return (
