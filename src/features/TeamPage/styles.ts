@@ -14,9 +14,9 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      margin: '4%',
+      margin: '3.5%',
       '& a': {
-        marginTop: '8px',
+        marginTop: '10px',
         'font-size': '20px',
         color: theme.palette.text.secondary,
       },
