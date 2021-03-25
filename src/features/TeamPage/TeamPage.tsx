@@ -11,9 +11,7 @@ const TeamPage = ({ classes }: Props): JSX.Element => {
       <div className={classes.item}>
         <Box className={classes.title}>
           <Avatar src="https://cdn.onlinewebfonts.com/svg/img_264570.png" />
-          <Link href="https://www.linkedin.com/in/artsiom-platkouski/">
-            Artsiom Platkouski
-          </Link>
+          <Link href="https://github.com/aplatkouski">Artsiom Platkouski</Link>
         </Box>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
