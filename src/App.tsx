@@ -10,15 +10,9 @@ const App = (): JSX.Element => {
     <BrowserRouter>
       <Navbar />
       <Switch>
-        <Route exact path="/">
-          <MainPage />
-        </Route>
-        <Route exact path="/sectors">
-          <SectorsPage />
-        </Route>
-        <Route exact path="/section/:sector/:page/:color">
-          <SectionPage />
-        </Route>
+        <Route component={MainPage} exact path="/" />
+        <Route component={SectorsPage} exact path="/sectors" />
+        <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
         <Redirect to="/" />
       </Switch>
     </BrowserRouter>

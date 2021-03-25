@@ -11,7 +11,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
-import { getSectors, Sector } from 'app/sectors/sectorsSlice';
+import { selectSectors, Sector } from 'app/sectors/sectorsSlice';
 
 import './SectorsPage.scss';
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SectionsPage(): JSX.Element {
   const classes = useStyles();
 
-  const sectors: Array<Sector> = useSelector(getSectors);
+  const sectors: Array<Sector> = useSelector(selectSectors);
 
   return (
     <div className={classes.root}>
