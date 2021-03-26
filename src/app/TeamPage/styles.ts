@@ -16,7 +16,7 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
       margin: theme.spacing(2.25),
       '& a': {
-        marginTop: theme.spacing(1.25),
+        marginTop: theme.spacing(1),
         'font-size': theme.spacing(2.5),
         color: theme.palette.text.secondary,
       },
