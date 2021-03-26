@@ -44,7 +44,6 @@ const LogInForm = ({
       );
     }
   };
-
   const handleKeyPressOnInput = (
     event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
