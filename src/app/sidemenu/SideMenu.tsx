@@ -32,7 +32,7 @@ const upperMenu = [
   { key: 3, title: 'Статистика', url: '', icon: <EventNote /> },
 ];
 
-const lowerMenu = [{ key: 1, title: 'О команде', url: '', icon: <People /> }];
+const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];
 
 const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => {
   const classes = useStyles();
@@ -60,8 +60,12 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
       <List>
         {lowerMenu.map((menuObj) => (
           <ListItem key={menuObj.key} button>
-            <ListItemIcon>{menuObj.icon}</ListItemIcon>
-            <ListItemText primary={menuObj.title} />
+            <NavLink to={menuObj.url}>
+              <ListItemIcon>{menuObj.icon}</ListItemIcon>
+            </NavLink>
+            <NavLink to={menuObj.url}>
+              <ListItemText primary={menuObj.title} />
+            </NavLink>
           </ListItem>
         ))}
       </List>
