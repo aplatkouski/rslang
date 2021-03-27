@@ -23,9 +23,7 @@ const initialState: t.SectorsState = SECTOR_COLORS.map((color, index) => {
     key: index,
     title: `Раздел ${index + 1}`,
     color,
-    get pages() {
-      return generatePages(index, color);
-    },
+    pages: generatePages(index, color),
   };
 });
 
