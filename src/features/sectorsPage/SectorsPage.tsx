@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { selectSectors } from 'features/sectors/sectorsSlice';
 import * as t from 'types';
+import { Settings } from '../../app/settings/settings';
 
 import './SectorsPage.scss';
 
@@ -70,6 +71,7 @@ export default function SectionsPage(): JSX.Element {
             </AccordionDetails>
           </Accordion>
         ))}
+      <Settings />
     </div>
   );
 }
