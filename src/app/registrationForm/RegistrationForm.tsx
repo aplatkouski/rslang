@@ -59,13 +59,6 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
   const handleRegisterUser = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    setRegistrationErrors({
-      name: null,
-      email: null,
-      password: null,
-      general: null,
-    });
-
     const formData = new FormData(formRef.current || undefined);
 
     setRegistrationInProgress(true);
@@ -109,6 +102,9 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
           ...registrationErrors,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           general: `${String(error.message)}. ${TRY_REGISTRATION_AGAIN_MESSAGE}`,
+          name: null,
+          email: null,
+          password: null,
         });
       }
     }
