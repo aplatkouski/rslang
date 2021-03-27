@@ -28,3 +28,8 @@ export interface Sector {
 }
 
 export type SectorsState = Array<Sector>;
+
+export interface Settings {
+  translation: boolean;
+  buttons: boolean;
+}
