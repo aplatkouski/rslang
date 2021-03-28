@@ -5,13 +5,17 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  IconButton,
   Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
+import React, { useRef, useState, useEffect } from 'react';
 import clsx from 'clsx';
 // import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import FormattedText from './FormattedText';
 import styles from './styles';
 // import {
@@ -63,17 +67,82 @@ const word: IWord = {
   wordTranslate: 'месяц',
 };
 
+const audios: Array<string> = [
+  `${URL}${word.audio}`,
+  `${URL}${word.audioExample}`,
+  `${URL}${word.audioMeaning}`,
+];
+
+const audioStart = (
+  audioRef: React.MutableRefObject<HTMLAudioElement>,
+  audioSrc: Array<string>,
+  setIsAudioPlay: any
+): void => {
+  const src: Array<string> = [...audioSrc];
+
+  if (!src.length) {
+    setIsAudioPlay((s: boolean) => !s);
+    return;
+  }
+
+  const audio = src.shift();
+  if (audio) {
+    // eslint-disable-next-line no-param-reassign
+    audioRef.current.src = audio;
+    // eslint-disable-next-line no-param-reassign
+    audioRef.current.play();
+  }
+
+  // eslint-disable-next-line no-param-reassign
+  audioRef.current.onended = () => {
+    audioStart(audioRef, src, setIsAudioPlay);
+  };
+};
+
+const audioStop = (audioRef: React.MutableRefObject<HTMLAudioElement>): void => {
+  // eslint-disable-next-line no-param-reassign
+  audioRef.current.pause();
+};
+
 const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
   const [isComplex, setIsComplex] = useState<boolean>(false);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
   const isTranslations = true;
   const isSettings = true;
+  const isAuth = true;
+
+  const htmlAudioRef = useRef<HTMLAudioElement>(new Audio(undefined));
+
+  const location = useLocation();
+  const isSection = location.pathname.includes('section');
+  // const isDictionary = location.pathname.includes('dictionary');
+  const isDictionary = true;
+
+  useEffect(() => {
+    return () => {
+      audioStop(htmlAudioRef);
+    };
+  }, []);
 
   const handleDelete = (): void => {
     setIsDeleted((s) => !s);
   };
   const handleComplex = (): void => {
     setIsComplex((s) => !s);
+  };
+  const handleRestore = (): void => {
+    console.log('restore');
+  };
+
+  const handleAudio = (): void => {
+    if (isAudioPlay) {
+      audioStop(htmlAudioRef);
+    } else {
+      audioStart(htmlAudioRef, audios, setIsAudioPlay);
+    }
+
+    setIsAudioPlay((s) => !s);
   };
 
   if (error || isDeleted) {
@@ -106,6 +175,17 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
         title={`${word.word}`}
       />
       <CardContent>
+        <IconButton
+          aria-label="play/pause"
+          className={classes.audioButton}
+          onClick={handleAudio}
+        >
+          {isAudioPlay ? (
+            <StopIcon className={classes.audioIcon} />
+          ) : (
+            <PlayArrowIcon className={classes.audioIcon} />
+          )}
+        </IconButton>
         <Typography>
           {word.word}
           {' - '}
@@ -121,7 +201,7 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
         </Typography>
         {isTranslations && <Typography>{word.textMeaningTranslate}</Typography>}
       </CardContent>
-      {isSettings && (
+      {isSettings && isAuth && isSection && (
         <CardActions>
           <Button
             className={classes.button}
@@ -138,6 +218,18 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
             variant="outlined"
           >
             {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
+          </Button>
+        </CardActions>
+      )}
+      {isDictionary && (
+        <CardActions>
+          <Button
+            className={classes.button}
+            color="secondary"
+            onClick={handleRestore}
+            variant="outlined"
+          >
+            восстановить
           </Button>
         </CardActions>
       )}

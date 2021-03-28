@@ -19,6 +19,16 @@ const styles = (theme: Theme) =>
       userSelect: 'none',
     },
     button: {},
+    audioButton: {
+      padding: theme.spacing(0),
+      border: '1px solid',
+      borderColor: theme.palette.secondary.main,
+    },
+    audioIcon: {
+      width: theme.spacing(4),
+      height: theme.spacing(4),
+      color: theme.palette.secondary.main,
+    },
   });
 
 export default styles;
