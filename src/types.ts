@@ -35,10 +35,18 @@ export interface Settings {
 }
 
 export interface IRegistrationErrors {
-  general: string | null | undefined;
+  [general: string]: string | null | undefined;
   email: string | null | undefined;
   name: string | null | undefined;
   password: string | null | undefined;
+}
+
+export interface ILoginErrors {
+  errLogInMessage: string | null | undefined;
+}
+
+export interface ILoginStatus {
+  inProgress: boolean;
 }
 
 export interface IUser {

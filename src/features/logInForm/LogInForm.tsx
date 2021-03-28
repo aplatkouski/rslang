@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -7,22 +8,19 @@ import {
   FormControl,
   Input,
   InputLabel,
+  Typography,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-// import { ICredentials, ILogInErrors } from 'Entities/user';
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useRef } from 'react';
-import { logIn } from 'features/user/userSlice';
+import { logIn, getErrLogInMessage, getLoginStatus } from 'features/user/userSlice';
 
-// import 'Styles/animate.min.css';
-
+import 'styles/animate.min.css';
 import './LogInForm.scss';
 
 interface Props {
-  // logInErrors: ILogInErrors | undefined;
   isOpen: boolean;
   onClose: () => void;
   onRegister: () => void;
-  // onLogIn: (credentials: ICredentials) => void;
 }
 
 const LogInForm = ({
@@ -33,13 +31,11 @@ const LogInForm = ({
   const refEmailField = useRef<HTMLInputElement>(null);
   const refPasswordField = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch();
+  const errLogInMessage = useSelector(getErrLogInMessage);
+  const logInStatus = useSelector(getLoginStatus);
 
   const handleLogInUser = () => {
     if (refEmailField.current && refPasswordField.current) {
-      /* onLogIn({
-        login: refLoginField.current.value,
-        password: refPasswordField.current.value,
-      }); */
       dispatch(
         logIn({
           email: refEmailField.current.value,
@@ -48,7 +44,7 @@ const LogInForm = ({
       );
     }
   };
-  /*
+
   const handleKeyPressOnInput = (
     event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -56,7 +52,6 @@ const LogInForm = ({
       handleLogInUser();
     }
   };
-*/
 
   return (
     <div>
@@ -70,12 +65,15 @@ const LogInForm = ({
       >
         <DialogTitle id="form-dialog-title">Войти в систему</DialogTitle>
         <DialogContent>
-          {/*
-          {logInErrors && logInErrors.general && (
-            <Typography className="animate__animated animate__bounceInLeft" gutterBottom>
-              {logInErrors.general}
+          {logInStatus && <CircularProgress />}
+          {errLogInMessage && (
+            <Typography
+              className="animate__animated animate__bounceInLeft error"
+              gutterBottom
+            >
+              {errLogInMessage}
             </Typography>
-          )} */}
+          )}
           <FormControl fullWidth>
             <InputLabel htmlFor="email">email</InputLabel>
             <Input
@@ -85,16 +83,9 @@ const LogInForm = ({
               inputRef={refEmailField}
               margin="dense"
               name="email"
+              onKeyUp={handleKeyPressOnInput}
               type="text"
             />
-            {/* logInErrors && logInErrors.login && (
-              <Typography
-                className="animate__animated animate__bounceInLeft"
-                gutterBottom
-              >
-                {logInErrors.login}
-              </Typography>
-            ) */}
           </FormControl>
           <br />
           <FormControl fullWidth>
@@ -105,25 +96,24 @@ const LogInForm = ({
               inputRef={refPasswordField}
               margin="dense"
               name="password"
+              onKeyUp={handleKeyPressOnInput}
               type="password"
             />
-            {/* logInErrors && logInErrors.password && (
-              <Typography
-                className="animate__animated animate__bounceInLeft"
-                gutterBottom
-              >
-                {logInErrors.password}
-              </Typography>
-            ) */}
           </FormControl>
           <DialogActions className="dlg-actions">
-            <Button color="primary" onClick={handleClose}>
+            <Button color="primary" disabled={logInStatus} onClick={handleClose}>
               Отмена
             </Button>
-            <Button color="primary" onClick={handleLogInUser}>
+            <Button
+              color="primary"
+              disabled={logInStatus}
+              onClick={handleLogInUser}
+              type="submit"
+              variant="outlined"
+            >
               Войти
             </Button>
-            <Button color="primary" onClick={handleRegister}>
+            <Button color="primary" disabled={logInStatus} onClick={handleRegister}>
               Зарегистрироваться
             </Button>
           </DialogActions>
