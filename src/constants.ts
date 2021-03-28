@@ -8,3 +8,7 @@ export const SECTOR_COLORS = [
   '#B59AC9',
   '#FFFDBF',
 ];
+
+export const api = 'https://rs-lang-server.herokuapp.com';
+export const USER_REGISTRATION_API = 'users';
+export const LOG_IN_API = 'signin';

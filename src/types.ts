@@ -33,3 +33,22 @@ export interface Settings {
   translation: boolean;
   buttons: boolean;
 }
+
+export interface IRegistrationErrors {
+  general: string | null | undefined;
+  email: string | null | undefined;
+  name: string | null | undefined;
+  password: string | null | undefined;
+}
+
+export interface IUser {
+  token: string;
+  refreshToken: string;
+  userId: string;
+  name: string;
+}
+
+export interface IUserLogInData {
+  email: string;
+  password: string;
+}

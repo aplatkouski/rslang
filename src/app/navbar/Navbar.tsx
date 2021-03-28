@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-  Tooltip,
-} from '@material-ui/core';
+import { AppBar, Toolbar, Typography, IconButton, Tooltip } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { NavLink } from 'react-router-dom';
 import SideMenu from 'app/sidemenu/SideMenu';
+import LogInForm from 'features/logInForm/LogInForm';
+import RegistrationForm from 'app/registrationForm/RegistrationForm';
 
 import Logo from 'assets/img/MainPageLogo.jpg';
 
@@ -29,14 +26,41 @@ const useStyles = makeStyles((theme) => ({
 export default function Navbar(): JSX.Element {
   const classes = useStyles();
   const [drawerState, setDrawerState] = useState(false);
+  const [openLogInModal, setOpenLogInModal] = useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+
+  const currentUser = null;
 
   const handleToggleSideMenu = () => {
     setDrawerState((state: boolean) => !state);
   };
 
+  const handleOpenLogInModal = () => {
+    setOpenLogInModal(true);
+  };
+
+  const handleCloseLogInModal = () => {
+    setOpenLogInModal(false);
+  };
+
+  const handleRegister = () => {
+    setOpenLogInModal(false);
+    setOpenRegisterModal(true);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setOpenRegisterModal(false);
+  };
+
   return (
     <div className={classes.root}>
       <SideMenu handleCloseSideMenu={() => handleToggleSideMenu()} open={drawerState} />
+      <LogInForm
+        isOpen={openLogInModal}
+        onClose={handleCloseLogInModal}
+        onRegister={handleRegister}
+      />
+      <RegistrationForm isOpen={openRegisterModal} onClose={handleCloseRegisterModal} />
 
       <AppBar position="static">
         <Toolbar>
@@ -62,7 +86,30 @@ export default function Navbar(): JSX.Element {
               </NavLink>
             </Tooltip>
           </Typography>
-          <Button color="inherit">Login</Button>
+          {currentUser /* && currentUser.token */ ? (
+            <>
+              {/* <UserCard /> */}
+              <IconButton
+                aria-label="menu"
+                className={classes.menuButton}
+                color="inherit"
+                edge="start"
+                onClick={handleToggleSideMenu}
+              >
+                <ExitToAppIcon />
+              </IconButton>
+            </>
+          ) : (
+            <IconButton
+              aria-label="menu"
+              className={classes.menuButton}
+              color="inherit"
+              edge="start"
+              onClick={handleOpenLogInModal}
+            >
+              <PersonIcon />
+            </IconButton>
+          )}
         </Toolbar>
       </AppBar>
     </div>
