@@ -19,8 +19,7 @@ type Props = WithStyles<typeof styles>;
 
 const Settings = ({ classes }: Props): JSX.Element => {
   const dispatch = useDispatch();
-  const initialSettings = useSelector(selectSettings);
-  const [settings, setSettings] = React.useState(initialSettings);
+  const settings = useSelector(selectSettings);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event: BaseSyntheticEvent) => {
@@ -32,7 +31,6 @@ const Settings = ({ classes }: Props): JSX.Element => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings({ ...settings, [event.target.name]: event.target.checked });
     dispatch(changeSettings({ ...settings, [event.target.name]: event.target.checked }));
   };
   const { translation, buttons } = settings;
