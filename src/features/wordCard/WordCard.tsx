@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -19,9 +18,9 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { RootState } from '../../app/store';
 import FormattedText from './FormattedText';
+import { audioStart, audioStop } from './audio-helpers';
+import { API } from '../../constants';
 import styles from './styles';
-
-const URL = 'https://rs-lang-server.herokuapp.com/';
 
 interface Props extends WithStyles<typeof styles> {
   // id: string;
@@ -44,51 +43,23 @@ interface IWord {
   wordTranslate: string;
 }
 
-const audioStart = (
-  audioRef: React.MutableRefObject<HTMLAudioElement>,
-  audioSrc: Array<string>,
-  setIsAudioPlay: any
-): void => {
-  const src: Array<string> = [...audioSrc];
-
-  if (!src.length) {
-    setIsAudioPlay((s: boolean) => !s);
-    return;
-  }
-
-  const audio = src.shift();
-  if (audio) {
-    // eslint-disable-next-line no-param-reassign
-    audioRef.current.src = audio;
-    // eslint-disable-next-line no-param-reassign
-    audioRef.current.play();
-  }
-
-  // eslint-disable-next-line no-param-reassign
-  audioRef.current.onended = () => {
-    audioStart(audioRef, src, setIsAudioPlay);
-  };
-};
-
-const audioStop = (audioRef: React.MutableRefObject<HTMLAudioElement>): void => {
-  // eslint-disable-next-line no-param-reassign
-  audioRef.current.pause();
-};
-
 const WordCard = ({ classes }: Props): JSX.Element => {
   const { translation, buttons } = useSelector((s: RootState) => s.settings.value);
 
-  const [isComplex, setIsComplex] = useState<boolean>(false);
-  const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
-  const isAuth = true;
 
   const htmlAudioRef = useRef<HTMLAudioElement>(new Audio(undefined));
 
-  const location = useLocation();
-  const isSection = location.pathname.includes('section');
-  // const isDictionary = location.pathname.includes('dictionary');
-  const isDictionary = false;
+  // получать и диспатчить в стор -----------------------------------------
+  const [isComplex, setIsComplex] = useState<boolean>(false);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const isAuth = true;
+  // ----------------------------------------------------------------------
+
+  const { pathname } = useLocation();
+  const isSectionRoot = pathname.includes('section');
+  const isDictionaryComplexRoot = pathname.includes('dictionary/complex');
+  const isDictionaryDeletedRoot = pathname.includes('dictionary/deleted');
 
   useEffect(() => {
     return () => {
@@ -118,22 +89,29 @@ const WordCard = ({ classes }: Props): JSX.Element => {
 
   const audios: Array<string> = useMemo(
     () => [
-      `${URL}${word.audio}`,
-      `${URL}${word.audioExample}`,
-      `${URL}${word.audioMeaning}`,
+      `${API}/${word.audio}`,
+      `${API}/${word.audioExample}`,
+      `${API}/${word.audioMeaning}`,
     ],
     [word]
   );
 
+  // диспатчить в стор ----------------------------------------------------
   const handleDelete = (): void => {
     setIsDeleted((s) => !s);
+    console.log(isDeleted);
   };
   const handleComplex = (): void => {
     setIsComplex((s) => !s);
   };
   const handleRestore = (): void => {
-    console.log('restore');
+    if (isDictionaryComplexRoot) {
+      console.log('restore complex');
+    } else if (isDictionaryDeletedRoot) {
+      console.log('restore deleted');
+    }
   };
+  // ----------------------------------------------------------------------
 
   const handleAudio = (): void => {
     if (isAudioPlay) {
@@ -145,44 +123,32 @@ const WordCard = ({ classes }: Props): JSX.Element => {
     setIsAudioPlay((s) => !s);
   };
 
-  if (isDeleted) {
-    return (
-      <Box className={classes.root}>
-        <Typography component="p" variant="body2">
-          No data
-        </Typography>
-      </Box>
-    );
-  }
-
-  const classList = isComplex ? clsx(classes.root, classes.root__complex) : classes.root;
-
   return (
-    <Card className={classList}>
+    <Card
+      className={isComplex ? clsx(classes.root, classes.root__complex) : classes.root}
+    >
       <CardMedia
         alt={`${word.word}`}
         className={classes.image}
         component="img"
-        image={`${URL}${word.image}`}
+        image={`${API}/${word.image}`}
         title={`${word.word}`}
       />
 
       <CardContent>
-        <IconButton
-          aria-label="play/pause"
-          className={classes.audioButton}
-          onClick={handleAudio}
-        >
-          {isAudioPlay ? (
-            <StopIcon className={classes.audioIcon} />
-          ) : (
-            <PlayArrowIcon className={classes.audioIcon} />
-          )}
-        </IconButton>
         <Typography>
-          {word.word}
-          {' - '}
-          {word.transcription}
+          <IconButton
+            aria-label="play/pause"
+            className={classes.audioButton}
+            onClick={handleAudio}
+          >
+            {isAudioPlay ? (
+              <StopIcon className={classes.audioIcon} />
+            ) : (
+              <PlayArrowIcon className={classes.audioIcon} />
+            )}
+          </IconButton>
+          {`${word.word} - ${word.transcription}`}
           {translation && ` - ${word.wordTranslate}`}
         </Typography>
         <Typography>
@@ -197,28 +163,29 @@ const WordCard = ({ classes }: Props): JSX.Element => {
         <Typography>Статистика: нет данных пока...</Typography>
       </CardContent>
 
-      {buttons && isAuth && isSection && (
-        <CardActions>
-          <Button
-            className={classes.button}
-            color="secondary"
-            onClick={handleDelete}
-            variant="outlined"
-          >
-            добавить в &quot;удаленные&quot;
-          </Button>
-          <Button
-            className={classes.button}
-            color="secondary"
-            onClick={handleComplex}
-            variant="outlined"
-          >
-            {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
-          </Button>
-        </CardActions>
-      )}
-      {isDictionary && (
-        <CardActions>
+      <CardActions>
+        {buttons && isAuth && isSectionRoot && (
+          <>
+            <Button
+              className={classes.button}
+              color="secondary"
+              onClick={handleDelete}
+              variant="outlined"
+            >
+              добавить в &quot;удаленные&quot;
+            </Button>
+            <Button
+              className={classes.button}
+              color="secondary"
+              onClick={handleComplex}
+              variant="outlined"
+            >
+              {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
+            </Button>
+          </>
+        )}
+
+        {!isSectionRoot && (
           <Button
             className={classes.button}
             color="secondary"
@@ -227,8 +194,8 @@ const WordCard = ({ classes }: Props): JSX.Element => {
           >
             восстановить
           </Button>
-        </CardActions>
-      )}
+        )}
+      </CardActions>
     </Card>
   );
 };

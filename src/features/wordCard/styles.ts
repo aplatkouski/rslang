@@ -8,7 +8,7 @@ const styles = (theme: Theme) =>
       background: theme.palette.background.default,
     },
     root__complex: {
-      background: 'gray',
+      background: theme.palette.warning.light,
     },
     image: {
       width: theme.spacing(40),
@@ -21,6 +21,7 @@ const styles = (theme: Theme) =>
     button: {},
     audioButton: {
       padding: theme.spacing(0),
+      marginRight: theme.spacing(1),
       border: '1px solid',
       borderColor: theme.palette.secondary.main,
     },
