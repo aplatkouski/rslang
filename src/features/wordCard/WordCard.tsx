@@ -5,6 +5,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Divider,
   IconButton,
   Typography,
   withStyles,
@@ -12,25 +13,18 @@ import {
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-// import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { RootState } from '../../app/store';
 import FormattedText from './FormattedText';
 import styles from './styles';
-// import {
-//   decrement,
-//   increment,
-//   incrementAsync,
-//   incrementByAmount,
-//   selectCount,
-// } from './wordCardSlice';
 
 const URL = 'https://rs-lang-server.herokuapp.com/';
 
 interface Props extends WithStyles<typeof styles> {
-  error: Error | undefined;
-  isLoading: boolean;
+  // id: string;
 }
 
 interface IWord {
@@ -49,29 +43,6 @@ interface IWord {
   textMeaningTranslate: string;
   wordTranslate: string;
 }
-
-const word: IWord = {
-  id: '5e9f5ee35eb9e72bc21af4ac',
-  group: 0,
-  page: 0,
-  word: 'month',
-  image: 'files/01_0014.jpg',
-  audio: 'files/01_0014.mp3',
-  audioMeaning: 'files/01_0014_meaning.mp3',
-  audioExample: 'files/01_0014_example.mp3',
-  textMeaning: 'A <i>month</i> is one of 12 periods of time in one year.',
-  textExample: 'January is the first <b>month</b> of the year.',
-  transcription: '[mʌnθ]',
-  textExampleTranslate: 'Январь - первый месяц года',
-  textMeaningTranslate: 'Месяц - это один из 12 периодов времени в году',
-  wordTranslate: 'месяц',
-};
-
-const audios: Array<string> = [
-  `${URL}${word.audio}`,
-  `${URL}${word.audioExample}`,
-  `${URL}${word.audioMeaning}`,
-];
 
 const audioStart = (
   audioRef: React.MutableRefObject<HTMLAudioElement>,
@@ -104,12 +75,12 @@ const audioStop = (audioRef: React.MutableRefObject<HTMLAudioElement>): void => 
   audioRef.current.pause();
 };
 
-const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
+const WordCard = ({ classes }: Props): JSX.Element => {
+  const { translation, buttons } = useSelector((s: RootState) => s.settings.value);
+
   const [isComplex, setIsComplex] = useState<boolean>(false);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
-  const isTranslations = true;
-  const isSettings = true;
   const isAuth = true;
 
   const htmlAudioRef = useRef<HTMLAudioElement>(new Audio(undefined));
@@ -117,13 +88,42 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
   const location = useLocation();
   const isSection = location.pathname.includes('section');
   // const isDictionary = location.pathname.includes('dictionary');
-  const isDictionary = true;
+  const isDictionary = false;
 
   useEffect(() => {
     return () => {
       audioStop(htmlAudioRef);
     };
   }, []);
+
+  const word: IWord = useMemo(
+    () => ({
+      id: '5e9f5ee35eb9e72bc21af4ac',
+      group: 0,
+      page: 0,
+      word: 'month',
+      image: 'files/01_0014.jpg',
+      audio: 'files/01_0014.mp3',
+      audioMeaning: 'files/01_0014_meaning.mp3',
+      audioExample: 'files/01_0014_example.mp3',
+      textMeaning: 'A <i>month</i> is one of 12 periods of time in one year.',
+      textExample: 'January is the first <b>month</b> of the year.',
+      transcription: '[mʌnθ]',
+      textExampleTranslate: 'Январь - первый месяц года',
+      textMeaningTranslate: 'Месяц - это один из 12 периодов времени в году',
+      wordTranslate: 'месяц',
+    }),
+    []
+  );
+
+  const audios: Array<string> = useMemo(
+    () => [
+      `${URL}${word.audio}`,
+      `${URL}${word.audioExample}`,
+      `${URL}${word.audioMeaning}`,
+    ],
+    [word]
+  );
 
   const handleDelete = (): void => {
     setIsDeleted((s) => !s);
@@ -145,20 +145,12 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
     setIsAudioPlay((s) => !s);
   };
 
-  if (error || isDeleted) {
+  if (isDeleted) {
     return (
       <Box className={classes.root}>
         <Typography component="p" variant="body2">
           No data
         </Typography>
-      </Box>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <Box className={classes.root}>
-        <div>Loading...</div>
       </Box>
     );
   }
@@ -174,6 +166,7 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
         image={`${URL}${word.image}`}
         title={`${word.word}`}
       />
+
       <CardContent>
         <IconButton
           aria-label="play/pause"
@@ -190,18 +183,21 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
           {word.word}
           {' - '}
           {word.transcription}
-          {isTranslations && ` - ${word.wordTranslate}`}
+          {translation && ` - ${word.wordTranslate}`}
         </Typography>
         <Typography>
           <FormattedText text={word.textExample} />
         </Typography>
-        {isTranslations && <Typography>{word.textExampleTranslate}</Typography>}
+        {translation && <Typography>{word.textExampleTranslate}</Typography>}
         <Typography>
           <FormattedText text={word.textMeaning} />
         </Typography>
-        {isTranslations && <Typography>{word.textMeaningTranslate}</Typography>}
+        {translation && <Typography>{word.textMeaningTranslate}</Typography>}
+        <Divider />
+        <Typography>Статистика: нет данных пока...</Typography>
       </CardContent>
-      {isSettings && isAuth && isSection && (
+
+      {buttons && isAuth && isSection && (
         <CardActions>
           <Button
             className={classes.button}
