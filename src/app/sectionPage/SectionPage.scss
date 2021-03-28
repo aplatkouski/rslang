@@ -1,4 +1,8 @@
 .page-header {
+  position: relative;
+}
+
+.page-title {
   text-align: center;
 }
 
@@ -12,4 +16,10 @@
 .nav-page {
   display: flex;
   flex-direction: row;
+}
+
+.settings {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
