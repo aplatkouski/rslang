@@ -12,10 +12,6 @@ export const SECTOR_COLORS = [
 export const api = 'https://rs-lang-server.herokuapp.com';
 export const USER_REGISTRATION_API = 'users';
 export const LOG_IN_API = 'signin';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fd4d769 (feat: registration, authorization, user card)
 export const GET_USER_PHOTO_API = (userId: string) => {
   return `users/${userId}/photo`;
 };
@@ -28,8 +24,3 @@ export const WRONG_AUTHENTICATION_DATA_MESSAGE = 'Неверный email и/ил
 export const WRONG_REGISTRATION_MESSAGE = 'Ошибка регистрации';
 export const TRY_REGISTRATION_AGAIN_MESSAGE = 'Проверьте правильность введенных данных';
 export const SUCCESSFUL_REGISTRATION_MESSAGE = 'Вы успешно зарегистрированы';
-<<<<<<< HEAD
-=======
->>>>>>> 929e141 (feat: initial steps)
-=======
->>>>>>> fd4d769 (feat: registration, authorization, user card)

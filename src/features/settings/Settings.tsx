@@ -6,6 +6,7 @@ import {
   FormGroup,
   FormLabel,
   Menu,
+  Tooltip,
 } from '@material-ui/core';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import React, { BaseSyntheticEvent } from 'react';
@@ -36,16 +37,18 @@ const Settings = ({ classes }: Props): JSX.Element => {
   const { translation, buttons } = settings;
   return (
     <>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        className={classes.button}
-        color="primary"
-        onClick={handleClick}
-        variant="contained"
-      >
-        <SettingsIcon />
-      </Button>
+      <Tooltip title="Настройки">
+        <Button
+          aria-controls="customized-menu"
+          aria-haspopup="true"
+          className={classes.button}
+          color="primary"
+          onClick={handleClick}
+          variant="contained"
+        >
+          <SettingsIcon />
+        </Button>
+      </Tooltip>
       <Menu
         anchorEl={anchorEl}
         id="customized-menu"
