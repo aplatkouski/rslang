@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -8,28 +9,31 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
-// import 'Styles/animate.min.css';
 import * as t from 'types';
-import { api, USER_REGISTRATION_API } from '../../constants';
+import {
+  api,
+  USER_REGISTRATION_API,
+  SERVER_OK_STATUS,
+  WRONG_REGISTRATION_MESSAGE,
+  SUCCESSFUL_REGISTRATION_MESSAGE,
+  TRY_REGISTRATION_AGAIN_MESSAGE,
+} from '../../constants';
+
+import 'styles/animate.min.css';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-/*
-interface IResponse {
-  errors: Array<{ param: keyof t.IRegistrationErrors; msg: string }>;
-  message: string;
-}
-*/
+
 const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element => {
+  const [registrationInProgress, setRegistrationInProgress] = useState(false);
   const [registrationErrors, setRegistrationErrors] = useState<t.IRegistrationErrors>({
     general: null,
     email: null,
     name: null,
     password: null,
   });
-
   const [successMess, setSuccessfulMessage] = useState<string | null>(null);
   const [chosenFileName, setChosenFileName] = useState<string | null | undefined>(null);
 
@@ -37,14 +41,19 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
   const loadHiddenTextFieldRef = useRef<HTMLInputElement>(null);
 
   const handleCloseDialog = () => {
-    setRegistrationErrors({
-      name: null,
-      email: null,
-      password: null,
-      general: null,
-    });
-    setSuccessfulMessage(null);
-    handleClose();
+    // Закрыть окно регистрации не получится, пока запущенный процесс регистрации
+    // не будет завершен
+    if (!registrationInProgress) {
+      setRegistrationErrors({
+        name: null,
+        email: null,
+        password: null,
+        general: null,
+      });
+      setSuccessfulMessage(null);
+      setChosenFileName(null);
+      handleClose();
+    }
   };
 
   const handleRegisterUser = async (e: React.SyntheticEvent) => {
@@ -59,47 +68,51 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
 
     const formData = new FormData(formRef.current || undefined);
 
+    setRegistrationInProgress(true);
     try {
       const response = await fetch(`${api}/${USER_REGISTRATION_API}`, {
         method: 'POST',
         body: formData,
       });
 
-      console.log(response.json());
-      /*
-      const body: IResponse = (await response.json()) as IResponse;
+      const content = await response.json();
 
-      if (response.status !== 201) {
+      if (response.status !== SERVER_OK_STATUS) {
         const errors: t.IRegistrationErrors = {
-          general: body.message,
+          general: `${WRONG_REGISTRATION_MESSAGE}. ${TRY_REGISTRATION_AGAIN_MESSAGE}`,
           email: null,
           name: null,
           password: null,
         };
 
-        if (body.errors && body.errors.length) {
-          for (let i = 0; i < body.errors.length; i += 1) {
-            const err = body.errors[i];
-            if (Object.keys(errors).includes(err.param)) {
-              errors[err.param] = err.msg;
+        if (content.error && content.error.errors) {
+          for (let i = 0; i < content.error.errors.length; i += 1) {
+            const err = content.error.errors[i];
+            let errFieldName: string;
+            if (err.path && Array.isArray(err.path) && err.path.length) {
+              [errFieldName] = err.path;
+
+              if (Object.keys(errors).includes(errFieldName)) {
+                errors[errFieldName] = err.message;
+              }
             }
           }
         }
+
         setRegistrationErrors({ ...registrationErrors, ...errors });
       } else {
-        setSuccessfulMessage(d.successfulRegistrationMessage);
-      } */
+        setSuccessfulMessage(SUCCESSFUL_REGISTRATION_MESSAGE);
+      }
     } catch (error) {
-      /*
       if (typeof error === 'object' && error !== null) {
         setRegistrationErrors({
           ...registrationErrors,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          general: String(error.message),
+          general: `${String(error.message)}. ${TRY_REGISTRATION_AGAIN_MESSAGE}`,
         });
-      } */
-      console.log(error);
+      }
     }
+    setRegistrationInProgress(false);
   };
 
   const handleFileNameChange = () => {
@@ -122,7 +135,10 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
           <DialogTitle id="form-dialog-title">Регистрация</DialogTitle>
           <DialogContent>
             {registrationErrors.general && (
-              <Typography className="animate__animated animate__bounceIn" gutterBottom>
+              <Typography
+                className="animate__animated animate__bounceIn error"
+                gutterBottom
+              >
                 {registrationErrors.general}
               </Typography>
             )}
@@ -132,6 +148,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               method="POST"
               onSubmit={handleRegisterUser}
             >
+              {registrationInProgress && <CircularProgress />}
               <TextField
                 autoFocus
                 fullWidth
@@ -143,7 +160,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.name && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft"
+                  className="animate__animated animate__bounceInLeft error"
                   gutterBottom
                 >
                   {registrationErrors.name}
@@ -159,7 +176,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.email && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft"
+                  className="animate__animated animate__bounceInLeft error"
                   gutterBottom
                 >
                   {registrationErrors.email}
@@ -175,7 +192,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.password && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft"
+                  className="animate__animated animate__bounceInLeft error"
                   gutterBottom
                 >
                   {registrationErrors.password}
@@ -189,7 +206,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
                   }
                 }}
               >
-                Загрузить фото
+                Загрузить фото (png/jpg/jpeg, max 10Мб)
               </Button>
               <Typography>{chosenFileName}</Typography>
               <input
@@ -200,10 +217,19 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
                 type="file"
               />
               <DialogActions>
-                <Button color="primary" onClick={handleCloseDialog}>
+                <Button
+                  color="primary"
+                  disabled={registrationInProgress}
+                  onClick={handleCloseDialog}
+                >
                   Отмена
                 </Button>
-                <Button color="primary" type="submit" variant="outlined">
+                <Button
+                  color="primary"
+                  disabled={registrationInProgress}
+                  type="submit"
+                  variant="outlined"
+                >
                   Зарегистрироваться
                 </Button>
               </DialogActions>
