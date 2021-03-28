@@ -1,5 +1,16 @@
-import { Box, Typography, withStyles, WithStyles } from '@material-ui/core';
-import React from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Typography,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core';
+import React, { useState } from 'react';
+import clsx from 'clsx';
 // import { useDispatch, useSelector } from 'react-redux';
 import FormattedText from './FormattedText';
 import styles from './styles';
@@ -47,13 +58,25 @@ const word: IWord = {
   textMeaning: 'A <i>month</i> is one of 12 periods of time in one year.',
   textExample: 'January is the first <b>month</b> of the year.',
   transcription: '[mʌnθ]',
-  textExampleTranslate: 'январь - первый месяц года',
+  textExampleTranslate: 'Январь - первый месяц года',
   textMeaningTranslate: 'Месяц - это один из 12 периодов времени в году',
   wordTranslate: 'месяц',
 };
 
 const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
-  if (error) {
+  const [isComplex, setIsComplex] = useState<boolean>(false);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const isTranslations = true;
+  const isSettings = true;
+
+  const handleDelete = (): void => {
+    setIsDeleted((s) => !s);
+  };
+  const handleComplex = (): void => {
+    setIsComplex((s) => !s);
+  };
+
+  if (error || isDeleted) {
     return (
       <Box className={classes.root}>
         <Typography component="p" variant="body2">
@@ -63,31 +86,62 @@ const WordCard = ({ classes, error, isLoading }: Props): JSX.Element => {
     );
   }
 
-  return (
-    <Box className={classes.root}>
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <Box className={classes.root}>
         <div>Loading...</div>
-      ) : (
-        <>
-          <Box className={classes.wordImage}>
-            <img
-              alt={`${word.word}`}
-              className={classes.image}
-              src={`${URL}${word.image}`}
-            />
-          </Box>
-          <Typography>{`${word.word} - ${word.transcription} - ${word.wordTranslate}`}</Typography>
-          <Typography>
-            <FormattedText text={word.textExample} />
-          </Typography>
-          <Typography>{word.textExampleTranslate}</Typography>
-          <Typography>
-            <FormattedText text={word.textMeaning} />
-          </Typography>
-          <Typography>{word.textMeaningTranslate}</Typography>
-        </>
+      </Box>
+    );
+  }
+
+  const classList = isComplex ? clsx(classes.root, classes.root__complex) : classes.root;
+
+  return (
+    <Card className={classList}>
+      <CardMedia
+        alt={`${word.word}`}
+        className={classes.image}
+        component="img"
+        image={`${URL}${word.image}`}
+        title={`${word.word}`}
+      />
+      <CardContent>
+        <Typography>
+          {word.word}
+          {' - '}
+          {word.transcription}
+          {isTranslations && ` - ${word.wordTranslate}`}
+        </Typography>
+        <Typography>
+          <FormattedText text={word.textExample} />
+        </Typography>
+        {isTranslations && <Typography>{word.textExampleTranslate}</Typography>}
+        <Typography>
+          <FormattedText text={word.textMeaning} />
+        </Typography>
+        {isTranslations && <Typography>{word.textMeaningTranslate}</Typography>}
+      </CardContent>
+      {isSettings && (
+        <CardActions>
+          <Button
+            className={classes.button}
+            color="secondary"
+            onClick={handleDelete}
+            variant="outlined"
+          >
+            добавить в &quot;удаленные&quot;
+          </Button>
+          <Button
+            className={classes.button}
+            color="secondary"
+            onClick={handleComplex}
+            variant="outlined"
+          >
+            {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
+          </Button>
+        </CardActions>
       )}
-    </Box>
+    </Card>
   );
 };
 
