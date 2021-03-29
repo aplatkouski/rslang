@@ -44,4 +44,10 @@ export const WORD_DIFFICULTY = {
   EASY: 'easy',
 };
 
-export const WORDS_PER_PAGE = 20;
+export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+export const ROUTES = {
+  main: '/',
+  sector: '/sectors',
+  sections: '/section/:sector/:page/:color',
+  team: '/about-team',
+};

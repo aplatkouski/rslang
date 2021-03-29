@@ -4,6 +4,7 @@ import React from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { NavLink } from 'react-router-dom';
 
+import { ROUTES, VIDEO_URL } from '../../constants';
 import styles from './styles';
 import statsImg from '../../assets/img/stats.png';
 import gameImg from '../../assets/img/game.png';
@@ -16,7 +17,6 @@ import backgroundImg from '../../assets/img/back.png';
 type Props = WithStyles<typeof styles>;
 
 const MainPage = ({ classes }: Props): JSX.Element => {
-  const size = 6;
   return (
     <main className={classes.app}>
       <Container className={classes.container}>
@@ -35,7 +35,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
           <Grid item xs={12}>
             <Typography variant="h3">Наши преимущества</Typography>
           </Grid>
-          <Grid item md={size} sm={12}>
+          <Grid item md={6} sm={12}>
             <div className={classes.card}>
               <div className={classes.description}>
                 <Typography variant="h5">Игры</Typography>
@@ -46,7 +46,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               <img alt="test" src={gameImg} />
             </div>
           </Grid>
-          <Grid item md={size} sm={12}>
+          <Grid item md={6} sm={12}>
             <div className={classes.card}>
               <img alt="test" src={dictionaryImg} />
               <div className={classes.description}>
@@ -57,7 +57,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               </div>
             </div>
           </Grid>
-          <Grid item md={size} sm={12}>
+          <Grid item md={6} sm={12}>
             <div className={classes.card}>
               <div className={classes.description}>
                 <Typography variant="h5">Пользовательские настройки</Typography>
@@ -68,7 +68,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               <img alt="test" src={settingsImg} />
             </div>
           </Grid>
-          <Grid item md={size} sm={12}>
+          <Grid item md={6} sm={12}>
             <div className={classes.card}>
               <img alt="test" src={statsImg} />
               <div className={classes.description}>
@@ -85,11 +85,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
       <div className={classes.background}>
         <Container className={classes.container}>
           <Typography variant="h3">Как работает наше приложение</Typography>
-          <ReactPlayer
-            className={classes.video}
-            controls
-            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          />
+          <ReactPlayer className={classes.video} controls url={VIDEO_URL} />
         </Container>
       </div>
       <Container className={classes.container}>
@@ -99,7 +95,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
             <Typography variant="h5">Команда</Typography>
             <Typography variant="subtitle1">
               А узнать, кто трудился над этим приложением вы можете&ensp;
-              <NavLink to="/about-team">тут!</NavLink>
+              <NavLink to={ROUTES.team}>тут!</NavLink>
             </Typography>
           </div>
         </div>
