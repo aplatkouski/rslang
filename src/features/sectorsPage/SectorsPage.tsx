@@ -69,6 +69,46 @@ export default function SectionsPage(): JSX.Element {
             </AccordionDetails>
           </Accordion>
         ))}
+      <Accordion key="dic" style={{ backgroundColor: 'white' }}>
+        <AccordionSummary
+          aria-controls="panel1a-content"
+          expandIcon={<ExpandMoreIcon />}
+          id="panel1a-header"
+        >
+          <Typography className="sector-title">Словарь</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box
+            alignItems="stretch"
+            css={{ maxWidth: '100%' }}
+            display="flex"
+            flexWrap="wrap"
+            justifyContent="space-evenly"
+          >
+            <div className="box">
+              <div className="schatten">
+                <NavLink to="/">
+                  <ListItemText className="page-title" primary="Изучаемые слова" />
+                </NavLink>
+              </div>
+            </div>
+            <div className="box">
+              <div className="schatten">
+                <NavLink to="/">
+                  <ListItemText className="page-title" primary="Сложные слова" />
+                </NavLink>
+              </div>
+            </div>
+            <div className="box">
+              <div className="schatten">
+                <NavLink to="/">
+                  <ListItemText className="page-title" primary="Удаленные слова" />
+                </NavLink>
+              </div>
+            </div>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 }
