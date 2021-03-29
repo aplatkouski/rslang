@@ -5,6 +5,7 @@ import MainPage from 'app/mainPage/MainPage';
 import SectorsPage from 'features/sectorsPage/SectorsPage';
 import SectionPage from 'app/sectionPage/SectionPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
+import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { useDispatch } from 'react-redux';
 import TeamPage from './app/TeamPage/TeamPage';
 
@@ -13,6 +14,7 @@ const App = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(logInViaLocalStorage());
+    dispatch(getSettingsFromLocalStorage());
   }, [dispatch]);
 
   return (
