@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import { NavLink } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import MiniGameCard from './MiniGameCard';
 
 interface MiniGamesPageProps {
   classes: any;
@@ -13,7 +12,12 @@ const gamesInfo = [
     path: '/mini-games/audio-call',
     description: 'Audio Call Description',
   },
-  { title: 'Savanna', path: '/mini-games/savanna', description: 'Savanna Description' },
+  {
+    title: 'Savanna',
+    path: '/mini-games/savanna',
+    description:
+      'Тренировка “Саванна” – это тренажер по переводу твоего пассивного изученного словаря в активную стадию. Все это происходит за счет вовлечения реакции в процесс перевода. Тренируйся регулярно и сможешь на лету подбирать правильные слова при письме и в процессе говорения.',
+  },
   { title: 'Sprint', path: '/mini-games/sprint', description: 'Sprint Description' },
 ];
 
@@ -22,13 +26,6 @@ const styles = (theme: Theme) =>
     root: {
       display: 'flex',
       flexDirection: 'column',
-    },
-    game: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 10,
     },
     games: {
       display: 'flex',
@@ -64,14 +61,7 @@ const MiniGamesPage = ({ classes }: MiniGamesPageProps) => {
       <div className={classes.title}> Mini Games</div>
       <div className={classes.games}>
         {gamesInfo.map(({ title, path, description }) => {
-          return (
-            <div className={classes.game}>
-              <div className={classes.title}>
-                <NavLink to={path}>{title}</NavLink>
-              </div>
-              <Typography>{description}</Typography>
-            </div>
-          );
+          return <MiniGameCard description={description} path={path} title={title} />;
         })}
       </div>
     </div>
