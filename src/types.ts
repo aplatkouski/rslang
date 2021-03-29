@@ -60,3 +60,34 @@ export interface IUserLogInData {
   email: string;
   password: string;
 }
+
+export interface IWord {
+  id: string;
+  group: number;
+  page: number;
+  word: string;
+  image: string;
+  audio: string;
+  audioMeaning: string;
+  audioExample: string;
+  textMeaning: string;
+  textExample: string;
+  transcription: string;
+  wordTranslate: string;
+  textMeaningTranslate: string;
+  textExampleTranslate: string;
+  difficulty: string; // "hard" - сложное слово, "easy" - удаленное
+}
+
+export type WordsList = Array<IWord>;
+
+export interface IWords {
+  data: WordsList;
+  loaded: boolean;
+  loadError?: string;
+}
+
+export interface IWordDifficulty {
+  wordId: string;
+  difficulty: string;
+}

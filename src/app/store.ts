@@ -3,6 +3,7 @@ import counterReducer from 'features/counter/counterSlice';
 import sectorsReducer from 'features/sectors/sectorsSlice';
 import settingsReducer from 'features/settings/settingsSlice';
 import userReducer from 'features/user/userSlice';
+import wordsReducer from 'features/words/wordsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     sectors: sectorsReducer,
     settings: settingsReducer,
     user: userReducer,
+    words: wordsReducer,
   },
 });
 
