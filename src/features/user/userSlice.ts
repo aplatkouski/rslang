@@ -112,7 +112,26 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
 };
 
 export const logOut = (): AppThunk => async (dispatch) => {
-  localStorage.removeItem(LOCALSTORAGE_KEY);
+  const noUserData: IUserState = {
+    token: '',
+    refreshToken: '',
+    userId: '',
+    name: '',
+    errLogInMessage: undefined,
+    inProgress: false,
+  };
+
+  const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
+  const savedUserData = lsItem ? (JSON.parse(lsItem) as IUser) : {};
+
+  localStorage.setItem(
+    LOCALSTORAGE_KEY,
+    JSON.stringify({
+      ...savedUserData,
+      ...noUserData,
+    })
+  );
+
   dispatch(unsetUser());
 };
 
