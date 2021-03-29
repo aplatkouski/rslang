@@ -19,6 +19,9 @@ export const GET_WORDS_API = 'words';
 export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {
   return `users/${userId}/words/${wordId}`;
 };
+export const GET_AGGREGATED_WORDS_API = (userId: string) => {
+  return `users/${userId}/aggregatedWords`;
+};
 
 export const LOCALSTORAGE_KEY = 'RSLangUserData';
 
