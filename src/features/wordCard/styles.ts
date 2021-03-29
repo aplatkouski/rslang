@@ -4,7 +4,10 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      margin: theme.spacing(2, 1),
+      display: 'flex',
+      flexDirection: 'column',
+      width: theme.spacing(40),
+      margin: theme.spacing(1),
       background: theme.palette.background.default,
     },
     root__complex: {
@@ -19,6 +22,9 @@ const styles = (theme: Theme) =>
       userSelect: 'none',
     },
     button: {},
+    buttonsGroup: {
+      marginTop: 'auto',
+    },
     audioButton: {
       padding: theme.spacing(0),
       marginRight: theme.spacing(1),
