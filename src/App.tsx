@@ -15,6 +15,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
+import MiniGamesPage from './app/MiniGamesPage/MiniGamesPage';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const App = (): JSX.Element => {
           path="/studiedSection/:sector/:page/:color"
         />
         <Route component={StatisticPage} exact path={ROUTES.statistic} />
+        <Route component={MiniGamesPage} exact path="/mini-games" />
         <Redirect to="/" />
       </Switch>
       <Footer />
