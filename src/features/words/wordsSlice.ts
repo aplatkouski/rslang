@@ -13,7 +13,6 @@ import {
   GET_WORDS_API,
   SERVER_OK_STATUS,
   GET_USER_WORD_API,
-  // WORDS_PER_PAGE,
 } from '../../constants';
 
 const initialState: IWords = {
