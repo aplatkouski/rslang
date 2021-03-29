@@ -7,6 +7,7 @@ import {
   GET_WORDS_API,
   SERVER_OK_STATUS,
   GET_AGGREGATED_WORDS_API,
+  WORDS_PER_PAGE,
 } from '../../constants';
 
 const initialState: IWords = {
@@ -19,6 +20,10 @@ export const wordsSlice = createSlice({
   name: 'words',
   initialState,
   reducers: {
+    setStartWordsLoading: (state) => {
+      state.loading = true;
+      state.loadError = undefined;
+    },
     setWordsLoadingStatus: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -43,8 +48,7 @@ export const loadWords = (
   userId?: string,
   userToken?: string
 ): AppThunk => async (dispatch) => {
-  dispatch(setWordsLoadingStatus(true));
-  dispatch(setWordsLoadError(undefined));
+  dispatch(setStartWordsLoading());
 
   try {
     // Вначале извлекаем основную информацию по словам на заданной странице заданного раздела
@@ -74,6 +78,7 @@ export const loadWords = (
         const params2 = new URLSearchParams([
           ['page', `${pageNum}`],
           ['group', `${sectorNum}`],
+          ['wordsPerPage', `${WORDS_PER_PAGE}`],
           ['filter', '{"userWord.optional":{"$exists":true}}'],
         ]);
         const options2 = {
@@ -116,6 +121,7 @@ export const loadWords = (
 };
 
 export const {
+  setStartWordsLoading,
   setWords,
   setWordsLoadingStatus,
   setWordsLoadError,
