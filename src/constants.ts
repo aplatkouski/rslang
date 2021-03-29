@@ -37,3 +37,5 @@ export const WORD_DIFFICULTY = {
   HARD: 'hard',
   EASY: 'easy',
 };
+
+export const WORDS_PER_PAGE = 20;
