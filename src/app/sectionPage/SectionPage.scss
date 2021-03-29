@@ -23,3 +23,20 @@
   right: 0;
   top: 0;
 }
+
+.word-cards-area {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.word-block {
+  border: 1px solid gray;
+  width: 200px;
+  height: 200px;
+  border-radius: 10px;
+  margin: 5px;
+  overflow: auto;
+  background-color: white;
+}

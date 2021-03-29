@@ -15,6 +15,10 @@ export const LOG_IN_API = 'signin';
 export const GET_USER_PHOTO_API = (userId: string) => {
   return `users/${userId}/photo`;
 };
+export const GET_WORDS_API = 'words';
+export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {
+  return `users/${userId}/words/${wordId}`;
+};
 
 export const LOCALSTORAGE_KEY = 'RSLangUserData';
 
@@ -24,3 +28,9 @@ export const WRONG_AUTHENTICATION_DATA_MESSAGE = 'Неверный email и/ил
 export const WRONG_REGISTRATION_MESSAGE = 'Ошибка регистрации';
 export const TRY_REGISTRATION_AGAIN_MESSAGE = 'Проверьте правильность введенных данных';
 export const SUCCESSFUL_REGISTRATION_MESSAGE = 'Вы успешно зарегистрированы';
+export const COULD_NOT_GET_WORDS = 'Не удалось получить список слов. Попробуйте снова';
+
+export const WORD_DIFFICULTY = {
+  HARD: 'hard',
+  EASY: 'easy',
+};
