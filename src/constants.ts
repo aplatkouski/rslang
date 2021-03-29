@@ -34,3 +34,11 @@ export const WORD_DIFFICULTY = {
   HARD: 'hard',
   EASY: 'easy',
 };
+
+export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+export const ROUTES = {
+  main: '/',
+  sector: '/sectors',
+  sections: '/section/:sector/:page/:color',
+  team: '/about-team',
+};
