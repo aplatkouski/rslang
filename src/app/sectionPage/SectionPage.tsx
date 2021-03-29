@@ -9,6 +9,7 @@ import { getWords, loadWords } from 'features/words/wordsSlice';
 
 import './SectionPage.scss';
 import Settings from '../../features/settings/Settings';
+import WordCard from '../../features/wordCard/WordCard';
 
 export default function SectionPage(): JSX.Element {
   const { sector, page, color } = useParams<t.SectionPageParams>();
@@ -57,9 +58,7 @@ export default function SectionPage(): JSX.Element {
         style={{ backgroundColor: decodeURIComponent(bgColor) }}
       >
         {words.map((word) => (
-          <div key={word.id} className="word-block">
-            {JSON.stringify(word)}
-          </div>
+          <WordCard key={word.id} data={word} />
         ))}
       </div>
     </>
