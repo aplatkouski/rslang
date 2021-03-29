@@ -45,3 +45,6 @@ export const ROUTES = {
   sections: '/section/:sector/:page/:color',
   team: '/about-team',
 };
+
+export const WORDS_PER_PAGE = 20;
+
