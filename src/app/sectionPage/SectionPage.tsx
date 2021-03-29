@@ -6,6 +6,7 @@ import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import * as t from 'types';
 import { getWords, loadWords } from 'features/words/wordsSlice';
+import { getCurrUser } from 'features/user/userSlice';
 
 import './SectionPage.scss';
 import Settings from '../../features/settings/Settings';
@@ -14,17 +15,24 @@ import WordCard from '../../features/wordCard/WordCard';
 export default function SectionPage(): JSX.Element {
   const { sector, page, color } = useParams<t.SectionPageParams>();
   const bgColor: string = color || 'white';
-
   const adjacentPages: Array<t.Page | undefined> = useSelector((state: any) =>
     selectAdjacentPages(state, { sectorNum: Number(sector), pageNum: Number(page) })
   );
-
   const dispatch = useDispatch();
   const words = useSelector(getWords);
+  const currentUser: t.IUser = useSelector(getCurrUser);
 
   useEffect(() => {
-    dispatch(loadWords(Number(sector), Number(page)));
-  }, [dispatch, page, sector]);
+    dispatch(
+      loadWords(
+        Number(sector),
+        Number(page),
+        currentUser ? currentUser.userId : undefined,
+        currentUser ? currentUser.token : undefined
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser.token, sector, page]);
 
   return (
     <>

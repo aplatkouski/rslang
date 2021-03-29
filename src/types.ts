@@ -61,6 +61,16 @@ export interface IUserLogInData {
   password: string;
 }
 
+export interface IWordOptions {
+  mode: string; // "studied" - изучаемое, "hard" - трудное
+  deleted: boolean;
+}
+
+export interface IDefiniteWordOptions {
+  wordId: string;
+  options: IWordOptions;
+}
+
 export interface IWord {
   id: string;
   group: number;
@@ -76,14 +86,14 @@ export interface IWord {
   wordTranslate: string;
   textMeaningTranslate: string;
   textExampleTranslate: string;
-  difficulty: string; // "hard" - сложное слово, "easy" - удаленное
+  optional: IWordOptions;
 }
 
 export type WordsList = Array<IWord>;
 
 export interface IWords {
   data: WordsList;
-  loaded: boolean;
+  loading: boolean;
   loadError?: string;
 }
 

@@ -1,16 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
-import { IWord, IWords, IWordDifficulty, WordsList } from '../../types';
+import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
 import {
   api,
   COULD_NOT_GET_WORDS,
   GET_WORDS_API,
   SERVER_OK_STATUS,
+  GET_AGGREGATED_WORDS_API,
 } from '../../constants';
 
 const initialState: IWords = {
   data: [],
-  loaded: false,
+  loading: false,
   loadError: undefined,
 };
 
@@ -18,8 +19,8 @@ export const wordsSlice = createSlice({
   name: 'words',
   initialState,
   reducers: {
-    setWordsLoadedStatus: (state, action: PayloadAction<boolean>) => {
-      state.loaded = action.payload;
+    setWordsLoadingStatus: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
     setWordsLoadError: (state, action: PayloadAction<string | undefined>) => {
       state.loadError = action.payload;
@@ -27,27 +28,31 @@ export const wordsSlice = createSlice({
     setWords: (state, action: PayloadAction<Array<IWord>>) => {
       state.data = action.payload;
     },
-    setWordDifficulty: (state, action: PayloadAction<IWordDifficulty>) => {
+    setWordOptions: (state, action: PayloadAction<IDefiniteWordOptions>) => {
       const index = state.data.findIndex((el) => String(el.id) === action.payload.wordId);
       if (index > -1) {
-        state.data[index].difficulty = action.payload.difficulty;
+        state.data[index].optional = action.payload.options;
       }
     },
   },
 });
 
-export const loadWords = (sectorNum: number, pageNum: number): AppThunk => async (
-  dispatch
-) => {
-  dispatch(setWordsLoadedStatus(true));
+export const loadWords = (
+  sectorNum: number,
+  pageNum: number,
+  userId?: string,
+  userToken?: string
+): AppThunk => async (dispatch) => {
+  dispatch(setWordsLoadingStatus(true));
+  dispatch(setWordsLoadError(undefined));
+
   try {
-    dispatch(setWordsLoadError(undefined));
+    // Вначале извлекаем основную информацию по словам на заданной странице заданного раздела
 
     const params = new URLSearchParams([
       ['page', `${pageNum}`],
       ['group', `${sectorNum}`],
     ]);
-
     const options = {
       method: 'GET',
       headers: {
@@ -55,32 +60,72 @@ export const loadWords = (sectorNum: number, pageNum: number): AppThunk => async
         'Content-Type': 'application/json; charset=UTF-8',
       },
     };
-
     const response = await fetch(`${api}/${GET_WORDS_API}?${params}`, options);
 
     if (response.status !== SERVER_OK_STATUS) {
       dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
     } else {
-      const data = (await response.json()) as WordsList;
-      dispatch(setWords(data));
+      const words = (await response.json()) as WordsList;
+
+      // После того как успешно извлекли основную информацию по словам,
+      // приступаем к извлечению опций, имеющих отношение к словам и заданных текущим пользователем
+
+      if (userId && userToken) {
+        const params2 = new URLSearchParams([
+          ['page', `${pageNum}`],
+          ['group', `${sectorNum}`],
+          ['filter', '{"userWord.optional":{"$exists":true}}'],
+        ]);
+        const options2 = {
+          method: 'GET',
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        };
+        const response2 = await fetch(
+          `${api}/${GET_AGGREGATED_WORDS_API(userId)}?${params2}`,
+          options2
+        );
+
+        if (response2.status === SERVER_OK_STATUS) {
+          const optionsData = await response2.json();
+
+          if (optionsData && optionsData.length && optionsData[0].paginatedResults) {
+            for (let i = 0; i < optionsData[0].paginatedResults.length; i += 1) {
+              const word = optionsData[0].paginatedResults[i];
+              // eslint-disable-next-line no-underscore-dangle
+              const index = words.findIndex((el) => el.id === word._id);
+              if (index > -1) {
+                words[index].optional = word.userWord.optional;
+              }
+            }
+          }
+        }
+      }
+
+      // В конечном итоге запоминаем полученные слова
+      dispatch(setWords(words));
     }
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
   }
-  dispatch(setWordsLoadedStatus(false));
+  dispatch(setWordsLoadingStatus(false));
 };
 
 export const {
   setWords,
-  setWordsLoadedStatus,
+  setWordsLoadingStatus,
   setWordsLoadError,
-  setWordDifficulty,
+  setWordOptions,
 } = wordsSlice.actions;
 
 export const getWords = (state: RootState) => state.words.data;
 
 export const getWordsLoadErrMessage = (state: RootState) => state.words.loadError;
 
-export const getWordsLoadedStatus = (state: RootState) => state.words.loaded;
+export const getWordsLoadingStatus = (state: RootState) => state.words.loading;
 
 export default wordsSlice.reducer;
