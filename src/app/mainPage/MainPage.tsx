@@ -35,7 +35,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
           <Grid item xs={12}>
             <Typography variant="h3">Наши преимущества</Typography>
           </Grid>
-          <Grid item sm={size} xs={12}>
+          <Grid item md={size} sm={12}>
             <div className={classes.card}>
               <div className={classes.description}>
                 <Typography variant="h5">Игры</Typography>
@@ -46,7 +46,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               <img alt="test" src={gameImg} />
             </div>
           </Grid>
-          <Grid item sm={size} xs={12}>
+          <Grid item md={size} sm={12}>
             <div className={classes.card}>
               <img alt="test" src={dictionaryImg} />
               <div className={classes.description}>
@@ -57,7 +57,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               </div>
             </div>
           </Grid>
-          <Grid item sm={size} xs={12}>
+          <Grid item md={size} sm={12}>
             <div className={classes.card}>
               <div className={classes.description}>
                 <Typography variant="h5">Пользовательские настройки</Typography>
@@ -68,7 +68,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
               <img alt="test" src={settingsImg} />
             </div>
           </Grid>
-          <Grid item sm={size} xs={12}>
+          <Grid item md={size} sm={12}>
             <div className={classes.card}>
               <img alt="test" src={statsImg} />
               <div className={classes.description}>
@@ -84,7 +84,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
       </Container>
       <div className={classes.background}>
         <Container className={classes.container}>
-          <Typography variant="h3">Немного о работе нашего приложения</Typography>
+          <Typography variant="h3">Как работает наше приложение</Typography>
           <ReactPlayer
             className={classes.video}
             controls
@@ -96,7 +96,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
         <div className={classes.team}>
           <img alt="test" src={teamImg} />
           <div className={classes.info}>
-            <Typography variant="h4">Команда</Typography>
+            <Typography variant="h5">Команда</Typography>
             <Typography variant="subtitle1">
               А узнать, кто трудился над этим приложением вы можете&ensp;
               <NavLink to="/about-team">тут!</NavLink>

@@ -8,6 +8,23 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      '& h3': {
+        [theme.breakpoints.down('sm')]: {
+          fontSize: theme.spacing(3),
+          fontWeight: 600,
+        },
+      },
+      '& h5': {
+        [theme.breakpoints.down('sm')]: {
+          fontSize: theme.spacing(2.5),
+          fontWeight: 600,
+        },
+      },
+      '& p': {
+        [theme.breakpoints.down('sm')]: {
+          fontSize: theme.spacing(1),
+        },
+      },
     },
     container: {
       position: 'relative',
@@ -19,6 +36,9 @@ const styles = (theme: Theme) =>
       '& h1': {
         fontSize: theme.spacing(7),
         marginTop: theme.spacing(2),
+        [theme.breakpoints.down('sm')]: {
+          fontSize: theme.spacing(4),
+        },
       },
     },
     background: {
@@ -36,15 +56,22 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       margin: theme.spacing(10),
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
       '& img': {
         width: theme.spacing(75),
         height: theme.spacing(48),
+        [theme.breakpoints.down('xs')]: {
+          width: theme.spacing(45),
+          height: theme.spacing(28),
+        },
       },
     },
     video: {
       margin: theme.spacing(5),
       [theme.breakpoints.down('sm')]: {
-        width: '310px !important',
+        width: '420px !important',
       },
     },
     card: {
@@ -55,8 +82,8 @@ const styles = (theme: Theme) =>
       backgroundColor: 'rgba(63, 81, 181, 0.2)',
       borderRadius: theme.spacing(1.5),
       '& img': {
-        width: theme.spacing(27),
-        height: theme.spacing(17),
+        width: theme.spacing(25),
+        height: theme.spacing(15),
         margin: theme.spacing(2),
       },
     },
@@ -71,14 +98,24 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
       backgroundColor: 'rgba(63, 81, 181, 0.2)',
       borderRadius: theme.spacing(2),
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
       '& img': {
         width: theme.spacing(50),
         height: theme.spacing(30),
+        [theme.breakpoints.down('sm')]: {
+          width: theme.spacing(30),
+          height: theme.spacing(20),
+        },
       },
     },
     info: {
       width: theme.spacing(40),
       margin: theme.spacing(4),
+      [theme.breakpoints.down('sm')]: {
+        width: theme.spacing(50),
+      },
     },
   });
 
