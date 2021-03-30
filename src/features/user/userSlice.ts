@@ -3,6 +3,7 @@ import type { AppThunk, RootState } from 'app/store';
 import { IUser, IUserLogInData, ILoginErrors, ILoginStatus } from '../../types';
 import {
   api,
+  GET_USER_API,
   LOCALSTORAGE_KEY,
   LOG_IN_API,
   SERVER_OK_STATUS,
@@ -57,20 +58,41 @@ export const userSlice = createSlice({
   },
 });
 
-export const logInViaLocalStorage = (): AppThunk => (dispatch) => {
+export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
   const savedUserData = JSON.parse(
     localStorage.getItem(LOCALSTORAGE_KEY) || 'null'
   ) as IUser | null;
 
+  // Если после перезагрузки в localstorage что-то о пользователе обнаруживается,
+  // то пробуем получить от сервера информацию о данном пользователе.
   if (savedUserData) {
     const { token, refreshToken, userId, name } = savedUserData;
-    const userData: IUser = {
-      token,
-      refreshToken,
-      userId,
-      name,
+
+    const options = {
+      method: 'GET',
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
     };
-    dispatch(setUser(userData));
+    const response = await fetch(`${api}/${GET_USER_API(userId)}`, options);
+
+    // Если получить информацию о пользователе с сервера не получается, то такой
+    // пользователь имеет просроченный токен. Ему необходимо заново пройти процедуру
+    // аутентификации.
+    if (response.status === SERVER_OK_STATUS) {
+      const userData: IUser = {
+        token,
+        refreshToken,
+        userId,
+        name,
+      };
+      dispatch(setUser(userData));
+    } else {
+      dispatch(logOut());
+    }
   }
 };
 

@@ -15,6 +15,12 @@ export const LOG_IN_API = 'signin';
 export const GET_USER_PHOTO_API = (userId: string) => {
   return `users/${userId}/photo`;
 };
+export const GET_USER_API = (userId: string) => {
+  return `users/${userId}`;
+};
+export const GET_USER_WORD_API = (userId: string, wordId: string) => {
+  return `users/${userId}/words/${wordId}`;
+};
 export const GET_WORDS_API = 'words';
 export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {
   return `users/${userId}/words/${wordId}`;
