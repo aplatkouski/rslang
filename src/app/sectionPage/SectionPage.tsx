@@ -116,9 +116,9 @@ export default function SectionPage(): JSX.Element {
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(bgColor) }}
       >
-        {words.map((word) => (
-          <WordCard key={word.id} data={word} />
-        ))}
+        {words.map(
+          (word) => !word.optional?.deleted && <WordCard key={word.id} word={word} />
+        )}
       </div>
     </>
   );

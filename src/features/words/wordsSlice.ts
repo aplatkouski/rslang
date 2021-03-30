@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
+import { getCurrUser } from '../user/userSlice';
 import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
 import {
   api,
@@ -11,6 +12,7 @@ import {
   GET_USER_WORDS_API,
   SPECIAL_WORD_INDICATOR,
   WORDS_PER_PAGE,
+  COULD_NOT_UPDATE_WORD,
 } from '../../constants';
 import * as t from '../../types';
 
@@ -20,6 +22,67 @@ const initialState: IWords = {
   loaded: false, // false с момента начала загрузки; true по окончании загрузки, вне зависимости от ее успеха
   loadError: undefined,
 };
+
+export const updateWordOptions = createAsyncThunk<
+  IDefiniteWordOptions | undefined,
+  IDefiniteWordOptions,
+  {
+    state: RootState;
+    rejectValue: { errorMessage: string };
+  }
+>(
+  'words/updateWordOptions',
+  async ({ wordId, options }: IDefiniteWordOptions, { getState, rejectWithValue }) => {
+    const { userId, token } = getCurrUser(getState());
+    const word = getWords(getState()).find(({ id }) => id === wordId);
+
+    if (!userId || !word) {
+      return undefined;
+    }
+
+    const body = word?.optional
+      ? {
+          difficulty: 'none',
+          optional: { ...word.optional, ...options },
+          group: word.group,
+          page: word.page,
+        }
+      : {
+          difficulty: 'none',
+          optional: { ...options },
+          group: word.group,
+          page: word.page,
+          // addedAt: new Date().toISOString().substring(0, 10),
+        };
+
+    const fetchOptions = {
+      method: word?.optional ? 'PUT' : 'POST',
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(body),
+    };
+
+    try {
+      const response = await fetch(
+        `${api}/users/${userId}/words/${word.id}`,
+        fetchOptions
+      );
+      if (response.status !== SERVER_OK_STATUS) {
+        return rejectWithValue({ errorMessage: COULD_NOT_UPDATE_WORD(word?.word) });
+      }
+      return { wordId, options } as IDefiniteWordOptions;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const wordsSlice = createSlice({
   name: 'words',
@@ -44,9 +107,35 @@ export const wordsSlice = createSlice({
     setWordOptions: (state, action: PayloadAction<IDefiniteWordOptions>) => {
       const index = state.data.findIndex((el) => String(el.id) === action.payload.wordId);
       if (index > -1) {
-        state.data[index].optional = action.payload.options;
+        state.data[index].optional = {
+          ...state.data[index].optional,
+          ...action.payload.options,
+        };
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateWordOptions.pending, (state) => {
+      state.loadError = undefined;
+    });
+    builder.addCase(updateWordOptions.fulfilled, (state, { payload }) => {
+      if (payload) {
+        const index = state.data.findIndex(({ id }) => id === payload.wordId);
+        if (index > -1) {
+          state.data[index].optional = {
+            ...state.data[index].optional,
+            ...payload.options,
+          };
+        }
+      }
+    });
+    builder.addCase(updateWordOptions.rejected, (state, action) => {
+      if (action.payload) {
+        state.loadError = action.payload.errorMessage;
+      } else {
+        state.loadError = action.error.message;
+      }
+    });
   },
 });
 
@@ -296,7 +385,7 @@ export const areAllWordsDeleted = (state: RootState): boolean => {
     return false;
   }
   for (let i = 0; i < state.words.data.length; i += 1) {
-    if (!state.words.data[i].optional || !state.words.data[i].optional.deleted) {
+    if (!state.words.data[i].optional || !state.words.data[i].optional?.deleted) {
       return false;
     }
   }

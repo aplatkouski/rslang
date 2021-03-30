@@ -62,10 +62,13 @@ export const WRONG_REGISTRATION_MESSAGE = 'Ошибка регистрации';
 export const TRY_REGISTRATION_AGAIN_MESSAGE = 'Проверьте правильность введенных данных';
 export const SUCCESSFUL_REGISTRATION_MESSAGE = 'Вы успешно зарегистрированы';
 export const COULD_NOT_GET_WORDS = 'Не удалось получить список слов. Попробуйте снова';
+export const COULD_NOT_UPDATE_WORD = (word: string | undefined) => {
+  return `Не удалось обновить данные слова "${word}"`;
+};
 
-export const WORD_DIFFICULTY = {
-  HARD: 'hard',
-  EASY: 'easy',
+export const WORD_OPTIONAL_MODE = {
+  hard: 'hard',
+  studied: 'studied',
 };
 
 export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';

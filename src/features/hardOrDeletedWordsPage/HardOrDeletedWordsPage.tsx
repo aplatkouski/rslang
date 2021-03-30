@@ -18,9 +18,26 @@ import Settings from 'features/settings/Settings';
 import WordCard from 'features/wordCard/WordCard';
 import { makeStyles } from '@material-ui/core/styles';
 import AttentionButton from 'app/./attentionButton/AttentionButton';
-import { SPECIAL_WORD_INDICATOR } from '../../constants';
+import { SPECIAL_WORD_INDICATOR, WORD_OPTIONAL_MODE } from '../../constants';
 
 import './HardOrDeletedWordsPage.scss';
+
+const specialWordIndicatorValues = Object.values(SPECIAL_WORD_INDICATOR);
+type SpecialWordIndicatorValues = typeof specialWordIndicatorValues[number];
+const cardVisibilityCondition = (
+  optional: t.IWordOptions | undefined,
+  indicator: SpecialWordIndicatorValues | undefined
+): boolean => {
+  if (
+    (optional?.deleted && indicator === SPECIAL_WORD_INDICATOR.DEL) ||
+    (optional?.mode === WORD_OPTIONAL_MODE.hard &&
+      !optional?.deleted &&
+      indicator === SPECIAL_WORD_INDICATOR.HARD)
+  ) {
+    return true;
+  }
+  return false;
+};
 
 const useStyles = makeStyles((theme) => ({
   sectorTitle: {
@@ -151,9 +168,12 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(String(color)) }}
       >
-        {words.map((word) => (
-          <WordCard key={word.id} data={word} />
-        ))}
+        {words.map(
+          (word) =>
+            cardVisibilityCondition(word.optional, indicator) && (
+              <WordCard key={word.id} word={word} />
+            )
+        )}
       </div>
     </>
   );
