@@ -54,6 +54,7 @@ export interface IUser {
   refreshToken: string;
   userId: string;
   name: string;
+  photoSrc: string;
 }
 
 export interface IUserLogInData {

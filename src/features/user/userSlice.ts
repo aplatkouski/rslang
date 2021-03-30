@@ -1,3 +1,4 @@
+import userAltImg from 'assets/img/UnknownUser.png';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import { IUser, IUserLogInData, ILoginErrors, ILoginStatus } from '../../types';
@@ -8,6 +9,7 @@ import {
   LOG_IN_API,
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
+  GET_USER_PHOTO_API,
 } from '../../constants';
 
 interface IUserState extends IUser, ILoginErrors, ILoginStatus {}
@@ -19,19 +21,21 @@ const initialState: IUserState = {
   name: '',
   errLogInMessage: undefined,
   inProgress: false,
+  photoSrc: userAltImg,
 };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<IUser>) => {
+    setUserWithDefPhoto: (state, action: PayloadAction<IUser>) => {
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
       state.userId = action.payload.userId;
       state.name = action.payload.name;
       state.errLogInMessage = undefined;
       state.inProgress = false;
+      state.photoSrc = userAltImg;
     },
     unsetUser: (state) => {
       state.token = '';
@@ -40,6 +44,7 @@ export const userSlice = createSlice({
       state.name = '';
       state.errLogInMessage = undefined;
       state.inProgress = false;
+      state.photoSrc = userAltImg;
     },
     setLogInError: (state, action: PayloadAction<string>) => {
       state.token = '';
@@ -48,12 +53,16 @@ export const userSlice = createSlice({
       state.name = '';
       state.errLogInMessage = action.payload;
       state.inProgress = false;
+      state.photoSrc = userAltImg;
     },
     delLogInErrMessage: (state) => {
       state.errLogInMessage = undefined;
     },
     setLoginProgress: (state, action: PayloadAction<boolean>) => {
       state.inProgress = action.payload;
+    },
+    setUserPhoto: (state, action: PayloadAction<string>) => {
+      state.photoSrc = action.payload;
     },
   },
 });
@@ -82,14 +91,17 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
     // Если получить информацию о пользователе с сервера не получается, то такой
     // пользователь имеет просроченный токен. Ему необходимо заново пройти процедуру
     // аутентификации.
+    // В противном случае пользователь успешно входит в систему, и мы подгружаем его фото.
     if (response.status === SERVER_OK_STATUS) {
       const userData: IUser = {
         token,
         refreshToken,
         userId,
         name,
+        photoSrc: '',
       };
-      dispatch(setUser(userData));
+      dispatch(setUserWithDefPhoto(userData));
+      dispatch(getUserPhotoSrc(userId, token));
     } else {
       dispatch(logOut());
     }
@@ -98,6 +110,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
 
 export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) => {
   dispatch(setLoginProgress(true));
+
   try {
     const options = {
       method: 'POST',
@@ -114,7 +127,8 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
     } else {
       const user = (await response.json()) as IUser;
 
-      dispatch(setUser(user));
+      dispatch(setUserWithDefPhoto(user));
+      dispatch(getUserPhotoSrc(user.userId, user.token));
 
       const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
       const savedUserData = lsItem ? (JSON.parse(lsItem) as IUser) : {};
@@ -141,6 +155,7 @@ export const logOut = (): AppThunk => async (dispatch) => {
     name: '',
     errLogInMessage: undefined,
     inProgress: false,
+    photoSrc: userAltImg,
   };
 
   const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
@@ -157,20 +172,49 @@ export const logOut = (): AppThunk => async (dispatch) => {
   dispatch(unsetUser());
 };
 
+export const getUserPhotoSrc = (userId: string, userToken: string): AppThunk => async (
+  dispatch
+) => {
+  if (userId && userToken) {
+    try {
+      const options = {
+        method: 'GET',
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          Accept: 'application/json',
+        },
+      };
+
+      const response = await fetch(`${api}/${GET_USER_PHOTO_API(userId)}`, options);
+
+      const blob = await response.blob();
+
+      dispatch(setUserPhoto(URL.createObjectURL(blob)));
+    } catch {
+      dispatch(setUserPhoto(userAltImg));
+    }
+  } else {
+    dispatch(setUserPhoto(userAltImg));
+  }
+};
+
 export const {
-  setUser,
+  setUserWithDefPhoto,
   unsetUser,
   setLogInError,
   delLogInErrMessage,
   setLoginProgress,
+  setUserPhoto,
 } = userSlice.actions;
 
-export const getCurrUser = (state: RootState) => {
+export const getCurrUser = (state: RootState): IUser => {
   return {
     token: state.user.token,
     refreshToken: state.user.refreshToken,
     userId: state.user.userId,
     name: state.user.name,
+    photoSrc: state.user.photoSrc,
   };
 };
 
