@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { selectSectors } from 'features/sectors/sectorsSlice';
 import * as t from 'types';
+import Dictionary from 'app/dictionary/Dictionary';
 
 import './SectorsPage.scss';
 
@@ -77,6 +78,7 @@ export default function SectionsPage(): JSX.Element {
         >
           <Typography className="sector-title">Словарь</Typography>
         </AccordionSummary>
+        <Dictionary />
         <AccordionDetails>
           <Box
             alignItems="stretch"
