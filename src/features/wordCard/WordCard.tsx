@@ -1,6 +1,5 @@
 import {
   Button,
-  Box,
   Card,
   CardActions,
   CardContent,
@@ -15,40 +14,44 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { RootState } from '../../app/store';
-import { IWord } from '../../types';
-import FormattedText from './FormattedText';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouteMatch, useParams } from 'react-router-dom';
+import { IWord, ISpecialSectionPageParams } from 'types';
+import { updateWordOptions } from 'features/words/wordsSlice';
+import { getCurrUser } from 'features/user/userSlice';
+import { selectSettings } from 'features/settings/settingsSlice';
+import { api, WORD_OPTIONAL_MODE, ROUTES } from '../../constants';
 import { audioStart, audioStop } from './audio-helpers';
-import { api } from '../../constants';
+import FormattedText from './FormattedText';
 import styles from './styles';
 
-const SECTION = 'section';
-const DICTIONARY_COMPLEX = 'dictionary/complex';
-const DICTIONARY_DELETED = 'dictionary/deleted';
+// с роутами словаря надо что то делать. Пока полная неразбериха
+const DICTIONARY_STUDIED = '/studiedSection/:sector/:page/:color';
 
 interface Props extends WithStyles<typeof styles> {
-  data: IWord;
+  word: IWord;
 }
 
-const WordCard = ({ classes, data: word }: Props): JSX.Element => {
-  const { translation, buttons } = useSelector((s: RootState) => s.settings.value);
-  const isAuth = useSelector((s: RootState) => s.user.userId);
+const WordCard = ({ classes, word }: Props): JSX.Element => {
+  const dispatch = useDispatch();
+  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false);
+
+  const { translation, buttons } = useSelector(selectSettings);
+  const { userId: isAuth } = useSelector(getCurrUser);
 
   const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
 
   const htmlAudioRef = useRef<HTMLAudioElement>(new Audio(undefined));
 
-  // получать и диспатчить в стор -----------------------------------------
-  const [isComplex, setIsComplex] = useState<boolean>(false);
-  const [isDeleted, setIsDeleted] = useState<boolean>(false);
-  // ----------------------------------------------------------------------
+  // блок определения, где находится карточка. Уточнить после решения о роутах словаря
+  const { path } = useRouteMatch();
+  const isSectionsRoute = path === ROUTES.sections;
+  const isDictionaryStudiedRoute = path === DICTIONARY_STUDIED;
+  const { indicator } = useParams<ISpecialSectionPageParams>();
+  const isDictionaryComplexRoute = indicator === 'hard';
+  const isDictionaryDeletedRoute = indicator === 'del';
 
-  const { pathname } = useLocation();
-  const isSectionRoute = pathname.includes(SECTION);
-  const isDictionaryComplexRoute = pathname.includes(DICTIONARY_COMPLEX);
-  const isDictionaryDeletedRoute = pathname.includes(DICTIONARY_DELETED);
+  const isComplex = word.optional?.mode === WORD_OPTIONAL_MODE.hard;
 
   useEffect(() => {
     return () => {
@@ -65,23 +68,49 @@ const WordCard = ({ classes, data: word }: Props): JSX.Element => {
     [word]
   );
 
-  // диспатчить в стор ----------------------------------------------------
-  const handleDelete = (): void => {
-    setIsDeleted((s) => !s);
-    console.log(isDeleted);
+  const handleDelete = async (): Promise<void> => {
+    setIsDisabledButton(true);
+    await dispatch(
+      updateWordOptions({
+        wordId: word.id,
+        options: { deleted: true },
+      })
+    );
+    setIsDisabledButton(false);
   };
-  const handleComplex = (): void => {
-    console.log(isComplex);
-    setIsComplex((s) => !s);
+
+  const handleComplex = async (): Promise<void> => {
+    setIsDisabledButton(true);
+    await dispatch(
+      updateWordOptions({
+        wordId: word.id,
+        options: {
+          mode: isComplex ? WORD_OPTIONAL_MODE.studied : WORD_OPTIONAL_MODE.hard,
+        },
+      })
+    );
+    setIsDisabledButton(false);
   };
-  const handleRestore = (): void => {
+
+  const handleRestore = async (): Promise<void> => {
+    setIsDisabledButton(true);
     if (isDictionaryComplexRoute) {
-      console.log('restore complex');
+      await dispatch(
+        updateWordOptions({
+          wordId: word.id,
+          options: { mode: WORD_OPTIONAL_MODE.studied },
+        })
+      );
     } else if (isDictionaryDeletedRoute) {
-      console.log('restore deleted');
+      await dispatch(
+        updateWordOptions({
+          wordId: word.id,
+          options: { deleted: false },
+        })
+      );
     }
+    setIsDisabledButton(false);
   };
-  // ----------------------------------------------------------------------
 
   const handleAudio = (): void => {
     if (isAudioPlay) {
@@ -89,91 +118,92 @@ const WordCard = ({ classes, data: word }: Props): JSX.Element => {
     } else {
       audioStart(htmlAudioRef, audios, setIsAudioPlay);
     }
-
     setIsAudioPlay((s) => !s);
   };
 
   return (
-    <Box boxShadow={10} className={classes.outerBox}>
-      <Card
-        className={isComplex ? clsx(classes.root, classes.root__complex) : classes.root}
-        style={{ height: '100%', margin: 0 }}
-      >
-        <CardMedia
-          alt={`${word.word}`}
-          className={classes.image}
-          component="img"
-          image={`${api}/${word.image}`}
-          title={`${word.word}`}
-        />
+    <Card
+      className={isComplex ? clsx(classes.root, classes.root__complex) : classes.root}
+    >
+      <CardMedia
+        alt={`${word.word}`}
+        className={classes.image}
+        component="img"
+        image={`${api}/${word.image}`}
+        title={`${word.word}`}
+      />
 
-        <CardContent>
-          <Typography gutterBottom>
-            <IconButton
-              aria-label="play/pause"
-              className={classes.audioButton}
-              onClick={handleAudio}
-            >
-              {isAudioPlay ? (
-                <StopIcon className={classes.audioIcon} />
-              ) : (
-                <PlayArrowIcon className={classes.audioIcon} />
-              )}
-            </IconButton>
-            {`${word.word} - ${word.transcription}`}
-            {translation && ` - ${word.wordTranslate}`}
-          </Typography>
-          <Typography>
-            <FormattedText text={word.textExample} />
-          </Typography>
-          {translation && (
-            <Typography gutterBottom>{word.textExampleTranslate}</Typography>
-          )}
-          <Typography>
-            <FormattedText text={word.textMeaning} />
-          </Typography>
-          {translation && (
-            <Typography gutterBottom>{word.textMeaningTranslate}</Typography>
-          )}
-          <Divider />
-          <Typography>Статистика: нет данных пока...</Typography>
-        </CardContent>
+      <CardContent className={classes.content}>
+        <Typography gutterBottom>
+          <IconButton
+            aria-label="play/pause"
+            className={classes.audioButton}
+            onClick={handleAudio}
+          >
+            {isAudioPlay ? (
+              <StopIcon className={classes.audioIcon} />
+            ) : (
+              <PlayArrowIcon className={classes.audioIcon} />
+            )}
+          </IconButton>
 
-        <CardActions className={classes.buttonsGroup}>
-          {buttons && isAuth && isSectionRoute && (
-            <>
-              <Button
-                className={classes.button}
-                color="secondary"
-                onClick={handleDelete}
-                variant="outlined"
-              >
-                добавить в &quot;удаленные&quot;
-              </Button>
-              <Button
-                className={classes.button}
-                color="secondary"
-                onClick={handleComplex}
-                variant="outlined"
-              >
-                {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
-              </Button>
-            </>
-          )}
+          <span className={classes.word}>{word.word}</span>
+          {' - '}
+          {word.transcription}
+          {translation && ` - ${word.wordTranslate}`}
+        </Typography>
 
-          {!isSectionRoute && (
+        <Typography>
+          <FormattedText text={word.textExample} />
+        </Typography>
+
+        {translation && <Typography gutterBottom>{word.textExampleTranslate}</Typography>}
+
+        <Typography>
+          <FormattedText text={word.textMeaning} />
+        </Typography>
+
+        {translation && <Typography gutterBottom>{word.textMeaningTranslate}</Typography>}
+
+        <Divider className={classes.divider} />
+        <Typography>Статистика: нет данных пока...</Typography>
+      </CardContent>
+
+      <CardActions className={classes.buttonsGroup}>
+        {buttons && isAuth && isSectionsRoute && (
+          <>
             <Button
               className={classes.button}
               color="secondary"
-              onClick={handleRestore}
+              onClick={handleDelete}
               variant="outlined"
             >
-              восстановить
+              добавить в &quot;удаленные&quot;
             </Button>
-          )}
-        </CardActions>
-      </Card>
-    </Box>
+            <Button
+              className={classes.button}
+              color="secondary"
+              onClick={handleComplex}
+              variant="outlined"
+            >
+              {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
+            </Button>
+          </>
+        )}
+
+        {!isSectionsRoute && !isDictionaryStudiedRoute && (
+          <Button
+            className={classes.button}
+            color="secondary"
+            disabled={isDisabledButton}
+            onClick={handleRestore}
+            variant="outlined"
+          >
+            восстановить
+          </Button>
+        )}
+      </CardActions>
+    </Card>
   );
 };
 

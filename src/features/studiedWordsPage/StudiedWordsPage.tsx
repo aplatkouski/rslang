@@ -105,7 +105,7 @@ export default function StudiedWordsPage(): JSX.Element {
         style={{ backgroundColor: decodeURIComponent(String(color)) }}
       >
         {words.map((word) => (
-          <WordCard key={word.id} data={word} />
+          <WordCard key={word.id} word={word} />
         ))}
       </div>
     </>

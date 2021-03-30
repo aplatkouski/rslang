@@ -2,15 +2,13 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 
 const styles = (theme: Theme) =>
   createStyles({
-    outerBox: {
-      margin: theme.spacing(1),
-    },
     root: {
       display: 'flex',
       flexDirection: 'column',
       width: theme.spacing(40),
       margin: theme.spacing(1),
       background: theme.palette.background.default,
+      boxShadow: theme.shadows[2],
     },
     root__complex: {
       background: theme.palette.warning.light,
@@ -23,10 +21,20 @@ const styles = (theme: Theme) =>
     text: {
       userSelect: 'none',
     },
+    word: {
+      color: theme.palette.primary.main,
+      fontWeight: 'bold',
+    },
     button: {},
-    buttonsGroup: {
+    content: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    },
+    divider: {
       marginTop: 'auto',
     },
+    buttonsGroup: {},
     audioButton: {
       padding: theme.spacing(0),
       marginRight: theme.spacing(1),

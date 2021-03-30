@@ -1,3 +1,5 @@
+import { WORD_OPTIONAL_MODE } from './constants';
+
 export type SectionPageParams = {
   sector?: string;
   page?: string;
@@ -91,9 +93,11 @@ export interface IUserLogInData {
   password: string;
 }
 
+const wordOptionalModeValues = Object.values(WORD_OPTIONAL_MODE);
+type WordOptionalModeValues = typeof wordOptionalModeValues[number];
 export interface IWordOptions {
-  mode: string; // "studied" - изучаемое, "hard" - трудное
-  deleted: boolean;
+  mode?: WordOptionalModeValues;
+  deleted?: boolean;
 }
 
 export interface IDefiniteWordOptions {
@@ -120,7 +124,7 @@ export interface IWord {
   wordTranslate: string;
   textMeaningTranslate: string;
   textExampleTranslate: string;
-  optional: IWordOptions;
+  optional?: IWordOptions;
   userWord?: IAdditionalUserWordOptions;
 }
 
