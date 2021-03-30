@@ -1,13 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
-import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
+import {
+  IWord,
+  IWords,
+  IWordOptions,
+  IDefiniteWordOptions,
+  WordsList,
+} from '../../types';
 import {
   api,
   COULD_NOT_GET_WORDS,
   GET_WORDS_API,
   SERVER_OK_STATUS,
-  GET_AGGREGATED_WORDS_API,
-  WORDS_PER_PAGE,
+  GET_USER_WORD_API,
+  // WORDS_PER_PAGE,
 } from '../../constants';
 
 const initialState: IWords = {
@@ -42,6 +48,34 @@ export const wordsSlice = createSlice({
   },
 });
 
+function getWordsPromise(sectorNum: number, pageNum: number) {
+  const params = new URLSearchParams([
+    ['page', `${pageNum}`],
+    ['group', `${sectorNum}`],
+  ]);
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  };
+  return fetch(`${api}/${GET_WORDS_API}?${params}`, options);
+}
+
+function getUserWordPromise(userId: string, wordId: string, userToken: string) {
+  const options = {
+    method: 'GET',
+    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  };
+  return fetch(`${api}/${GET_USER_WORD_API(userId, wordId)}`, options);
+}
+
 export const loadWords = (
   sectorNum: number,
   pageNum: number,
@@ -51,67 +85,43 @@ export const loadWords = (
   dispatch(setStartWordsLoading());
 
   try {
-    // Вначале извлекаем основную информацию по словам на заданной странице заданного раздела
-
-    const params = new URLSearchParams([
-      ['page', `${pageNum}`],
-      ['group', `${sectorNum}`],
-    ]);
-    const options = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-    const response = await fetch(`${api}/${GET_WORDS_API}?${params}`, options);
+    const response = await getWordsPromise(sectorNum, pageNum);
 
     if (response.status !== SERVER_OK_STATUS) {
       dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
     } else {
       const words = (await response.json()) as WordsList;
 
-      // После того как успешно извлекли основную информацию по словам,
-      // приступаем к извлечению опций, имеющих отношение к словам и заданных текущим пользователем
+      const setWordOptions = (wordId: string, options: IWordOptions) => {
+        const index = words.findIndex((el) => el.id === wordId);
+        if (index > -1) {
+          words[index].optional = options;
+        }
+      };
 
       if (userId && userToken) {
-        const params2 = new URLSearchParams([
-          ['page', `${pageNum}`],
-          ['group', `${sectorNum}`],
-          ['wordsPerPage', `${WORDS_PER_PAGE}`],
-          ['filter', '{"userWord.optional":{"$exists":true}}'],
-        ]);
-        const options2 = {
-          method: 'GET',
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-        };
-        const response2 = await fetch(
-          `${api}/${GET_AGGREGATED_WORDS_API(userId)}?${params2}`,
-          options2
-        );
+        const promiseArr: Array<Promise<Response>> = [];
 
-        if (response2.status === SERVER_OK_STATUS) {
-          const optionsData = await response2.json();
+        for (let i = 0; i < words.length; i += 1) {
+          promiseArr.push(getUserWordPromise(userId, words[i].id, userToken));
+        }
 
-          if (optionsData && optionsData.length && optionsData[0].paginatedResults) {
-            for (let i = 0; i < optionsData[0].paginatedResults.length; i += 1) {
-              const word = optionsData[0].paginatedResults[i];
-              // eslint-disable-next-line no-underscore-dangle
-              const index = words.findIndex((el) => el.id === word._id);
-              if (index > -1) {
-                words[index].optional = word.userWord.optional;
-              }
-            }
+        const responses = await Promise.all(promiseArr);
+
+        for (let i = 0; i < responses.length; i += 1) {
+          const resp: Response = responses[i];
+
+          if (resp.status === SERVER_OK_STATUS) {
+            const findRes = resp.url.match(/words(.*)$/);
+            const urlSubstr = findRes ? findRes[0] : '';
+            const id = urlSubstr.substring(urlSubstr.indexOf('/') + 1);
+            resp
+              .json()
+              .then((options) => setWordOptions(id, options.optional))
+              .catch(() => {});
           }
         }
       }
-
-      // В конечном итоге запоминаем полученные слова
       dispatch(setWords(words));
     }
   } catch (e) {
