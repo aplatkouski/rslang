@@ -24,12 +24,7 @@ export default function SectionPage(): JSX.Element {
 
   useEffect(() => {
     dispatch(
-      loadWords(
-        Number(sector),
-        Number(page),
-        currentUser ? currentUser.userId : undefined,
-        currentUser ? currentUser.token : undefined
-      )
+      loadWords(Number(sector), Number(page), currentUser.userId, currentUser.token)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.token, sector, page]);
