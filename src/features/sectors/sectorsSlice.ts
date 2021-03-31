@@ -2,11 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import * as t from 'types';
 import {
+  api,
+  DELETED_WORDS_SECTOR_COLOR,
+  GET_DELETED_WORDS_STAT,
+  HARD_WORDS_SECTOR_COLOR,
+  GET_HARD_WORDS_STAT,
   PAGES_PER_SECTOR,
   SECTOR_COLORS,
-  api,
-  GET_DELETED_WORDS_STAT,
   SERVER_OK_STATUS,
+  SPECIAL_WORD_INDICATOR,
   WORDS_PER_PAGE,
 } from '../../constants';
 
@@ -40,7 +44,6 @@ const initialState: t.ISectorsInfo = {
   deletedSections: [],
   // массив страниц раздела "сложные слова"
   hardSections: [],
-  hardSectionsReady: true,
 };
 
 export const sectorsSlice = createSlice({
@@ -64,7 +67,7 @@ export const sectorsSlice = createSlice({
       }
     },
     /**
-     * Устанавливает/сбрасывает флаг видимости для заданных страниц заданных разделов учебника.
+     * Устанавливает/сбрасывает флаг видимости для заданных страниц заданных основных разделов учебника.
      */
     setSectorPagesVisibility: (
       state,
@@ -88,6 +91,7 @@ export const sectorsSlice = createSlice({
     },
     /**
      * Для всех страниц всех разделов учебника устанавливает флаг видимости.
+     * Чистит массивы страниц сложных и удаленных слов.
      */
     setAllPagesVisible: (state) => {
       for (let i = 0; i < state.sectors.length; i += 1) {
@@ -96,6 +100,7 @@ export const sectorsSlice = createSlice({
         }
       }
       state.deletedSections = [];
+      state.hardSections = [];
     },
     /**
      * Устанавливает/сбрасывает флаг готовности разделов и страниц.
@@ -115,19 +120,12 @@ export const sectorsSlice = createSlice({
     setHardSections: (state, action: PayloadAction<t.SpecialSections>) => {
       state.hardSections = action.payload;
     },
-    /**
-     * Устанавливает/сбрасывает флаг готовности страниц со сложными словами.
-     */
-    setHardSectionsReadyState: (state, action: PayloadAction<boolean>) => {
-      state.hardSectionsReady = action.payload;
-    },
   },
 });
 
 export const {
   setDeletedSections,
   setHardSections,
-  setHardSectionsReadyState,
   setAllPagesVisible,
   setSectorPageVisibility,
   setSectorPagesVisibility,
@@ -138,8 +136,6 @@ export const selectSectors = (state: RootState) => state.sectors.sectors;
 export const selectSectorsReadyState = (state: RootState) => state.sectors.sectorsReady;
 export const selectDeletedSections = (state: RootState) => state.sectors.deletedSections;
 export const selectHardSections = (state: RootState) => state.sectors.hardSections;
-export const selectHardSectionsReadyState = (state: RootState) =>
-  state.sectors.hardSectionsReady;
 
 /**
  * Для заданной страницы основного раздела учебника возвращает смежные ей страницы,
@@ -168,9 +164,49 @@ export const selectAdjacentPages = (
 };
 
 /**
+ * Формирует страницы для разделов сложных / удаленных слов.
+ */
+const formSpecialSections = (data: any, urlIndicator: string, color: string) => {
+  // Объект, определяющий количество special-слов в каждом разделе учебника
+  const specialWordsTotal: any = {};
+
+  data.forEach((stat: any) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const { group } = stat._id;
+
+    if (!specialWordsTotal[group]) {
+      specialWordsTotal[group] = stat.count;
+    } else {
+      specialWordsTotal[group] += stat.count;
+    }
+  });
+
+  // На основании specialWordsTotal формируем страницы с удаленными/сложными словами
+  const specialSections: t.SpecialSections = [];
+  let lastSpecialSectionNum = 0;
+
+  Object.keys(specialWordsTotal).forEach((sector) => {
+    for (let i = 0; i < Math.ceil(specialWordsTotal[sector] / PAGES_PER_SECTOR); i += 1) {
+      specialSections.push({
+        group: Number(sector),
+        page: lastSpecialSectionNum,
+        dbRefPage: i,
+        url: `/hardOrDeletedSection/${urlIndicator}/${sector}/${lastSpecialSectionNum}/${i}/${encodeURIComponent(
+          color
+        )}`,
+      });
+      lastSpecialSectionNum += 1;
+    }
+  });
+
+  return specialSections;
+};
+
+/**
  * Позволяет установить видимость страниц основного раздела учебника, основываясь на
  * данных о текущем пользователе и данных, содержащихся в БД.
  * Параллельно формирует массив информации о страницах с удаленными словами.
+ * А также массив информации о страницах со сложными словами.
  */
 export const updatePagesVisibility = (
   userId?: string,
@@ -186,6 +222,7 @@ export const updatePagesVisibility = (
   // Если же пользователь вошел в систему, то необходим дополнительный запрос на сервер,
   // чтобы решить, все ли страницы visible = true, или для некоторых visible = false.
   // Параллельно будет сформирован массив страниц с deleted words.
+  // А также массив страниц с hard words.
 
   const options = {
     method: 'GET',
@@ -207,8 +244,6 @@ export const updatePagesVisibility = (
 
       // Страницы учебника, для которых необходимо изменить visibility
       const visibilityObjects: Array<t.SectorPageVisibility> = [];
-      // Объект, определяющий количество deleted-слов в каждом разделе учебника
-      const deletedWordsTotal: any = {};
 
       data.forEach((stat: any) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -219,35 +254,35 @@ export const updatePagesVisibility = (
           pageNum: page,
           visible: stat.count !== WORDS_PER_PAGE,
         });
-
-        if (!deletedWordsTotal[group]) {
-          deletedWordsTotal[group] = stat.count;
-        } else {
-          deletedWordsTotal[group] += stat.count;
-        }
       });
 
       dispatch(setSectorPagesVisibility(visibilityObjects));
 
-      // На основании deletedWordsTotal формируем страницы с удаленными словами
-      const deletedSections: t.SpecialSections = [];
-      let lastDeletedSectionNum = 0;
+      // Формируем страницы для deleted words
 
-      Object.keys(deletedWordsTotal).forEach((sector) => {
-        for (
-          let i = 0;
-          i < Math.ceil(deletedWordsTotal[sector] / PAGES_PER_SECTOR);
-          i += 1
-        ) {
-          deletedSections.push({
-            group: Number(sector),
-            page: lastDeletedSectionNum,
-          });
-          lastDeletedSectionNum += 1;
-        }
-      });
+      const deletedSections = formSpecialSections(
+        data,
+        SPECIAL_WORD_INDICATOR.DEL,
+        DELETED_WORDS_SECTOR_COLOR
+      );
 
       dispatch(setDeletedSections(deletedSections));
+
+      // Переходим к hard words
+
+      const hardResponse = await fetch(`${api}/${GET_HARD_WORDS_STAT(userId)}`, options);
+
+      if (hardResponse.status === SERVER_OK_STATUS) {
+        const hardData = await hardResponse.json();
+
+        const hardSections = formSpecialSections(
+          hardData,
+          SPECIAL_WORD_INDICATOR.HARD,
+          HARD_WORDS_SECTOR_COLOR
+        );
+
+        dispatch(setHardSections(hardSections));
+      }
     }
     // eslint-disable-next-line no-empty
   } catch (e) {}

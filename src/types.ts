@@ -1,8 +1,13 @@
 export type SectionPageParams = {
   sector?: string;
   page?: string;
+  dbRefPage?: string;
   color?: string;
 };
+
+export interface ISpecialSectionPageParams extends SectionPageParams {
+  indicator?: string;
+}
 
 export interface SectorPage {
   sectorNum: number;
@@ -32,6 +37,8 @@ export type SectorsState = Array<Sector>;
 export interface ISpecialSection {
   group: number;
   page: number;
+  dbRefPage: number;
+  url: string;
 }
 
 export type SpecialSections = Array<ISpecialSection>;
@@ -41,7 +48,6 @@ export interface ISectorsInfo {
   sectorsReady: boolean;
   deletedSections: SpecialSections;
   hardSections: SpecialSections;
-  hardSectionsReady: boolean;
 }
 
 export interface Settings {

@@ -18,7 +18,7 @@ import {
   updatePagesVisibility,
 } from 'features/sectors/sectorsSlice';
 import * as t from 'types';
-import Dictionary from 'app/dictionary/Dictionary';
+import Dictionary from 'features/dictionary/Dictionary';
 import { getCurrUser } from 'features/user/userSlice';
 
 import './SectorsPage.scss';
@@ -73,7 +73,7 @@ export default function SectionsPage(): JSX.Element {
                   flexWrap="wrap"
                   justifyContent="space-evenly"
                 >
-                  {sector.pages &&
+                  {sector.pages && sector.pages.length ? (
                     sector.pages.map((page) => (
                       <div key={page.key} className="box">
                         <div className="schatten">
@@ -86,7 +86,10 @@ export default function SectionsPage(): JSX.Element {
                           )}
                         </div>
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <Typography className="sector-title">Данный раздел пуст</Typography>
+                  )}
                 </Box>
               )}
             </AccordionDetails>
@@ -100,37 +103,8 @@ export default function SectionsPage(): JSX.Element {
         >
           <Typography className="sector-title">Словарь</Typography>
         </AccordionSummary>
-        <Dictionary />
         <AccordionDetails>
-          <Box
-            alignItems="stretch"
-            css={{ maxWidth: '100%' }}
-            display="flex"
-            flexWrap="wrap"
-            justifyContent="space-evenly"
-          >
-            <div className="box">
-              <div className="schatten">
-                <NavLink to="/">
-                  <ListItemText className="page-title" primary="Изучаемые слова" />
-                </NavLink>
-              </div>
-            </div>
-            <div className="box">
-              <div className="schatten">
-                <NavLink to="/">
-                  <ListItemText className="page-title" primary="Сложные слова" />
-                </NavLink>
-              </div>
-            </div>
-            <div className="box">
-              <div className="schatten">
-                <NavLink to="/">
-                  <ListItemText className="page-title" primary="Удаленные слова" />
-                </NavLink>
-              </div>
-            </div>
-          </Box>
+          <Dictionary />
         </AccordionDetails>
       </Accordion>
     </div>

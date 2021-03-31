@@ -4,9 +4,12 @@ import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
 import {
   api,
   COULD_NOT_GET_WORDS,
+  CREATE_USER_WORDS_API,
   GET_WORDS_API,
   SERVER_OK_STATUS,
   GET_USER_WORDS_API,
+  SPECIAL_WORD_INDICATOR,
+  WORDS_PER_PAGE,
 } from '../../constants';
 
 const initialState: IWords = {
@@ -113,6 +116,83 @@ export const loadWords = (
       }
     }
 
+    dispatch(setWords(words));
+  } catch (e) {
+    dispatch(setWordsLoadError(e.message));
+  }
+
+  dispatch(setWordsLoadingStatus(false));
+};
+
+function getUserSpecialWordsPromise(
+  userId: string,
+  userToken: string,
+  group: number,
+  page: number,
+  requestIndicator: string
+) {
+  let filter: string = '';
+  if (requestIndicator === SPECIAL_WORD_INDICATOR.HARD) {
+    filter = '{"userWord.optional.mode":"hard"}';
+  } else if (requestIndicator === SPECIAL_WORD_INDICATOR.DEL) {
+    filter = '{"userWord.optional.deleted":true}';
+  }
+
+  const params = new URLSearchParams([
+    ['page', `${page}`],
+    ['group', `${group}`],
+    ['wordsPerPage', `${WORDS_PER_PAGE}`],
+    ['filter', filter],
+  ]);
+
+  const options = {
+    method: 'GET',
+    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  };
+
+  return fetch(`${api}/${CREATE_USER_WORDS_API(userId)}?${params}`, options);
+}
+
+export const getUserSpecialWords = (
+  sectorNum: number,
+  pageNum: number,
+  userId: string,
+  userToken: string,
+  requestIndicator: string
+): AppThunk => async (dispatch) => {
+  dispatch(setStartWordsLoading());
+
+  const words: WordsList = [];
+
+  try {
+    const response = await getUserSpecialWordsPromise(
+      userId,
+      userToken,
+      sectorNum,
+      pageNum,
+      requestIndicator
+    );
+
+    if (response.status !== SERVER_OK_STATUS) {
+      dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
+    } else {
+      const result: any = await response.json();
+
+      if (result && result[0].paginatedResults) {
+        result[0].paginatedResults.forEach((word: any) => {
+          if (word.userWord) {
+            word.optional = word.userWord.optional;
+            delete word.userWord;
+            words.push(word);
+          }
+        });
+      }
+    }
     dispatch(setWords(words));
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
