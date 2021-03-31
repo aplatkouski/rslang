@@ -38,7 +38,7 @@ export default function Dictionary(): JSX.Element {
       return;
     }
     const params = new URLSearchParams([
-      ['page', '1'],
+      ['page', '0'],
       ['group', '0'],
       ['wordsPerPage', '3'],
       ['filter', '{"userWord.optional.mode":"hard"}'],

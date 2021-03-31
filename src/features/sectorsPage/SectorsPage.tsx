@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Accordion,
@@ -6,14 +6,20 @@ import {
   AccordionDetails,
   ListItemText,
   Box,
+  CircularProgress,
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
-import { selectSectors } from 'features/sectors/sectorsSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectSectors,
+  selectSectorsReadyState,
+  updatePagesVisibility,
+} from 'features/sectors/sectorsSlice';
 import * as t from 'types';
 import Dictionary from 'app/dictionary/Dictionary';
+import { getCurrUser } from 'features/user/userSlice';
 
 import './SectorsPage.scss';
 
@@ -35,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
 export default function SectionsPage(): JSX.Element {
   const classes = useStyles();
   const sectors: Array<t.Sector> = useSelector(selectSectors);
+  const currentUser: t.IUser = useSelector(getCurrUser);
+  const dispatch = useDispatch();
+  const sectorsReady = useSelector(selectSectorsReadyState);
+
+  useEffect(() => {
+    dispatch(updatePagesVisibility(currentUser.userId, currentUser.token));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser.token]);
 
   return (
     <div className={classes.root}>
@@ -49,24 +63,32 @@ export default function SectionsPage(): JSX.Element {
               <Typography className="sector-title">{sector.title}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box
-                alignItems="stretch"
-                css={{ maxWidth: '100%' }}
-                display="flex"
-                flexWrap="wrap"
-                justifyContent="space-evenly"
-              >
-                {sector.pages &&
-                  sector.pages.map((page) => (
-                    <div key={page.key} className="box">
-                      <div className="schatten">
-                        <NavLink to={page.url}>
-                          <ListItemText className="page-title" primary={page.title} />
-                        </NavLink>
+              {!sectorsReady ? (
+                <CircularProgress />
+              ) : (
+                <Box
+                  alignItems="stretch"
+                  css={{ maxWidth: '100%' }}
+                  display="flex"
+                  flexWrap="wrap"
+                  justifyContent="space-evenly"
+                >
+                  {sector.pages &&
+                    sector.pages.map((page) => (
+                      <div key={page.key} className="box">
+                        <div className="schatten">
+                          {page.show ? (
+                            <NavLink to={page.url}>
+                              <ListItemText className="page-title" primary={page.title} />
+                            </NavLink>
+                          ) : (
+                            <ListItemText className="page-title" primary={page.title} />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-              </Box>
+                    ))}
+                </Box>
+              )}
             </AccordionDetails>
           </Accordion>
         ))}
