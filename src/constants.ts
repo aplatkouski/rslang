@@ -53,4 +53,3 @@ export const ROUTES = {
 };
 
 export const WORDS_PER_PAGE = 20;
-
