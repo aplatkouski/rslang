@@ -80,3 +80,28 @@ export const SPECIAL_WORD_INDICATOR = {
   DEL: 'del',
   HARD: 'hard',
 };
+
+const defaultStats = {
+  words: 0,
+  answers: 0,
+  correctAnswers: 0,
+  series: 0,
+};
+export const initialStats = [
+  {
+    ...defaultStats,
+    name: 'Спринт',
+  },
+  {
+    ...defaultStats,
+    name: 'Аудиовызов',
+  },
+  {
+    ...defaultStats,
+    name: 'Саванна',
+  },
+  {
+    ...defaultStats,
+    name: 'Своя игра',
+  },
+];
