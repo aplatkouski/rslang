@@ -1,18 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
-import {
-  IWord,
-  IWords,
-  IWordOptions,
-  IDefiniteWordOptions,
-  WordsList,
-} from '../../types';
+import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
 import {
   api,
   COULD_NOT_GET_WORDS,
   GET_WORDS_API,
   SERVER_OK_STATUS,
-  GET_USER_WORD_API,
+  GET_USER_WORDS_API,
 } from '../../constants';
 
 const initialState: IWords = {
@@ -62,7 +56,16 @@ function getWordsPromise(sectorNum: number, pageNum: number) {
   return fetch(`${api}/${GET_WORDS_API}?${params}`, options);
 }
 
-function getUserWordPromise(userId: string, wordId: string, userToken: string) {
+function getUserWordsPromise(
+  userId: string,
+  userToken: string,
+  group: number,
+  page: number
+) {
+  const params = new URLSearchParams([
+    ['group', `${group}`],
+    ['page', `${page}`],
+  ]);
   const options = {
     method: 'GET',
     withCredentials: true,
@@ -72,7 +75,7 @@ function getUserWordPromise(userId: string, wordId: string, userToken: string) {
       'Content-Type': 'application/json; charset=UTF-8',
     },
   };
-  return fetch(`${api}/${GET_USER_WORD_API(userId, wordId)}`, options);
+  return fetch(`${api}/${GET_USER_WORDS_API(userId)}?${params}`, options);
 }
 
 export const loadWords = (
@@ -83,49 +86,38 @@ export const loadWords = (
 ): AppThunk => async (dispatch) => {
   dispatch(setStartWordsLoading());
 
+  let words: WordsList = [];
+
   try {
-    const response = await getWordsPromise(sectorNum, pageNum);
+    if (!userId || !userToken) {
+      const response = await getWordsPromise(sectorNum, pageNum);
 
-    if (response.status !== SERVER_OK_STATUS) {
-      dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
-    } else {
-      const words = (await response.json()) as WordsList;
-
-      const setWordOptions = (wordId: string, options: IWordOptions) => {
-        const index = words.findIndex((el) => el.id === wordId);
-        if (index > -1) {
-          words[index].optional = options;
-        }
-      };
-
-      if (userId && userToken) {
-        const promiseArr: Array<Promise<Response>> = [];
-
-        for (let i = 0; i < words.length; i += 1) {
-          promiseArr.push(getUserWordPromise(userId, words[i].id, userToken));
-        }
-
-        const responses = await Promise.all(promiseArr);
-
-        for (let i = 0; i < responses.length; i += 1) {
-          const resp: Response = responses[i];
-
-          if (resp.status === SERVER_OK_STATUS) {
-            const findRes = resp.url.match(/words(.*)$/);
-            const urlSubstr = findRes ? findRes[0] : '';
-            const id = urlSubstr.substring(urlSubstr.indexOf('/') + 1);
-            resp
-              .json()
-              .then((options) => setWordOptions(id, options.optional))
-              .catch(() => {});
-          }
-        }
+      if (response.status !== SERVER_OK_STATUS) {
+        dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
+      } else {
+        words = (await response.json()) as WordsList;
       }
-      dispatch(setWords(words));
+    } else {
+      const response = await getUserWordsPromise(userId, userToken, sectorNum, pageNum);
+
+      if (response.status !== SERVER_OK_STATUS) {
+        dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
+      } else {
+        words = (await response.json()) as WordsList;
+        words.forEach((word) => {
+          if (word.userWord) {
+            word.optional = word.userWord.optional;
+            delete word.userWord;
+          }
+        });
+      }
     }
+
+    dispatch(setWords(words));
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
   }
+
   dispatch(setWordsLoadingStatus(false));
 };
 
