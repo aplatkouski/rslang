@@ -72,6 +72,10 @@ export interface IDefiniteWordOptions {
   options: IWordOptions;
 }
 
+export interface IAdditionalUserWordOptions {
+  optional: IWordOptions;
+}
+
 export interface IWord {
   id: string;
   group: number;
@@ -88,6 +92,7 @@ export interface IWord {
   textMeaningTranslate: string;
   textExampleTranslate: string;
   optional: IWordOptions;
+  userWord?: IAdditionalUserWordOptions;
 }
 
 export type WordsList = Array<IWord>;
@@ -101,4 +106,10 @@ export interface IWords {
 export interface IWordDifficulty {
   wordId: string;
   difficulty: string;
+}
+
+export interface ISectionsDeletedWords {
+  group: number;
+  page: number;
+  deletedWordsCount: number;
 }

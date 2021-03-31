@@ -6,6 +6,7 @@ import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import * as t from 'types';
 import { getWords, loadWords } from 'features/words/wordsSlice';
+
 import { getCurrUser } from 'features/user/userSlice';
 
 import './SectionPage.scss';

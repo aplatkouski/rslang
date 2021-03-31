@@ -1,4 +1,5 @@
 export const PAGES_PER_SECTOR = 30;
+export const WORDS_PER_PAGE = 20;
 
 export const SECTOR_COLORS = [
   '#D7F1B5',
@@ -20,6 +21,12 @@ export const GET_USER_API = (userId: string) => {
 };
 export const GET_USER_WORD_API = (userId: string, wordId: string) => {
   return `users/${userId}/words/${wordId}`;
+};
+export const GET_USER_WORDS_API = (userId: string) => {
+  return `users/${userId}/aggregatedWords/fromPage`;
+};
+export const GET_DELETED_WORDS_STAT = (userId: string) => {
+  return `users/${userId}/wordsStat/deletedWordsStat`;
 };
 export const GET_WORDS_API = 'words';
 export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {
