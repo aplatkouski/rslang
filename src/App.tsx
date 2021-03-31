@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
 import Navbar from 'app/navbar/Navbar';
 import MainPage from 'app/mainPage/MainPage';
 import SectorsPage from 'features/sectorsPage/SectorsPage';
 import SectionPage from 'app/sectionPage/SectionPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
-import { useDispatch } from 'react-redux';
 import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
+import StatisticPage from './app/statisticPage/StatisticPage';
 import TeamPage from './app/TeamPage/TeamPage';
 
 const App = (): JSX.Element => {
@@ -37,6 +39,7 @@ const App = (): JSX.Element => {
           exact
           path="/studiedSection/:sector/:page/:color"
         />
+        <Route component={StatisticPage} exact path="/statistic" />
         <Redirect to="/" />
       </Switch>
     </BrowserRouter>
