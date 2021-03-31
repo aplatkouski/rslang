@@ -29,6 +29,21 @@ export interface Sector {
 
 export type SectorsState = Array<Sector>;
 
+export interface ISpecialSection {
+  group: number;
+  page: number;
+}
+
+export type SpecialSections = Array<ISpecialSection>;
+
+export interface ISectorsInfo {
+  sectors: SectorsState;
+  sectorsReady: boolean;
+  deletedSections: SpecialSections;
+  hardSections: SpecialSections;
+  hardSectionsReady: boolean;
+}
+
 export interface Settings {
   translation: boolean;
   buttons: boolean;
