@@ -10,6 +10,10 @@ export const SECTOR_COLORS = [
   '#FFFDBF',
 ];
 
+export const STUDIED_WORDS_SECTOR_COLOR = '#D7F1B5';
+export const HARD_WORDS_SECTOR_COLOR = '#98CAB7';
+export const DELETED_WORDS_SECTOR_COLOR = '#FFD3BF';
+
 export const api = 'https://rs-lang-server.herokuapp.com';
 export const USER_REGISTRATION_API = 'users';
 export const LOG_IN_API = 'signin';
@@ -25,8 +29,14 @@ export const GET_USER_WORD_API = (userId: string, wordId: string) => {
 export const GET_USER_WORDS_API = (userId: string) => {
   return `users/${userId}/aggregatedWords/fromPage`;
 };
+export const CREATE_USER_WORDS_API = (userId: string) => {
+  return `users/${userId}/aggregatedWords`;
+};
 export const GET_DELETED_WORDS_STAT = (userId: string) => {
   return `users/${userId}/wordsStat/deletedWordsStat`;
+};
+export const GET_HARD_WORDS_STAT = (userId: string) => {
+  return `users/${userId}/wordsStat/hardWordsStat`;
 };
 export const GET_WORDS_API = 'words';
 export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {
@@ -59,4 +69,7 @@ export const ROUTES = {
   team: '/about-team',
 };
 
-export const WORDS_PER_PAGE = 20;
+export const SPECIAL_WORD_INDICATOR = {
+  DEL: 'del',
+  HARD: 'hard',
+};

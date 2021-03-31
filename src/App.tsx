@@ -7,6 +7,7 @@ import SectionPage from 'app/sectionPage/SectionPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { useDispatch } from 'react-redux';
+import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
 import TeamPage from './app/TeamPage/TeamPage';
 
 const App = (): JSX.Element => {
@@ -25,6 +26,11 @@ const App = (): JSX.Element => {
         <Route component={SectorsPage} exact path="/sectors" />
         <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
         <Route component={TeamPage} exact path="/about-team" />
+        <Route
+          component={HardOrDeletedWordsPage}
+          exact
+          path="/hardOrDeletedSection/:indicator/:sector/:page/:dbRefPage/:color"
+        />
         <Redirect to="/" />
       </Switch>
     </BrowserRouter>
