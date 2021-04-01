@@ -18,6 +18,22 @@ export const DELETED_WORDS_SECTOR_COLOR = '#FFBE85';
 export const api = 'https://rs-lang-server.herokuapp.com';
 export const USER_REGISTRATION_API = 'users';
 export const LOG_IN_API = 'signin';
+
+export const MINI_GAMES = [
+  {
+    title: 'AudioCall',
+    path: '/mini-games/audio-call',
+    description: 'Audio Call Description',
+  },
+  {
+    title: 'Savanna',
+    path: '/mini-games/savanna',
+    description:
+      'Тренировка “Саванна” – это тренажер по переводу твоего пассивного изученного словаря в активную стадию. Все это происходит за счет вовлечения реакции в процесс перевода. Тренируйся регулярно и сможешь на лету подбирать правильные слова при письме и в процессе говорения.',
+  },
+  { title: 'Sprint', path: '/mini-games/sprint', description: 'Sprint Description' },
+];
+
 export const GET_USER_PHOTO_API = (userId: string) => {
   return `users/${userId}/photo`;
 };
@@ -78,6 +94,8 @@ export const ROUTES = {
   sections: '/section/:sector/:page/:color',
   team: '/about-team',
   statistic: '/statistic',
+  MINI_GAMES: '/mini-games',
+  SAVANNA: '/mini-games/savanna',
 };
 
 export const SPECIAL_WORD_INDICATOR = {

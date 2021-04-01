@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
 import MiniGamesPage from './app/MiniGamesPage/MiniGamesPage';
+import Savanna from './features/savanna/Savanna';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -46,7 +47,8 @@ const App = (): JSX.Element => {
           path="/studiedSection/:sector/:page/:color"
         />
         <Route component={StatisticPage} exact path={ROUTES.statistic} />
-        <Route component={MiniGamesPage} exact path="/mini-games" />
+        <Route component={MiniGamesPage} exact path={ROUTES.MINI_GAMES} />
+        <Route component={Savanna} exact path={ROUTES.SAVANNA} />
         <Redirect to="/" />
       </Switch>
       <Footer />
