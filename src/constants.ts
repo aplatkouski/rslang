@@ -2,17 +2,18 @@ export const PAGES_PER_SECTOR = 30;
 export const WORDS_PER_PAGE = 20;
 
 export const SECTOR_COLORS = [
-  '#D7F1B5',
-  '#98CAB7',
-  '#FFD3BF',
-  '#E7ADC6',
-  '#B59AC9',
-  '#FFFDBF',
+  '#faedcb',
+  '#c9e4de',
+  '#c6def1',
+  '#dbcdf0',
+  '#f2c6de',
+  '#f9c6c9',
 ];
 
-export const STUDIED_WORDS_SECTOR_COLOR = '#D7F1B5';
-export const HARD_WORDS_SECTOR_COLOR = '#98CAB7';
-export const DELETED_WORDS_SECTOR_COLOR = '#FFD3BF';
+export const DICTIONARY_SECTOR_COLOR = '#e2cfc4';
+export const STUDIED_WORDS_SECTOR_COLOR = '#FFE9CE';
+export const HARD_WORDS_SECTOR_COLOR = '#FFF1AD';
+export const DELETED_WORDS_SECTOR_COLOR = '#FFBE85';
 
 export const api = 'https://rs-lang-server.herokuapp.com';
 export const USER_REGISTRATION_API = 'users';

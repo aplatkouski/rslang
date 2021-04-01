@@ -164,6 +164,56 @@ export const selectAdjacentPages = (
 };
 
 /**
+ * Для заданной страницы раздела словаря сложных слов возвращает смежные ей страницы.
+ */
+export const selectAdjacentHardPages = (
+  state: RootState,
+  requestData: t.SectorPage
+): Array<t.ISpecialSection | undefined> => {
+  let prevPage;
+  let nextPage;
+  const { hardSections } = state.sectors;
+
+  for (let index = 0; index < hardSections.length; index += 1) {
+    const page = hardSections[index];
+    if (page.page < requestData.pageNum) {
+      prevPage = page;
+    } else if (nextPage) {
+      break;
+    } else if (page.page > requestData.pageNum) {
+      nextPage = page;
+    }
+  }
+
+  return [prevPage, nextPage];
+};
+
+/**
+ * Для заданной страницы раздела словаря удаленных слов возвращает смежные ей страницы.
+ */
+export const selectAdjacentDeletedPages = (
+  state: RootState,
+  requestData: t.SectorPage
+): Array<t.ISpecialSection | undefined> => {
+  let prevPage;
+  let nextPage;
+  const { deletedSections } = state.sectors;
+
+  for (let index = 0; index < deletedSections.length; index += 1) {
+    const page = deletedSections[index];
+    if (page.page < requestData.pageNum) {
+      prevPage = page;
+    } else if (nextPage) {
+      break;
+    } else if (page.page > requestData.pageNum) {
+      nextPage = page;
+    }
+  }
+
+  return [prevPage, nextPage];
+};
+
+/**
  * Формирует страницы для разделов сложных / удаленных слов.
  */
 const formSpecialSections = (data: any, urlIndicator: string, color: string) => {

@@ -20,6 +20,7 @@ const styles = (theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1.25),
+      backgroundColor: '#5A38FD',
     },
   });
 
