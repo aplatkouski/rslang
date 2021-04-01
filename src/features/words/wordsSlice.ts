@@ -6,6 +6,7 @@ import {
   COULD_NOT_GET_WORDS,
   CREATE_USER_WORDS_API,
   GET_WORDS_API,
+  GET_STUDIED_USER_WORDS_API,
   SERVER_OK_STATUS,
   GET_USER_WORDS_API,
   SPECIAL_WORD_INDICATOR,
@@ -114,6 +115,66 @@ export const loadWords = (
           }
         });
       }
+    }
+
+    dispatch(setWords(words));
+  } catch (e) {
+    dispatch(setWordsLoadError(e.message));
+  }
+
+  dispatch(setWordsLoadingStatus(false));
+};
+
+function getUserStudiedWordsPromise(
+  userId: string,
+  userToken: string,
+  group: number,
+  page: number
+) {
+  const params = new URLSearchParams([
+    ['group', `${group}`],
+    ['page', `${page}`],
+  ]);
+  const options = {
+    method: 'GET',
+    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  };
+  return fetch(`${api}/${GET_STUDIED_USER_WORDS_API(userId)}?${params}`, options);
+}
+
+export const loadStudiedWords = (
+  sectorNum: number,
+  pageNum: number,
+  userId: string,
+  userToken: string
+): AppThunk => async (dispatch) => {
+  dispatch(setStartWordsLoading());
+
+  let words: WordsList = [];
+
+  try {
+    const response = await getUserStudiedWordsPromise(
+      userId,
+      userToken,
+      sectorNum,
+      pageNum
+    );
+
+    if (response.status !== SERVER_OK_STATUS) {
+      dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
+    } else {
+      words = (await response.json()) as WordsList;
+      words.forEach((word) => {
+        if (word.userWord) {
+          word.optional = word.userWord.optional;
+          delete word.userWord;
+        }
+      });
     }
 
     dispatch(setWords(words));

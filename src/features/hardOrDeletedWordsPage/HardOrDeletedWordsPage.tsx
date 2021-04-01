@@ -98,8 +98,10 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
         >
           <Typography className={classes.sectorTitle}>{pageTitle}</Typography>
           <Typography className={classes.sectorTitle}>
-            Раздел учебника {Number(sector) + 1}, страница раздела словаря{' '}
-            {Number(page) + 1}
+            Раздел учебника {Number(sector) + 1}
+          </Typography>
+          <Typography className={classes.sectorTitle}>
+            Страница раздела словаря {Number(page) + 1}
           </Typography>
           <div className="pages-navigation">
             {adjacentPages && adjacentPages[0] && (
@@ -131,9 +133,8 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(String(color)) }}
       >
-        {words.map((word) => (
-          <WordCard key={word.id} data={word} />
-        ))}
+        {!dataIsBeingLoaded &&
+          words.map((word) => <WordCard key={word.id} data={word} />)}
       </div>
     </>
   );

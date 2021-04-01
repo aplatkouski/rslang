@@ -16,6 +16,7 @@ import {
   selectDeletedSections,
   selectHardSections,
   selectSectorsReadyState,
+  selectStudiedSections,
 } from 'features/sectors/sectorsSlice';
 import {
   STUDIED_WORDS_SECTOR_COLOR,
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   sectorTitle: {
     fontSize: theme.typography.pxToRem(17),
     fontWeight: theme.typography.fontWeightBold,
+    textAlign: 'center',
   },
   paper: {
     padding: theme.spacing(2),
@@ -43,6 +45,7 @@ export default function Dictionary(): JSX.Element {
   const sectorsReady = useSelector(selectSectorsReadyState);
   const hardSections = useSelector(selectHardSections);
   const deletedSections = useSelector(selectDeletedSections);
+  const studiedSections = useSelector(selectStudiedSections);
 
   return (
     <div className={classes.root}>
@@ -55,9 +58,36 @@ export default function Dictionary(): JSX.Element {
           <Typography className={classes.sectorTitle}>Изучаемые слова</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <NavLink to="/">
-            <ListItemText className="page-title" primary="Перейти в раздел" />
-          </NavLink>
+          {!sectorsReady ? (
+            <CircularProgress />
+          ) : (
+            <Box
+              alignItems="stretch"
+              css={{ maxWidth: '100%' }}
+              display="flex"
+              flexWrap="wrap"
+              justifyContent="space-evenly"
+            >
+              {studiedSections && studiedSections.length ? (
+                studiedSections.map((page) => (
+                  <div key={`${page.sectorNum}${page.pageNum}`} className="box">
+                    <div className="schatten">
+                      <NavLink to={page.url}>
+                        <ListItemText
+                          className={classes.sectorTitle}
+                          primary={`Раздел ${page.sectorNum + 1}, страница ${
+                            page.pageNum + 1
+                          }, слов: ${page.count}`}
+                        />
+                      </NavLink>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <Typography className="sector-title">Данный раздел пуст</Typography>
+              )}
+            </Box>
+          )}
         </AccordionDetails>
       </Accordion>
       <Accordion style={{ backgroundColor: `${HARD_WORDS_SECTOR_COLOR}` }}>

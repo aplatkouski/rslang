@@ -7,11 +7,13 @@ import {
   GET_DELETED_WORDS_STAT,
   HARD_WORDS_SECTOR_COLOR,
   GET_HARD_WORDS_STAT,
+  GET_STUDIED_WORDS_STAT,
   PAGES_PER_SECTOR,
   SECTOR_COLORS,
   SERVER_OK_STATUS,
   SPECIAL_WORD_INDICATOR,
   WORDS_PER_PAGE,
+  STUDIED_WORDS_SECTOR_COLOR,
 } from '../../constants';
 
 /* Страницы нумеруются с нуля! */
@@ -44,6 +46,8 @@ const initialState: t.ISectorsInfo = {
   deletedSections: [],
   // массив страниц раздела "сложные слова"
   hardSections: [],
+  // массив страниц секции "изучаемые слова"
+  studiedWordsSections: [],
 };
 
 export const sectorsSlice = createSlice({
@@ -101,6 +105,7 @@ export const sectorsSlice = createSlice({
       }
       state.deletedSections = [];
       state.hardSections = [];
+      state.studiedWordsSections = [];
     },
     /**
      * Устанавливает/сбрасывает флаг готовности разделов и страниц.
@@ -120,12 +125,19 @@ export const sectorsSlice = createSlice({
     setHardSections: (state, action: PayloadAction<t.SpecialSections>) => {
       state.hardSections = action.payload;
     },
+    /**
+     * Устанавливает массив страниц с изучаемыми словами.
+     */
+    setStudiedSections: (state, action: PayloadAction<t.StudiedWordsSections>) => {
+      state.studiedWordsSections = action.payload;
+    },
   },
 });
 
 export const {
   setDeletedSections,
   setHardSections,
+  setStudiedSections,
   setAllPagesVisible,
   setSectorPageVisibility,
   setSectorPagesVisibility,
@@ -136,6 +148,8 @@ export const selectSectors = (state: RootState) => state.sectors.sectors;
 export const selectSectorsReadyState = (state: RootState) => state.sectors.sectorsReady;
 export const selectDeletedSections = (state: RootState) => state.sectors.deletedSections;
 export const selectHardSections = (state: RootState) => state.sectors.hardSections;
+export const selectStudiedSections = (state: RootState) =>
+  state.sectors.studiedWordsSections;
 
 /**
  * Для заданной страницы основного раздела учебника возвращает смежные ей страницы,
@@ -252,11 +266,28 @@ const formSpecialSections = (data: any, urlIndicator: string, color: string) => 
   return specialSections;
 };
 
+function compareSections(a: t.IStudiedWordsSection, b: t.IStudiedWordsSection) {
+  if (a.sectorNum < b.sectorNum) {
+    return -1;
+  }
+  if (a.sectorNum > b.sectorNum) {
+    return 1;
+  }
+  if (a.pageNum < b.pageNum) {
+    return -1;
+  }
+  if (a.pageNum > b.pageNum) {
+    return 1;
+  }
+  return 0;
+}
+
 /**
  * Позволяет установить видимость страниц основного раздела учебника, основываясь на
  * данных о текущем пользователе и данных, содержащихся в БД.
  * Параллельно формирует массив информации о страницах с удаленными словами.
  * А также массив информации о страницах со сложными словами.
+ * И массив информации о разделах изучаемых слов.
  */
 export const updatePagesVisibility = (
   userId?: string,
@@ -332,6 +363,40 @@ export const updatePagesVisibility = (
         );
 
         dispatch(setHardSections(hardSections));
+      }
+
+      // Остались изучаемые слова
+
+      const studiedResponse = await fetch(
+        `${api}/${GET_STUDIED_WORDS_STAT(userId)}`,
+        options
+      );
+
+      if (studiedResponse.status === SERVER_OK_STATUS) {
+        const studiedData = await studiedResponse.json();
+
+        const studiedSections: t.StudiedWordsSections = [];
+
+        studiedData.forEach((section: any) => {
+          studiedSections.push({
+            // eslint-disable-next-line no-underscore-dangle
+            sectorNum: section._id.group,
+            // eslint-disable-next-line no-underscore-dangle
+            pageNum: section._id.page,
+            count: section.count,
+            // eslint-disable-next-line no-underscore-dangle
+            url: `/studiedSection/${section._id.group}/${
+              // eslint-disable-next-line no-underscore-dangle
+              section._id.page
+            }/${encodeURIComponent(STUDIED_WORDS_SECTOR_COLOR)}`,
+          });
+        });
+
+        // Теперь отсортируем массив, чтобы номера разделов и страниц в рамках них
+        // шли в порядке возрастания
+        studiedSections.sort(compareSections);
+
+        dispatch(setStudiedSections(studiedSections));
       }
     }
     // eslint-disable-next-line no-empty
