@@ -8,6 +8,7 @@ import { logInViaLocalStorage } from 'features/user/userSlice';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { useDispatch } from 'react-redux';
 import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
+import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import TeamPage from './app/TeamPage/TeamPage';
 
 const App = (): JSX.Element => {
@@ -30,6 +31,11 @@ const App = (): JSX.Element => {
           component={HardOrDeletedWordsPage}
           exact
           path="/hardOrDeletedSection/:indicator/:sector/:page/:dbRefPage/:color"
+        />
+        <Route
+          component={StudiedWordsPage}
+          exact
+          path="/studiedSection/:sector/:page/:color"
         />
         <Redirect to="/" />
       </Switch>

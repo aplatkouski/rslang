@@ -30,6 +30,9 @@ export const GET_USER_WORD_API = (userId: string, wordId: string) => {
 export const GET_USER_WORDS_API = (userId: string) => {
   return `users/${userId}/aggregatedWords/fromPage`;
 };
+export const GET_STUDIED_USER_WORDS_API = (userId: string) => {
+  return `users/${userId}/aggregatedWords/studiedFromPage`;
+};
 export const CREATE_USER_WORDS_API = (userId: string) => {
   return `users/${userId}/aggregatedWords`;
 };
@@ -38,6 +41,9 @@ export const GET_DELETED_WORDS_STAT = (userId: string) => {
 };
 export const GET_HARD_WORDS_STAT = (userId: string) => {
   return `users/${userId}/wordsStat/hardWordsStat`;
+};
+export const GET_STUDIED_WORDS_STAT = (userId: string) => {
+  return `users/${userId}/wordsStat/studiedWordsStat`;
 };
 export const GET_WORDS_API = 'words';
 export const CREATE_USER_WORD_API = (userId: string, wordId: string) => {

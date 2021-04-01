@@ -82,9 +82,8 @@ export default function SectionPage(): JSX.Element {
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(bgColor) }}
       >
-        {words.map((word) => (
-          <WordCard key={word.id} data={word} />
-        ))}
+        {!dataIsBeingLoaded &&
+          words.map((word) => <WordCard key={word.id} data={word} />)}
       </div>
     </>
   );
