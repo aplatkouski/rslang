@@ -20,6 +20,7 @@ import {
 import * as t from 'types';
 import Dictionary from 'features/dictionary/Dictionary';
 import { getCurrUser } from 'features/user/userSlice';
+import { DICTIONARY_SECTOR_COLOR } from '../../constants';
 
 import './SectorsPage.scss';
 
@@ -27,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
+  sectorTitle: {
+    fontSize: theme.typography.pxToRem(17),
+    fontWeight: theme.typography.fontWeightBold,
   },
   paper: {
     padding: theme.spacing(2),
@@ -60,7 +61,7 @@ export default function SectionsPage(): JSX.Element {
               expandIcon={<ExpandMoreIcon />}
               id="panel1a-header"
             >
-              <Typography className="sector-title">{sector.title}</Typography>
+              <Typography className={classes.sectorTitle}>{sector.title}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               {!sectorsReady ? (
@@ -95,18 +96,20 @@ export default function SectionsPage(): JSX.Element {
             </AccordionDetails>
           </Accordion>
         ))}
-      <Accordion key="dic" style={{ backgroundColor: 'white' }}>
-        <AccordionSummary
-          aria-controls="panel1a-content"
-          expandIcon={<ExpandMoreIcon />}
-          id="panel1a-header"
-        >
-          <Typography className="sector-title">Словарь</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Dictionary />
-        </AccordionDetails>
-      </Accordion>
+      {currentUser && currentUser.token && (
+        <Accordion key="dic" style={{ backgroundColor: `${DICTIONARY_SECTOR_COLOR}` }}>
+          <AccordionSummary
+            aria-controls="panel1a-content"
+            expandIcon={<ExpandMoreIcon />}
+            id="panel1a-header"
+          >
+            <Typography className={classes.sectorTitle}>Словарь</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Dictionary />
+          </AccordionDetails>
+        </Accordion>
+      )}
     </div>
   );
 }

@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+  navBar: {
+    backgroundColor: '#5A38FD',
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -86,7 +89,7 @@ export default function Navbar(): JSX.Element {
       />
       <RegistrationForm isOpen={openRegisterModal} onClose={handleCloseRegisterModal} />
 
-      <AppBar position="static">
+      <AppBar className={classes.navBar} position="static">
         <Toolbar>
           <IconButton
             aria-label="menu"

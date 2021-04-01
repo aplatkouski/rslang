@@ -17,14 +17,19 @@ import {
   selectHardSections,
   selectSectorsReadyState,
 } from 'features/sectors/sectorsSlice';
+import {
+  STUDIED_WORDS_SECTOR_COLOR,
+  HARD_WORDS_SECTOR_COLOR,
+  DELETED_WORDS_SECTOR_COLOR,
+} from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
+  sectorTitle: {
+    fontSize: theme.typography.pxToRem(17),
+    fontWeight: theme.typography.fontWeightBold,
   },
   paper: {
     padding: theme.spacing(2),
@@ -41,13 +46,13 @@ export default function Dictionary(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <Accordion>
+      <Accordion style={{ backgroundColor: `${STUDIED_WORDS_SECTOR_COLOR}` }}>
         <AccordionSummary
           aria-controls="panel1a-content"
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className="sector-title">Изучаемые слова</Typography>
+          <Typography className={classes.sectorTitle}>Изучаемые слова</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <NavLink to="/">
@@ -55,13 +60,13 @@ export default function Dictionary(): JSX.Element {
           </NavLink>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion style={{ backgroundColor: `${HARD_WORDS_SECTOR_COLOR}` }}>
         <AccordionSummary
           aria-controls="panel1a-content"
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className="sector-title">Сложные слова</Typography>
+          <Typography className={classes.sectorTitle}>Сложные слова</Typography>
         </AccordionSummary>
         <AccordionDetails>
           {!sectorsReady ? (
@@ -94,13 +99,13 @@ export default function Dictionary(): JSX.Element {
           )}
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion style={{ backgroundColor: `${DELETED_WORDS_SECTOR_COLOR}` }}>
         <AccordionSummary
           aria-controls="panel1a-content"
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className="sector-title">Удаленные слова</Typography>
+          <Typography className={classes.sectorTitle}>Удаленные слова</Typography>
         </AccordionSummary>
         <AccordionDetails>
           {!sectorsReady ? (
