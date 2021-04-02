@@ -153,3 +153,8 @@ export interface Contributor {
   name: string;
   gitHubLink: string;
 }
+
+export interface Contributor {
+  name: string;
+  gitHubLink: string;
+}
