@@ -21,8 +21,8 @@ const styles = (theme: Theme) =>
         color: theme.palette.text.secondary,
       },
       '& div': {
-        width: '100px',
-        height: '100px',
+        width: '200px',
+        height: '200px',
       },
     },
     avatar: {
