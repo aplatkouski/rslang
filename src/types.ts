@@ -144,3 +144,8 @@ export interface MiniGameStats {
   correctAnswers: number;
   series: number | string;
 }
+
+export interface Contributor {
+  name: string;
+  gitHubLink: string;
+}

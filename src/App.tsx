@@ -10,6 +10,7 @@ import { logInViaLocalStorage } from 'features/user/userSlice';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
+import Footer from 'app/footer/Footer';
 import StatisticPage from './app/statisticPage/StatisticPage';
 import TeamPage from './app/TeamPage/TeamPage';
 import { ROUTES } from './constants';
@@ -43,6 +44,7 @@ const App = (): JSX.Element => {
         <Route component={StatisticPage} exact path={ROUTES.statistic} />
         <Redirect to="/" />
       </Switch>
+      <Footer />
     </BrowserRouter>
   );
 };
