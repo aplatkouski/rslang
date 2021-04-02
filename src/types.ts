@@ -4,6 +4,11 @@ export type SectionPageParams = {
   color?: string;
 };
 
+export interface ISpecialSectionPageParams extends SectionPageParams {
+  indicator?: string;
+  dbRefPage?: string;
+}
+
 export interface SectorPage {
   sectorNum: number;
   pageNum: number;
@@ -28,6 +33,30 @@ export interface Sector {
 }
 
 export type SectorsState = Array<Sector>;
+
+export interface ISpecialSection {
+  group: number;
+  page: number;
+  dbRefPage: number;
+  url: string;
+}
+
+export type SpecialSections = Array<ISpecialSection>;
+
+export interface IStudiedWordsSection extends SectorPage {
+  count: number;
+  url: string;
+}
+
+export type StudiedWordsSections = Array<IStudiedWordsSection>;
+
+export interface ISectorsInfo {
+  sectors: SectorsState;
+  sectorsReady: boolean;
+  deletedSections: SpecialSections;
+  hardSections: SpecialSections;
+  studiedWordsSections: StudiedWordsSections;
+}
 
 export interface Settings {
   translation: boolean;
@@ -72,6 +101,10 @@ export interface IDefiniteWordOptions {
   options: IWordOptions;
 }
 
+export interface IAdditionalUserWordOptions {
+  optional: IWordOptions;
+}
+
 export interface IWord {
   id: string;
   group: number;
@@ -88,6 +121,7 @@ export interface IWord {
   textMeaningTranslate: string;
   textExampleTranslate: string;
   optional: IWordOptions;
+  userWord?: IAdditionalUserWordOptions;
 }
 
 export type WordsList = Array<IWord>;
@@ -101,4 +135,12 @@ export interface IWords {
 export interface IWordDifficulty {
   wordId: string;
   difficulty: string;
+}
+
+export interface MiniGameStats {
+  name: string;
+  words: number;
+  answers: number;
+  correctAnswers: number;
+  series: number | string;
 }
