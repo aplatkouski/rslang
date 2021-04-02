@@ -12,6 +12,7 @@ import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDelete
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import StatisticPage from './app/statisticPage/StatisticPage';
 import TeamPage from './app/TeamPage/TeamPage';
+import { ROUTES } from './constants';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const App = (): JSX.Element => {
           exact
           path="/studiedSection/:sector/:page/:color"
         />
-        <Route component={StatisticPage} exact path="/statistic" />
+        <Route component={StatisticPage} exact path={ROUTES.statistic} />
         <Redirect to="/" />
       </Switch>
     </BrowserRouter>

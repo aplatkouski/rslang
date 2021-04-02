@@ -11,14 +11,14 @@ import {
 import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 
-import { initialStats } from '../../constants';
+import { initialStats, STATISTIC_KEY } from '../../constants';
 import * as t from '../../types';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
 
 const StatisticPage = ({ classes }: Props): JSX.Element => {
-  const data = localStorage.getItem('stats');
+  const data = localStorage.getItem(STATISTIC_KEY);
   const stats: Array<t.MiniGameStats> = data ? JSON.parse(data) : initialStats;
   const totalStats = {
     name: 'Всего',

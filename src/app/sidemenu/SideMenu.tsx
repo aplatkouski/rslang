@@ -12,6 +12,8 @@ import { LocalLibrary, Games, EventNote, People } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom';
 
+import { ROUTES } from '../../constants';
+
 export type SideMenuProps = {
   open: boolean;
   handleCloseSideMenu: () => void;
@@ -29,7 +31,7 @@ const useStyles = makeStyles({
 const upperMenu = [
   { key: 1, title: 'Учебник', url: '/sectors', icon: <LocalLibrary /> },
   { key: 2, title: 'Мини-игры', url: '', icon: <Games /> },
-  { key: 3, title: 'Статистика', url: '/statistic', icon: <EventNote /> },
+  { key: 3, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];
 
 const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];

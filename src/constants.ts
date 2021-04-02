@@ -74,11 +74,21 @@ export const ROUTES = {
   sector: '/sectors',
   sections: '/section/:sector/:page/:color',
   team: '/about-team',
+  statistic: '/statistic',
 };
 
 export const SPECIAL_WORD_INDICATOR = {
   DEL: 'del',
   HARD: 'hard',
+};
+
+export const STATISTIC_KEY = 'stats';
+
+export const GAMES = {
+  sprint: 'Спринт',
+  audioCall: 'Аудиовызов',
+  savanna: 'Саванна',
+  ownGame: 'Своя игра',
 };
 
 const defaultStats = {
@@ -90,18 +100,18 @@ const defaultStats = {
 export const initialStats = [
   {
     ...defaultStats,
-    name: 'Спринт',
+    name: GAMES.sprint,
   },
   {
     ...defaultStats,
-    name: 'Аудиовызов',
+    name: GAMES.audioCall,
   },
   {
     ...defaultStats,
-    name: 'Саванна',
+    name: GAMES.savanna,
   },
   {
     ...defaultStats,
-    name: 'Своя игра',
+    name: GAMES.ownGame,
   },
 ];
