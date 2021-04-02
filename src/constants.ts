@@ -80,3 +80,5 @@ export const SPECIAL_WORD_INDICATOR = {
   DEL: 'del',
   HARD: 'hard',
 };
+
+export const GAME_PART_URL_PATH = 'game';

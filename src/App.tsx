@@ -9,6 +9,7 @@ import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { useDispatch } from 'react-redux';
 import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
+import Footer from 'app/footer/Footer';
 import TeamPage from './app/TeamPage/TeamPage';
 
 const App = (): JSX.Element => {
@@ -39,6 +40,7 @@ const App = (): JSX.Element => {
         />
         <Redirect to="/" />
       </Switch>
+      <Footer />
     </BrowserRouter>
   );
 };

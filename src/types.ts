@@ -142,3 +142,8 @@ export interface ISectionsDeletedWords {
   page: number;
   deletedWordsCount: number;
 }
+
+export interface Contributor {
+  name: string;
+  gitHubLink: string;
+}
