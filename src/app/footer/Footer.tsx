@@ -47,7 +47,7 @@ const Footer = ({ classes }: Props): JSX.Element => {
         <Grid className={classes.item} item md sm={12}>
           <Link
             color="inherit"
-            href="https://rs.school/js/"
+            href="https://rs.school/react/"
             rel="noopener"
             target="_blank"
             underline="none"
