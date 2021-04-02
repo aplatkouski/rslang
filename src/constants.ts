@@ -115,3 +115,4 @@ export const initialStats = [
     name: GAMES.ownGame,
   },
 ];
+export const GAME_PART_URL_PATH = 'game';
