@@ -21,7 +21,7 @@ const AppIntro = (): JSX.Element => (
       title="RSLang source"
       underline="none"
     >
-      RSLang
+      RS Lang
     </Link>
     , 2021.
   </Typography>
