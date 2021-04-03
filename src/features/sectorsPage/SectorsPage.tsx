@@ -23,6 +23,7 @@ import { getCurrUser } from 'features/user/userSlice';
 import { DICTIONARY_SECTOR_COLOR } from '../../constants';
 
 import './SectorsPage.scss';
+import 'styles/animate.min.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   sectorTitle: {
     fontSize: theme.typography.pxToRem(17),
     fontWeight: theme.typography.fontWeightBold,
+    '&:hover': {
+      fontSize: theme.typography.pxToRem(20),
+    },
   },
   paper: {
     padding: theme.spacing(2),
@@ -61,7 +65,11 @@ export default function SectionsPage(): JSX.Element {
               expandIcon={<ExpandMoreIcon />}
               id="panel1a-header"
             >
-              <Typography className={classes.sectorTitle}>{sector.title}</Typography>
+              <Typography
+                className={`${classes.sectorTitle} animate__animated animate__backInRight`}
+              >
+                {sector.title}
+              </Typography>
             </AccordionSummary>
             <AccordionDetails>
               {!sectorsReady ? (
@@ -103,7 +111,11 @@ export default function SectionsPage(): JSX.Element {
             expandIcon={<ExpandMoreIcon />}
             id="panel1a-header"
           >
-            <Typography className={classes.sectorTitle}>Словарь</Typography>
+            <Typography
+              className={`${classes.sectorTitle} animate__animated animate__backInRight`}
+            >
+              Словарь
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Dictionary />
