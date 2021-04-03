@@ -1,45 +1,68 @@
+@import "../../styles/shadowedBlock";
+
 .page-title {
   margin: 5px;
-  font-weight: 700;
 }
 
-.box {
-  position: relative;
-  z-index: 1;
-  width: 120px;
-  height: 70px;
-  margin: 7px;
-  border-radius: 10px;
+// ------------------------------
+
+.sector-title {
+  @include block(
+    center,
+    center,
+    10px,
+    #313133,
+    700,
+    1.2rem,
+  );
 }
 
-.schatten {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: #777;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow:
-    0  25px 10px -10px rgba(0, 0, 0, .3),
-    0   1px  4px       rgba(0, 0, 0, .3),
-    0 -30px 40px       rgba(0, 0, 0, .1) inset;
+.sector-title:hover {
+  color: #3f51b5;
+  border: 1px solid #3f51b5;
+  box-shadow: 0 0 60px #3f51b5;
 }
 
-.schatten::before {
+// ------------------------------
+
+.page-wrap {
+  @include block-wrap(120px, 70px, 10px, 10px);
+}
+
+.page-btn {
+  @include block(
+    center,
+    center,
+    10px,
+    #313133,
+    500,
+    1rem,
+  );
+  background-color: #fff;
+}
+
+.page-btn::before {
   position: absolute;
-  z-index: -2;
+  top: 50%;
+  left: 50%;
+  min-width: calc(120px + 12px);
+  min-height: calc(70px + 12px);
   content: "";
-  border-radius: 100px / 20px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, .6);
+  border: 1px solid #3f51b5;
+  border-radius: 10px;
+  box-shadow: 0 0 60px #3f51b5;
+  opacity: .2;
+  transition: all .3s ease-in-out 0s;
+  transform: translate(-50%, -50%);
 }
 
-.schatten:hover {
-  top: 10px;
-  box-shadow:
-    0  10px 10px -10px rgba(0, 0, 0, .6),
-    0   1px  4px       rgba(0, 0, 0, .3),
-    0   0   40px       rgba(0, 0, 0, .1) inset;
+.page-wrap:hover,
+.page-btn:hover {
+  color: #3f51b5;
+  transform: translateY(-5px);
+}
+
+.page-wrap::before,
+.page-btn:hover::before {
+  opacity: 1;
 }

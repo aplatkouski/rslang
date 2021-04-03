@@ -26,6 +26,12 @@ const useStyles = makeStyles({
   fullList: {
     width: 'auto',
   },
+  drawer: {
+    backgroundColor: '#5A38FD',
+  },
+  menuTitle: {
+    color: '#fff',
+  },
 });
 
 const upperMenu = [
@@ -52,8 +58,8 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
             <NavLink to={menuObj.url}>
               <ListItemIcon>{menuObj.icon}</ListItemIcon>
             </NavLink>
-            <NavLink to={menuObj.url}>
-              <ListItemText primary={menuObj.title} />
+            <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
+              <ListItemText className={classes.menuTitle} primary={menuObj.title} />
             </NavLink>
           </ListItem>
         ))}
@@ -65,8 +71,8 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
             <NavLink to={menuObj.url}>
               <ListItemIcon>{menuObj.icon}</ListItemIcon>
             </NavLink>
-            <NavLink to={menuObj.url}>
-              <ListItemText primary={menuObj.title} />
+            <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
+              <ListItemText className={classes.menuTitle} primary={menuObj.title} />
             </NavLink>
           </ListItem>
         ))}
@@ -75,7 +81,12 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
   );
 
   return (
-    <Drawer anchor="left" onClose={handleCloseSideMenu} open={open}>
+    <Drawer
+      anchor="left"
+      classes={{ paper: classes.drawer }}
+      onClose={handleCloseSideMenu}
+      open={open}
+    >
       {list()}
     </Drawer>
   );

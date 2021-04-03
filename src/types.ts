@@ -126,10 +126,14 @@ export interface IWord {
 
 export type WordsList = Array<IWord>;
 
-export interface IWords {
-  data: WordsList;
+export interface IWordsStatus {
   loading: boolean;
+  loaded: boolean;
   loadError?: string;
+}
+
+export interface IWords extends IWordsStatus {
+  data: WordsList;
 }
 
 export interface IWordDifficulty {

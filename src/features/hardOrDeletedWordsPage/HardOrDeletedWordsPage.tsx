@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, NavLink, useHistory } from 'react-router-dom';
 import * as t from 'types';
 import {
@@ -57,7 +57,11 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
   );
   const words = useSelector(getWords);
   const history = useHistory();
-  const dataIsBeingLoaded = useSelector(getWordsLoadingStatus);
+  const dataLoadStatus: t.IWordsStatus = useSelector(getWordsLoadingStatus);
+  // loadProcessLaunched нужен для того, чтобы в коде, где рендериться компонент, определить,
+  // побывали ли мы до этого в useEffect. Если не делать этой проверки, то рендеринг не дожидается
+  // загрузки данных в useEffect и срабатывает не так, как хочется
+  const [loadProcessLaunched, setLoadProcessLaunched] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -69,6 +73,7 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
         String(indicator)
       )
     );
+    setLoadProcessLaunched(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.token, dbRefPage, indicator, sector]);
 
@@ -83,16 +88,25 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
     history.push('/sectors');
   };
 
-  if (dataIsBeingLoaded) {
+  // Идет загрузка слов ...
+  if (!loadProcessLaunched || dataLoadStatus.loading) {
     return <CircularProgress />;
   }
 
-  // Проверка "!words || !words.length" позволяет красиво выйти из ситуации, когда
-  // пользователь выходит/входит в систему, находясь на этой странице, да еще и под
-  // несколькими аккаунтами
-  if (!words || !words.length) {
-    // eslint-disable-next-line react/jsx-handler-names
-    return <AttentionButton btnTitle="Перейти к учебнику" handleClick={handleGoToBook} />;
+  // Ошибка загрузки слов
+  if (dataLoadStatus.loadError) {
+    return (
+      <div>
+        <p className="err-mess">{dataLoadStatus.loadError}</p>
+        {/* eslint-disable-next-line react/jsx-handler-names */}
+        <AttentionButton btnTitle="Перейти к учебнику" handleClick={handleGoToBook} />
+      </div>
+    );
+  }
+
+  // Слова загружены, но их массив оказался пуст
+  if (dataLoadStatus.loaded && (!words || !words.length)) {
+    handleGoToBook();
   }
 
   return (

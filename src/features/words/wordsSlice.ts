@@ -12,10 +12,12 @@ import {
   SPECIAL_WORD_INDICATOR,
   WORDS_PER_PAGE,
 } from '../../constants';
+import * as t from '../../types';
 
 const initialState: IWords = {
   data: [],
-  loading: false,
+  loading: false, // true в момент начала загрузки; false по окончании загрузки
+  loaded: false, // false с момента начала загрузки; true по окончании загрузки, вне зависимости от ее успеха
   loadError: undefined,
 };
 
@@ -24,11 +26,14 @@ export const wordsSlice = createSlice({
   initialState,
   reducers: {
     setStartWordsLoading: (state) => {
+      state.data = [];
       state.loading = true;
+      state.loaded = false;
       state.loadError = undefined;
     },
-    setWordsLoadingStatus: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setEndWordsLoading: (state) => {
+      state.loading = false;
+      state.loaded = true;
     },
     setWordsLoadError: (state, action: PayloadAction<string | undefined>) => {
       state.loadError = action.payload;
@@ -100,9 +105,15 @@ export const loadWords = (
         dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
       } else {
         words = (await response.json()) as WordsList;
+        dispatch(setWords(words));
       }
     } else {
-      const response = await getUserWordsPromise(userId, userToken, sectorNum, pageNum);
+      const response = await getUserWordsPromise(
+        String(userId),
+        String(userToken),
+        sectorNum,
+        pageNum
+      );
 
       if (response.status !== SERVER_OK_STATUS) {
         dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
@@ -114,15 +125,14 @@ export const loadWords = (
             delete word.userWord;
           }
         });
+        dispatch(setWords(words));
       }
     }
-
-    dispatch(setWords(words));
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
   }
 
-  dispatch(setWordsLoadingStatus(false));
+  dispatch(setEndWordsLoading());
 };
 
 function getUserStudiedWordsPromise(
@@ -175,14 +185,13 @@ export const loadStudiedWords = (
           delete word.userWord;
         }
       });
+      dispatch(setWords(words));
     }
-
-    dispatch(setWords(words));
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
   }
 
-  dispatch(setWordsLoadingStatus(false));
+  dispatch(setEndWordsLoading());
 };
 
 function getUserSpecialWordsPromise(
@@ -253,19 +262,19 @@ export const getUserSpecialWords = (
           }
         });
       }
+      dispatch(setWords(words));
     }
-    dispatch(setWords(words));
   } catch (e) {
     dispatch(setWordsLoadError(e.message));
   }
 
-  dispatch(setWordsLoadingStatus(false));
+  dispatch(setEndWordsLoading());
 };
 
 export const {
   setStartWordsLoading,
   setWords,
-  setWordsLoadingStatus,
+  setEndWordsLoading,
   setWordsLoadError,
   setWordOptions,
 } = wordsSlice.actions;
@@ -274,6 +283,24 @@ export const getWords = (state: RootState) => state.words.data;
 
 export const getWordsLoadErrMessage = (state: RootState) => state.words.loadError;
 
-export const getWordsLoadingStatus = (state: RootState) => state.words.loading;
+export const getWordsLoadingStatus = (state: RootState): t.IWordsStatus => {
+  return {
+    loading: state.words.loading,
+    loaded: state.words.loaded,
+    loadError: state.words.loadError,
+  };
+};
+
+export const areAllWordsDeleted = (state: RootState): boolean => {
+  if (!state.words.data.length) {
+    return false;
+  }
+  for (let i = 0; i < state.words.data.length; i += 1) {
+    if (!state.words.data[i].optional || !state.words.data[i].optional.deleted) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export default wordsSlice.reducer;
