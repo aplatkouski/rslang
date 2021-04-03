@@ -6,7 +6,6 @@ import {
   AccordionSummary,
   Box,
   CircularProgress,
-  ListItemText,
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -24,6 +23,8 @@ import {
   DELETED_WORDS_SECTOR_COLOR,
 } from '../../constants';
 
+import './Dictionary.scss';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -31,15 +32,6 @@ const useStyles = makeStyles((theme) => ({
   sectorTitle: {
     fontSize: theme.typography.pxToRem(17),
     fontWeight: theme.typography.fontWeightBold,
-    textAlign: 'center',
-    '&:hover': {
-      fontSize: theme.typography.pxToRem(20),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   },
 }));
 
@@ -58,7 +50,9 @@ export default function Dictionary(): JSX.Element {
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className={classes.sectorTitle}>Изучаемые слова</Typography>
+          <Typography className={`${classes.sectorTitle} dictionary-section-title`}>
+            Изучаемые слова
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           {!sectorsReady ? (
@@ -73,17 +67,14 @@ export default function Dictionary(): JSX.Element {
             >
               {studiedSections && studiedSections.length ? (
                 studiedSections.map((page) => (
-                  <div key={`${page.sectorNum}${page.pageNum}`} className="box">
-                    <div className="schatten">
-                      <NavLink to={page.url}>
-                        <ListItemText
-                          className={classes.sectorTitle}
-                          primary={`Раздел ${page.sectorNum + 1}, страница ${
-                            page.pageNum + 1
-                          }, слов: ${page.count}`}
-                        />
-                      </NavLink>
-                    </div>
+                  <div key={`${page.sectorNum}${page.pageNum}`} className="page-wrap">
+                    <NavLink style={{ textDecoration: 'none' }} to={page.url}>
+                      <button className="page-btn" type="button">
+                        {`Раздел ${page.sectorNum + 1}, страница ${
+                          page.pageNum + 1
+                        }, слов: ${page.count}`}
+                      </button>
+                    </NavLink>
                   </div>
                 ))
               ) : (
@@ -99,7 +90,9 @@ export default function Dictionary(): JSX.Element {
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className={classes.sectorTitle}>Сложные слова</Typography>
+          <Typography className={`${classes.sectorTitle} dictionary-section-title`}>
+            Сложные слова
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           {!sectorsReady ? (
@@ -114,15 +107,12 @@ export default function Dictionary(): JSX.Element {
             >
               {hardSections && hardSections.length ? (
                 hardSections.map((page) => (
-                  <div key={`${page.group}`} className="box">
-                    <div className="schatten">
-                      <NavLink to={page.url}>
-                        <ListItemText
-                          className="page-title"
-                          primary={`Страница ${page.page + 1}`}
-                        />
-                      </NavLink>
-                    </div>
+                  <div key={`${page.group}`} className="page-wrap">
+                    <NavLink style={{ textDecoration: 'none' }} to={page.url}>
+                      <button className="page-btn" type="button">
+                        {`Страница ${page.page + 1}`}
+                      </button>
+                    </NavLink>
                   </div>
                 ))
               ) : (
@@ -138,7 +128,9 @@ export default function Dictionary(): JSX.Element {
           expandIcon={<ExpandMoreIcon />}
           id="panel1a-header"
         >
-          <Typography className={classes.sectorTitle}>Удаленные слова</Typography>
+          <Typography className={`${classes.sectorTitle} dictionary-section-title`}>
+            Удаленные слова
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           {!sectorsReady ? (
@@ -153,15 +145,12 @@ export default function Dictionary(): JSX.Element {
             >
               {deletedSections && deletedSections.length ? (
                 deletedSections.map((page) => (
-                  <div key={`${page.group}`} className="box">
-                    <div className="schatten">
-                      <NavLink to={page.url}>
-                        <ListItemText
-                          className="page-title"
-                          primary={`Страница ${page.page + 1}`}
-                        />
-                      </NavLink>
-                    </div>
+                  <div key={`${page.group}`} className="page-wrap">
+                    <NavLink style={{ textDecoration: 'none' }} to={page.url}>
+                      <button className="page-btn" type="button">
+                        {`Страница ${page.page + 1}`}
+                      </button>
+                    </NavLink>
                   </div>
                 ))
               ) : (

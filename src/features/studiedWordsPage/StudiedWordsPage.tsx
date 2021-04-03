@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import * as t from 'types';
 import {
@@ -31,7 +31,11 @@ export default function StudiedWordsPage(): JSX.Element {
   const currentUser: t.IUser = useSelector(getCurrUser);
   const words = useSelector(getWords);
   const history = useHistory();
-  const dataIsBeingLoaded = useSelector(getWordsLoadingStatus);
+  const dataLoadStatus: t.IWordsStatus = useSelector(getWordsLoadingStatus);
+  // loadProcessLaunched нужен для того, чтобы в коде, где рендериться компонент, определить,
+  // побывали ли мы до этого в useEffect. Если не делать этой проверки, то рендеринг не дожидается
+  // загрузки данных в useEffect и срабатывает не так, как хочется
+  const [loadProcessLaunched, setLoadProcessLaunched] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -42,6 +46,7 @@ export default function StudiedWordsPage(): JSX.Element {
         currentUser.token
       )
     );
+    setLoadProcessLaunched(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.token, sector, page]);
 
@@ -49,8 +54,25 @@ export default function StudiedWordsPage(): JSX.Element {
     history.push('/sectors');
   };
 
-  if (dataIsBeingLoaded) {
+  // Идет загрузка слов ...
+  if (!loadProcessLaunched || dataLoadStatus.loading) {
     return <CircularProgress />;
+  }
+
+  // Ошибка загрузки слов
+  if (dataLoadStatus.loadError) {
+    return (
+      <div>
+        <p className="err-mess">{dataLoadStatus.loadError}</p>
+        {/* eslint-disable-next-line react/jsx-handler-names */}
+        <AttentionButton btnTitle="Перейти к учебнику" handleClick={handleGoToBook} />
+      </div>
+    );
+  }
+
+  // Слова загружены, но их массив оказался пуст
+  if (dataLoadStatus.loaded && (!words || !words.length)) {
+    handleGoToBook();
   }
 
   // Проверка "!words || !words.length" позволяет красиво выйти из ситуации, когда

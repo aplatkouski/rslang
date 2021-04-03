@@ -32,14 +32,6 @@ const useStyles = makeStyles((theme) => ({
   sectorTitle: {
     fontSize: theme.typography.pxToRem(17),
     fontWeight: theme.typography.fontWeightBold,
-    '&:hover': {
-      fontSize: theme.typography.pxToRem(20),
-    },
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   },
 }));
 
@@ -66,7 +58,7 @@ export default function SectionsPage(): JSX.Element {
               id="panel1a-header"
             >
               <Typography
-                className={`${classes.sectorTitle} animate__animated animate__backInRight`}
+                className={`${classes.sectorTitle} sector-title animate__animated animate__backInRight`}
               >
                 {sector.title}
               </Typography>
@@ -84,16 +76,16 @@ export default function SectionsPage(): JSX.Element {
                 >
                   {sector.pages && sector.pages.length ? (
                     sector.pages.map((page) => (
-                      <div key={page.key} className="box">
-                        <div className="schatten">
-                          {page.show ? (
-                            <NavLink to={page.url}>
-                              <ListItemText className="page-title" primary={page.title} />
-                            </NavLink>
-                          ) : (
-                            <ListItemText className="page-title" primary={page.title} />
-                          )}
-                        </div>
+                      <div key={page.key} className="page-wrap">
+                        {page.show ? (
+                          <NavLink style={{ textDecoration: 'none' }} to={page.url}>
+                            <button className="page-btn" type="button">
+                              {page.title}
+                            </button>
+                          </NavLink>
+                        ) : (
+                          <ListItemText className="page-title" primary={page.title} />
+                        )}
                       </div>
                     ))
                   ) : (
@@ -112,7 +104,7 @@ export default function SectionsPage(): JSX.Element {
             id="panel1a-header"
           >
             <Typography
-              className={`${classes.sectorTitle} animate__animated animate__backInRight`}
+              className={`${classes.sectorTitle} sector-title animate__animated animate__backInRight`}
             >
               Словарь
             </Typography>
