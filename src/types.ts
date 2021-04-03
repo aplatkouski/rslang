@@ -153,3 +153,10 @@ export interface Contributor {
   name: string;
   gitHubLink: string;
 }
+
+export interface IGames {
+  id: string;
+  name: string;
+  num: number;
+}
+
