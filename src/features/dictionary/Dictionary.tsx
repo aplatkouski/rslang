@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.pxToRem(17),
     fontWeight: theme.typography.fontWeightBold,
     textAlign: 'center',
+    '&:hover': {
+      fontSize: theme.typography.pxToRem(20),
+    },
   },
   paper: {
     padding: theme.spacing(2),
