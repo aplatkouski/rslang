@@ -3,6 +3,9 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const styles = (theme: Theme) =>
   createStyles({
+    outerBox: {
+      margin: theme.spacing(1),
+    },
     root: {
       display: 'flex',
       flexDirection: 'column',

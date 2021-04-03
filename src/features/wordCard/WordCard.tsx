@@ -1,5 +1,6 @@
 import {
   Button,
+  Box,
   Card,
   CardActions,
   CardContent,
@@ -93,79 +94,86 @@ const WordCard = ({ classes, data: word }: Props): JSX.Element => {
   };
 
   return (
-    <Card
-      className={isComplex ? clsx(classes.root, classes.root__complex) : classes.root}
-    >
-      <CardMedia
-        alt={`${word.word}`}
-        className={classes.image}
-        component="img"
-        image={`${api}/${word.image}`}
-        title={`${word.word}`}
-      />
+    <Box boxShadow={10} className={classes.outerBox}>
+      <Card
+        className={isComplex ? clsx(classes.root, classes.root__complex) : classes.root}
+        style={{ height: '100%', margin: 0 }}
+      >
+        <CardMedia
+          alt={`${word.word}`}
+          className={classes.image}
+          component="img"
+          image={`${api}/${word.image}`}
+          title={`${word.word}`}
+        />
 
-      <CardContent>
-        <Typography gutterBottom>
-          <IconButton
-            aria-label="play/pause"
-            className={classes.audioButton}
-            onClick={handleAudio}
-          >
-            {isAudioPlay ? (
-              <StopIcon className={classes.audioIcon} />
-            ) : (
-              <PlayArrowIcon className={classes.audioIcon} />
-            )}
-          </IconButton>
-          {`${word.word} - ${word.transcription}`}
-          {translation && ` - ${word.wordTranslate}`}
-        </Typography>
-        <Typography>
-          <FormattedText text={word.textExample} />
-        </Typography>
-        {translation && <Typography gutterBottom>{word.textExampleTranslate}</Typography>}
-        <Typography>
-          <FormattedText text={word.textMeaning} />
-        </Typography>
-        {translation && <Typography gutterBottom>{word.textMeaningTranslate}</Typography>}
-        <Divider />
-        <Typography>Статистика: нет данных пока...</Typography>
-      </CardContent>
+        <CardContent>
+          <Typography gutterBottom>
+            <IconButton
+              aria-label="play/pause"
+              className={classes.audioButton}
+              onClick={handleAudio}
+            >
+              {isAudioPlay ? (
+                <StopIcon className={classes.audioIcon} />
+              ) : (
+                <PlayArrowIcon className={classes.audioIcon} />
+              )}
+            </IconButton>
+            {`${word.word} - ${word.transcription}`}
+            {translation && ` - ${word.wordTranslate}`}
+          </Typography>
+          <Typography>
+            <FormattedText text={word.textExample} />
+          </Typography>
+          {translation && (
+            <Typography gutterBottom>{word.textExampleTranslate}</Typography>
+          )}
+          <Typography>
+            <FormattedText text={word.textMeaning} />
+          </Typography>
+          {translation && (
+            <Typography gutterBottom>{word.textMeaningTranslate}</Typography>
+          )}
+          <Divider />
+          <Typography>Статистика: нет данных пока...</Typography>
+        </CardContent>
 
-      <CardActions className={classes.buttonsGroup}>
-        {buttons && isAuth && isSectionRoute && (
-          <>
+        <CardActions className={classes.buttonsGroup}>
+          {buttons && isAuth && isSectionRoute && (
+            <>
+              <Button
+                className={classes.button}
+                color="secondary"
+                onClick={handleDelete}
+                variant="outlined"
+              >
+                добавить в &quot;удаленные&quot;
+              </Button>
+              <Button
+                className={classes.button}
+                color="secondary"
+                onClick={handleComplex}
+                variant="outlined"
+              >
+                {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
+              </Button>
+            </>
+          )}
+
+          {!isSectionRoute && (
             <Button
               className={classes.button}
               color="secondary"
-              onClick={handleDelete}
+              onClick={handleRestore}
               variant="outlined"
             >
-              добавить в &quot;удаленные&quot;
+              восстановить
             </Button>
-            <Button
-              className={classes.button}
-              color="secondary"
-              onClick={handleComplex}
-              variant="outlined"
-            >
-              {isComplex ? 'удалить из "сложные"' : 'добавить в "сложные"'}
-            </Button>
-          </>
-        )}
-
-        {!isSectionRoute && (
-          <Button
-            className={classes.button}
-            color="secondary"
-            onClick={handleRestore}
-            variant="outlined"
-          >
-            восстановить
-          </Button>
-        )}
-      </CardActions>
-    </Card>
+          )}
+        </CardActions>
+      </Card>
+    </Box>
   );
 };
 
