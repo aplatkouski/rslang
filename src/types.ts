@@ -160,3 +160,26 @@ export interface IGames {
   num: number;
 }
 
+export interface IGameStatistic {
+  id: string;
+  gameId: string;
+  bestSeries: number;
+  date: string;
+}
+
+export interface ICredentials {
+  userId: string;
+  userToken: string;
+}
+
+export interface ICreateThunkArguments<T> extends ICredentials {
+  obj: Omit<T, 'id'>;
+}
+
+export interface IRemoveThunkArguments extends ICredentials {
+  id: string;
+}
+
+export interface IUpdateThunkArguments<T> extends ICredentials {
+  obj: T;
+}
