@@ -8,10 +8,11 @@ import {
 } from 'features/words/wordsSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCurrUser } from 'features/user/userSlice';
-import { Typography, Button, CircularProgress } from '@material-ui/core';
+import { Typography, CircularProgress } from '@material-ui/core';
 import Settings from 'features/settings/Settings';
 import WordCard from 'features/wordCard/WordCard';
 import { makeStyles } from '@material-ui/core/styles';
+import AttentionButton from 'app/./attentionButton/AttentionButton';
 
 import './StudiedWordsPage.scss';
 
@@ -48,38 +49,42 @@ export default function StudiedWordsPage(): JSX.Element {
     history.push('/sectors');
   };
 
+  if (dataIsBeingLoaded) {
+    return <CircularProgress />;
+  }
+
   // Проверка "!words || !words.length" позволяет красиво выйти из ситуации, когда
   // пользователь выходит/входит в систему, находясь на этой странице, да еще и под
   // несколькими аккаунтами
-  return !words || !words.length ? (
-    <Button onClick={handleGoToBook}>Перейти к учебнику</Button>
-  ) : (
+  if (!words || !words.length) {
+    // eslint-disable-next-line react/jsx-handler-names
+    return <AttentionButton btnTitle="Перейти к учебнику" handleClick={handleGoToBook} />;
+  }
+
+  return (
     <>
-      {dataIsBeingLoaded ? (
-        <CircularProgress />
-      ) : (
-        <div
-          className="page-header"
-          style={{ backgroundColor: decodeURIComponent(String(color)) }}
-        >
-          <Typography className={classes.sectorTitle}>Изучаемые слова</Typography>
-          <Typography className={classes.sectorTitle}>
-            Раздел учебника {Number(sector) + 1}
-          </Typography>
-          <Typography className={classes.sectorTitle}>
-            Страница раздела {Number(page) + 1}
-          </Typography>
-          <div className="settings">
-            <Settings />
-          </div>
+      <div
+        className="page-header"
+        style={{ backgroundColor: decodeURIComponent(String(color)) }}
+      >
+        <Typography className={classes.sectorTitle}>Изучаемые слова</Typography>
+        <Typography className={classes.sectorTitle}>
+          Раздел учебника {Number(sector) + 1}
+        </Typography>
+        <Typography className={classes.sectorTitle}>
+          Страница раздела {Number(page) + 1}
+        </Typography>
+        <div className="settings">
+          <Settings />
         </div>
-      )}
+      </div>
       <div
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(String(color)) }}
       >
-        {!dataIsBeingLoaded &&
-          words.map((word) => <WordCard key={word.id} data={word} />)}
+        {words.map((word) => (
+          <WordCard key={word.id} data={word} />
+        ))}
       </div>
     </>
   );

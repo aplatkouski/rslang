@@ -13,10 +13,11 @@ import {
   selectAdjacentDeletedPages,
 } from 'features/sectors/sectorsSlice';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
-import { ListItemText, Typography, Button, CircularProgress } from '@material-ui/core';
+import { ListItemText, Typography, CircularProgress } from '@material-ui/core';
 import Settings from 'features/settings/Settings';
 import WordCard from 'features/wordCard/WordCard';
 import { makeStyles } from '@material-ui/core/styles';
+import AttentionButton from 'app/./attentionButton/AttentionButton';
 import { SPECIAL_WORD_INDICATOR } from '../../constants';
 
 import './HardOrDeletedWordsPage.scss';
@@ -82,59 +83,63 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
     history.push('/sectors');
   };
 
+  if (dataIsBeingLoaded) {
+    return <CircularProgress />;
+  }
+
   // Проверка "!words || !words.length" позволяет красиво выйти из ситуации, когда
   // пользователь выходит/входит в систему, находясь на этой странице, да еще и под
   // несколькими аккаунтами
-  return !words || !words.length ? (
-    <Button onClick={handleGoToBook}>Перейти к учебнику</Button>
-  ) : (
+  if (!words || !words.length) {
+    // eslint-disable-next-line react/jsx-handler-names
+    return <AttentionButton btnTitle="Перейти к учебнику" handleClick={handleGoToBook} />;
+  }
+
+  return (
     <>
-      {dataIsBeingLoaded ? (
-        <CircularProgress />
-      ) : (
-        <div
-          className="page-header"
-          style={{ backgroundColor: decodeURIComponent(String(color)) }}
-        >
-          <Typography className={classes.sectorTitle}>{pageTitle}</Typography>
-          <Typography className={classes.sectorTitle}>
-            Раздел учебника {Number(sector) + 1}
-          </Typography>
-          <Typography className={classes.sectorTitle}>
-            Страница раздела словаря {Number(page) + 1}
-          </Typography>
-          <div className="pages-navigation">
-            {adjacentPages && adjacentPages[0] && (
-              <NavLink className="nav-page" to={adjacentPages[0].url}>
-                <ArrowBackIos />
-                <ListItemText
-                  className="page-title"
-                  primary={`К странице ${adjacentPages[0].page + 1}`}
-                />
-              </NavLink>
-            )}
-            &nbsp; &nbsp; &nbsp;
-            {adjacentPages && adjacentPages[1] && (
-              <NavLink className="nav-page" to={adjacentPages[1].url}>
-                <ListItemText
-                  className="page-title"
-                  primary={`К странице ${adjacentPages[1].page + 1}`}
-                />
-                <ArrowForwardIos />
-              </NavLink>
-            )}
-          </div>
-          <div className="settings">
-            <Settings />
-          </div>
+      <div
+        className="page-header"
+        style={{ backgroundColor: decodeURIComponent(String(color)) }}
+      >
+        <Typography className={classes.sectorTitle}>{pageTitle}</Typography>
+        <Typography className={classes.sectorTitle}>
+          Раздел учебника {Number(sector) + 1}
+        </Typography>
+        <Typography className={classes.sectorTitle}>
+          Страница раздела словаря {Number(page) + 1}
+        </Typography>
+        <div className="pages-navigation">
+          {adjacentPages && adjacentPages[0] && (
+            <NavLink className="nav-page" to={adjacentPages[0].url}>
+              <ArrowBackIos />
+              <ListItemText
+                className="page-title"
+                primary={`К странице ${adjacentPages[0].page + 1}`}
+              />
+            </NavLink>
+          )}
+          &nbsp; &nbsp; &nbsp;
+          {adjacentPages && adjacentPages[1] && (
+            <NavLink className="nav-page" to={adjacentPages[1].url}>
+              <ListItemText
+                className="page-title"
+                primary={`К странице ${adjacentPages[1].page + 1}`}
+              />
+              <ArrowForwardIos />
+            </NavLink>
+          )}
         </div>
-      )}
+        <div className="settings">
+          <Settings />
+        </div>
+      </div>
       <div
         className="word-cards-area"
         style={{ backgroundColor: decodeURIComponent(String(color)) }}
       >
-        {!dataIsBeingLoaded &&
-          words.map((word) => <WordCard key={word.id} data={word} />)}
+        {words.map((word) => (
+          <WordCard key={word.id} data={word} />
+        ))}
       </div>
     </>
   );
