@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
-import Navbar from 'app/navbar/Navbar';
-import MainPage from 'app/mainPage/MainPage';
-import SectorsPage from 'features/sectorsPage/SectorsPage';
-import SectionPage from 'app/sectionPage/SectionPage';
-import { logInViaLocalStorage } from 'features/user/userSlice';
-import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
-import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
-import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import Footer from 'app/footer/Footer';
-import StatisticPage from './app/statisticPage/StatisticPage';
-import TeamPage from './app/TeamPage/TeamPage';
+import MainPage from 'app/mainPage/MainPage';
+import Navbar from 'app/navbar/Navbar';
+import SectionPage from 'app/sectionPage/SectionPage';
+import StatisticPage from 'app/statisticPage/StatisticPage';
+import TeamPage from 'app/TeamPage/TeamPage';
+import games from 'features/games';
+import { fetchGames } from 'features/games/gamesSlice';
+import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
+import SectorsPage from 'features/sectorsPage/SectorsPage';
+import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
+import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
+import { logInViaLocalStorage } from 'features/user/userSlice';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
 
 const App = (): JSX.Element => {
@@ -21,6 +22,7 @@ const App = (): JSX.Element => {
   useEffect(() => {
     dispatch(logInViaLocalStorage());
     dispatch(getSettingsFromLocalStorage());
+    dispatch(fetchGames(null));
   }, [dispatch]);
 
   return (
@@ -31,6 +33,7 @@ const App = (): JSX.Element => {
         <Route component={SectorsPage} exact path="/sectors" />
         <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
         <Route component={TeamPage} exact path="/about-team" />
+        <Route component={games.GamesPage} exact path="/games" />
         <Route
           component={HardOrDeletedWordsPage}
           exact
