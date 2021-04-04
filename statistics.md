@@ -6,7 +6,8 @@
 
 ## Виды изучаемых слов:
 
-1. Изучаем слово (1) - которое в принципе было добавлено в изучаемые
+1. Изучаем слово (1) - которое в принципе было добавлено в изучаемые (каждое слово
+   считается только один раз)
 2. Изучаем слово (2) - которое в определённую дату было использовано в мини-игре
 
 ## Все статистики:
@@ -14,20 +15,158 @@
 1. Кол-во изучаемых слов в разбивке по:
 
 - страницам и группам учебника (1)
-- мини-играм (2)
+- мини-играм (2): `selectWordCountByGames`
+
+  ```ts
+  interface report {
+    [gameId: string]: number;
+  }
+  ```
+
+  Пример использования:
+
+  ```tsx
+  import { useAppSelector } from 'common/hooks';
+  import {
+    selectWordCountByGames
+  } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = () => {
+    const stats = useAppSelector(selectWordCountByGames),
+    )
+    return (
+      <ul>
+        {Object.entries(stats).map(([gameId, wordCount]) =>
+          <li key={gameId}>`${gameId}: ${wordCount}`</li>
+        )}
+      </ul>
+    )
+  }
+  ```
 
 2. Результат изучения (кол-во правильных и неправильных ответов) в разбивке по:
 
+```ts
+interface report {
+  correctAnswerTotal: number;
+  wrongAnswerTotal: number;
+}
+```
+
 - для слова
-- суммарно для всех слов в группе учебника (за всё время — для авторизованного пользователя)
-- суммарно для всех слов в группе учебника (за текущий день — для не авторизованного пользователя)
-- суммарно для всех слов на странице учебника (за всё время — для авторизованного пользователя)
-- суммарно для всех слов на странице учебника (за текущий день — для не авторизованного пользователя)
+
+  ```tsx
+  import { useAppSelector, useDate } from 'common/hooks';
+  import { selectCorrectVsWrongByWordId } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = ({ wordId }) => {
+    const stat = useAppSelector((state) =>
+      selectCorrectVsWrongByWordId(state, { wordId })
+    );
+    return <div>{`${stat.correctAnswerTotal} / ${stat.wrongAnswerTotal}`}</div>;
+  };
+  ```
+
+- суммарно для всех слов в группе учебника (за всё время — для авторизованного
+  пользователя)
+
+  ```tsx
+  import { useAppSelector } from 'common/hooks';
+  import { selectCorrectVsWrongByGroup } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = ({ group }) => {
+    const stat = useAppSelector((state) => selectCorrectVsWrongByGroup(state, { group }));
+    return <div>{`${stat.correctAnswerTotal} / ${stat.wrongAnswerTotal}`}</div>;
+  };
+  ```
+
+- суммарно для всех слов в группе учебника (за текущий день — для не авторизованного
+  пользователя)
+
+  ```tsx
+  import { useAppSelector, useDate } from 'common/hooks';
+  import { selectCorrectVsWrongByGroupAndDate } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = ({ group }) => {
+    const studiedAt = useDate();
+
+    const stat = useAppSelector((state) =>
+      selectCorrectVsWrongByGroupAndDate(state, { group, studiedAt })
+    );
+    return <div>{`${stat.correctAnswerTotal} / ${stat.wrongAnswerTotal}`}</div>;
+  };
+  ```
+
+- суммарно для всех слов на странице учебника (за всё время — для авторизованного
+  пользователя)
+
+  ```tsx
+  import { useAppSelector } from 'common/hooks';
+  import { selectCorrectVsWrongByPage } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = ({ group, page }) => {
+    const stat = useAppSelector((state) =>
+      selectCorrectVsWrongByPage(state, { group, page })
+    );
+    return <div>{`${stat.correctAnswerTotal} / ${stat.wrongAnswerTotal}`}</div>;
+  };
+  ```
+
+- суммарно для всех слов на странице учебника (за текущий день — для не
+  авторизованного пользователя)
+
+  ```tsx
+  import { useAppSelector, useDate } from 'common/hooks';
+  import { selectCorrectVsWrongByPageAndDate } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = ({ group, page }) => {
+    const studiedAt = useDate();
+
+    const stat = useAppSelector((state) =>
+      selectCorrectVsWrongByPageAndDate(state, { group, page, studiedAt })
+    );
+    return <div>{`${stat.correctAnswerTotal} / ${stat.wrongAnswerTotal}`}</div>;
+  };
+  ```
 
 3. Результат изучения (кол-во правильных и неправильных ответов) в разбивке по:
 
-- дням и по мини-играм
-- по мини-играм (за всё время)
+- дням и по мини-играм (`selectCorrectVsWrongGroupByGameAndDate`) результатом
+  будет `type report` (см. ниже)
+
+  ```ts
+  interface GroupByGameAndDate {
+    gameId: string;
+    studiedAt: string;
+    correctAnswerTotal: number;
+    wrongAnswerTotal: number;
+  }
+
+  type report = Array<GroupByGameAndDate>;
+  ```
+
+  Пример использования:
+
+  ```tsx
+  import { useAppSelector } from 'common/hooks';
+  import {
+    selectCorrectVsWrongGroupByGameAndDate
+  } from 'features/word-statistics/wordStatisticSlice';
+
+  const MyComponent = () => {
+    const stats = useAppSelector(selectCorrectVsWrongGroupByGameAndDate),
+    )
+    return (
+      <div>
+        {`Game Id: ${stats[0].gameId}; Date: ${stats[0].studiedAt};`}
+        {`${stats[0].correctAnswerTotal} / ${stats[0].wrongAnswerTotal}`}
+      </div>
+    )
+  }
+  ```
+
+- по мини-играм (за всё время). Пример использование см. выше, но
+  использовать необходимо селектор `selectCorrectVsWrongGroupByGame`
 
 4. Самая длинная серия правильных ответов в разбивке по:
 
@@ -35,9 +174,9 @@
 
 ## Виды графиков:
 
-- кол-во изученных слов (2) в разбивке по
-  - дням
-- кол-во изученных слов (1) в разбивке по
+- кол-во изучаемых слов (2) в разбивке по
+  - дням `selectWordCountByDate` - пример использования см. выше
+- кол-во (уникальных) изучаемых слов (1) в разбивке по
   - дням
 
 ## Пользовательские данные, которые нужно хранить:
