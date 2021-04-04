@@ -154,10 +154,11 @@ export interface Contributor {
   gitHubLink: string;
 }
 
-export interface IGames {
+export interface IGame {
   id: string;
   name: string;
   num: number;
+  img?: string;
 }
 
 export interface IGameStatistic {

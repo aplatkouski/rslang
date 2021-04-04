@@ -1,11 +1,13 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import type { RootState } from 'app/store';
-import { IGames } from 'types';
+import type { AppDispatch, RootState } from 'app/store';
+import { IGame } from 'types';
 import { api } from '../../constants';
 
-const name = 'games';
+const name = 'games' as const;
 
-const gameStatisticsAdapter = createEntityAdapter<IGames>();
+const gameStatisticsAdapter = createEntityAdapter<IGame>({
+  sortComparer: (a, b) => a.num - b.num,
+});
 
 interface State {
   status: 'idle' | string;
@@ -16,18 +18,33 @@ const initialState: State = {
   status: 'idle',
 };
 
-export const fetchGames = createAsyncThunk(`${name}/fetch`, async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
+export const fetchGames = createAsyncThunk<
+  Array<IGame>,
+  unknown,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>(
+  `${name}/fetch`,
+  async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    };
+    const response = await fetch(`${api}/games`, options);
+    return (await response.json()) as Array<IGame>;
+  },
+  {
+    condition: (_: unknown, { getState }) => {
+      const { status } = getState()[name];
+      return status === 'idle';
     },
-  };
-
-  const response = await fetch(`${api}/games`, options);
-  return (await response.json()) as Array<IGames>;
-});
+  }
+);
 
 const gamesSlice = createSlice({
   name,
@@ -35,16 +52,22 @@ const gamesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGames.pending, (state, { type }) => {
-        state.status = type;
+      .addCase(fetchGames.pending, (state, { meta }) => {
+        if (state.status === 'idle') {
+          state.status = meta.requestStatus;
+        }
       })
-      .addCase(fetchGames.fulfilled, (state, { type, payload: gameStatistics }) => {
-        state.status = type;
-        gameStatisticsAdapter.setAll(state, gameStatistics);
+      .addCase(fetchGames.fulfilled, (state, { meta, payload: gameStatistics }) => {
+        if (state.status === 'pending') {
+          state.status = meta.requestStatus;
+          gameStatisticsAdapter.setAll(state, gameStatistics);
+        }
       })
-      .addCase(fetchGames.rejected, (state, { type, error }) => {
-        state.status = type;
-        state.error = error.message;
+      .addCase(fetchGames.rejected, (state, { error }) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.error = error.message;
+        }
       });
   },
 });
@@ -52,6 +75,6 @@ const gamesSlice = createSlice({
 export const {
   selectAll: selectAllGames,
   selectById: selectGamesById,
-} = gameStatisticsAdapter.getSelectors<RootState>((state) => state.games);
+} = gameStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
 export default gamesSlice.reducer;
