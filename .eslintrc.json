@@ -135,6 +135,12 @@
       "rules": {
         "no-param-reassign": "off"
       }
+    },
+    {
+      "files": ["src/features/**/*styles.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
     }
   ]
 }
