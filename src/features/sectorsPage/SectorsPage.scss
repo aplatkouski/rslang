@@ -41,6 +41,18 @@
   background-color: #fff;
 }
 
+.page-btn-disabled {
+  @include block(
+    center,
+    center,
+    10px,
+    #313133,
+    500,
+    1rem,
+  );
+  background-color: rgb(202, 207, 209);
+}
+
 .page-btn::before {
   position: absolute;
   top: 50%;

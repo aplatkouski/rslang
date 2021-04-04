@@ -4,7 +4,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  ListItemText,
   Box,
   CircularProgress,
   Typography,
@@ -84,7 +83,9 @@ export default function SectionsPage(): JSX.Element {
                             </button>
                           </NavLink>
                         ) : (
-                          <ListItemText className="page-title" primary={page.title} />
+                          <button className="page-btn-disabled" type="button">
+                            {page.title}
+                          </button>
                         )}
                       </div>
                     ))
