@@ -184,3 +184,14 @@ export interface IRemoveThunkArguments extends ICredentials {
 export interface IUpdateThunkArguments<T> extends ICredentials {
   obj: T;
 }
+
+export interface IWordStatistic {
+  id: string;
+  wordId: string;
+  gameId: string;
+  group: number;
+  page: number;
+  correctAnswerTotal: number;
+  wrongAnswerTotal: number;
+  studiedAt: string;
+}
