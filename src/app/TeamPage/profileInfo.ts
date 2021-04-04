@@ -30,7 +30,7 @@ export const info = [
   {
     avatar: 'images/man_img3.png',
     link: 'https://github.com/DmitryBogdan90',
-    name: 'DmitryBogdan90',
+    name: 'Dmitry Bogdan',
     description: 'Разработчик. Создатель мини-игр.',
   },
   {

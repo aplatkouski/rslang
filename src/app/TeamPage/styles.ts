@@ -2,13 +2,6 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 
 const styles = (theme: Theme) =>
   createStyles({
-    item: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'justify',
-    },
     title: {
       display: 'flex',
       flexDirection: 'column',
@@ -26,12 +19,14 @@ const styles = (theme: Theme) =>
       },
     },
     avatar: {
-      color: theme.palette.text.secondary,
       margin: theme.spacing(5),
     },
     divider: {
       height: '2px',
       margin: '35px 30px 0',
+    },
+    contribution: {
+      height: '100%',
     },
   });
 
