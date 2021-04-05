@@ -8,7 +8,7 @@ import React from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { NavLink } from 'react-router-dom';
 import { ROUTES, VIDEO_URL } from '../../constants';
-import PromotionCard from './PromotionCard';
+import PromotionCard from './promotion-card/PromotionCard';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
