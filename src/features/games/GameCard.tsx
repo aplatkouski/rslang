@@ -17,16 +17,14 @@ const GameCard = ({ classes, game }: Props): JSX.Element => {
 
   return (
     <Card className={classes.root}>
-      <div className={classes.details}>
-        <CardContent className={classes.content}>
-          <Typography component="h5" variant="h5">
-            {game.name}
-          </Typography>
-          <Typography color="textSecondary" variant="subtitle1">
-            {game.id}
-          </Typography>
-        </CardContent>
-      </div>
+      <CardContent className={classes.content}>
+        <Typography component="h5" variant="h5">
+          {game.name}
+        </Typography>
+        <Typography color="textSecondary" variant="subtitle1">
+          {game.id}
+        </Typography>
+      </CardContent>
       <CardMedia className={classes.cover} image={gameLogo} title={game.name} />
     </Card>
   );
