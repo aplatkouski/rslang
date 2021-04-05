@@ -1,4 +1,4 @@
-import { createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, fade, Theme } from '@material-ui/core/styles';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -32,10 +32,10 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      margin: theme.spacing(6),
+      maxWidth: theme.spacing(128),
+      margin: theme.spacing(3, 'auto'),
       '& h1': {
-        fontSize: theme.spacing(7),
-        marginTop: theme.spacing(2),
+        fontSize: theme.spacing(5),
         [theme.breakpoints.down('sm')]: {
           fontSize: theme.spacing(4),
         },
@@ -45,50 +45,35 @@ const styles = (theme: Theme) =>
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
-      backgroundColor: 'rgba(63, 81, 181, 0.1)',
+      backgroundColor: fade(theme.palette.primary.main, 0.1),
     },
-    ellips: {
+    ellipse: {
       position: 'absolute',
       zIndex: -1,
-      margin: '5px',
+      paddingLeft: theme.spacing(12),
+      '& img': {
+        marginTop: theme.spacing(8),
+      },
     },
     title: {
       display: 'flex',
-      justifyContent: 'space-between',
-      margin: theme.spacing(10),
+      justifyContent: 'space-around',
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
       },
       '& img': {
-        width: theme.spacing(75),
-        height: theme.spacing(48),
-        [theme.breakpoints.down('xs')]: {
-          width: theme.spacing(45),
-          height: theme.spacing(28),
+        width: theme.spacing(70),
+        [theme.breakpoints.down('sm')]: {
+          maxWidth: theme.spacing(100),
+          width: '100%',
         },
       },
     },
     video: {
       margin: theme.spacing(5),
       [theme.breakpoints.down('sm')]: {
-        width: '420px !important',
+        width: theme.spacing(52.5),
       },
-    },
-    card: {
-      height: theme.spacing(28),
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: 'rgba(63, 81, 181, 0.2)',
-      borderRadius: theme.spacing(1.5),
-      '& img': {
-        width: theme.spacing(25),
-        height: theme.spacing(15),
-        margin: theme.spacing(2),
-      },
-    },
-    description: {
-      margin: theme.spacing(4),
     },
     team: {
       width: '100%',
@@ -96,7 +81,7 @@ const styles = (theme: Theme) =>
       height: theme.spacing(40),
       justifyContent: 'space-evenly',
       alignItems: 'center',
-      backgroundColor: 'rgba(63, 81, 181, 0.2)',
+      backgroundColor: fade(theme.palette.primary.main, 0.2),
       borderRadius: theme.spacing(2),
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
