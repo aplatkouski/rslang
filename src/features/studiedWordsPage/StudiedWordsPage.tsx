@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import * as t from 'types';
-import {
-  loadStudiedWords,
-  getWords,
-  getWordsLoadingStatus,
-} from 'features/words/wordsSlice';
-import { useSelector, useDispatch } from 'react-redux';
-import { getCurrUser } from 'features/user/userSlice';
-import { Typography, CircularProgress } from '@material-ui/core';
-import Settings from 'features/settings/Settings';
-import WordCard from 'features/wordCard/WordCard';
+import { CircularProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AttentionButton from 'app/./attentionButton/AttentionButton';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import Settings from 'features/settings/Settings';
+import { getCurrUser } from 'features/user/userSlice';
+import WordCard from 'features/wordCard/WordCard';
+import {
+  getWords,
+  getWordsLoadingStatus,
+  loadStudiedWords,
+} from 'features/words/wordsSlice';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import * as t from 'types';
 
 import './StudiedWordsPage.scss';
 
@@ -27,11 +27,11 @@ const useStyles = makeStyles((theme) => ({
 export default function StudiedWordsPage(): JSX.Element {
   const { sector, page, color } = useParams<t.SectionPageParams>();
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const currentUser: t.IUser = useSelector(getCurrUser);
-  const words = useSelector(getWords);
+  const dispatch = useAppDispatch();
+  const currentUser: t.IUser = useAppSelector(getCurrUser);
+  const words = useAppSelector(getWords);
   const history = useHistory();
-  const dataLoadStatus: t.IWordsStatus = useSelector(getWordsLoadingStatus);
+  const dataLoadStatus: t.IWordsStatus = useAppSelector(getWordsLoadingStatus);
   // loadProcessLaunched нужен для того, чтобы в коде, где рендериться компонент, определить,
   // побывали ли мы до этого в useEffect. Если не делать этой проверки, то рендеринг не дожидается
   // загрузки данных в useEffect и срабатывает не так, как хочется

@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { AppBar, IconButton, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton, Tooltip } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
-import { NavLink } from 'react-router-dom';
-import SideMenu from 'app/sidemenu/SideMenu';
-import LogInForm from 'features/logInForm/LogInForm';
+import PersonIcon from '@material-ui/icons/Person';
 import RegistrationForm from 'app/registrationForm/RegistrationForm';
-import { useDispatch, useSelector } from 'react-redux';
+import SideMenu from 'app/sidemenu/SideMenu';
+import Logo from 'assets/img/MainPageLogo.jpg';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import LogInForm from 'features/logInForm/LogInForm';
 import {
-  getCurrUser,
   delLogInErrMessage,
-  logOut,
+  getCurrUser,
   getLoginStatus,
+  logOut,
 } from 'features/user/userSlice';
 import UserCard from 'features/userCard/UserCard';
-
-import Logo from 'assets/img/MainPageLogo.jpg';
+import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,9 +38,9 @@ export default function Navbar(): JSX.Element {
   const [drawerState, setDrawerState] = useState(false);
   const [openLogInModal, setOpenLogInModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
-  const dispatch = useDispatch();
-  const user = useSelector(getCurrUser);
-  const logInStatus = useSelector(getLoginStatus);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(getCurrUser);
+  const logInStatus = useAppSelector(getLoginStatus);
 
   const handleToggleSideMenu = () => {
     setDrawerState((state: boolean) => !state);

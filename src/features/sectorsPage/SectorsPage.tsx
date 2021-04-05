@@ -1,28 +1,28 @@
-import React, { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
   Box,
   CircularProgress,
   Typography,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import Dictionary from 'features/dictionary/Dictionary';
 import {
   selectSectors,
   selectSectorsReadyState,
   updatePagesVisibility,
 } from 'features/sectors/sectorsSlice';
-import * as t from 'types';
-import Dictionary from 'features/dictionary/Dictionary';
 import { getCurrUser } from 'features/user/userSlice';
+import React, { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import 'styles/animate.min.css';
+import * as t from 'types';
 import { DICTIONARY_SECTOR_COLOR } from '../../constants';
 
 import './SectorsPage.scss';
-import 'styles/animate.min.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SectionsPage(): JSX.Element {
   const classes = useStyles();
-  const sectors: Array<t.Sector> = useSelector(selectSectors);
-  const currentUser: t.IUser = useSelector(getCurrUser);
-  const dispatch = useDispatch();
-  const sectorsReady = useSelector(selectSectorsReadyState);
+  const sectors: Array<t.Sector> = useAppSelector(selectSectors);
+  const currentUser: t.IUser = useAppSelector(getCurrUser);
+  const dispatch = useAppDispatch();
+  const sectorsReady = useAppSelector(selectSectorsReadyState);
 
   useEffect(() => {
     dispatch(updatePagesVisibility(currentUser.userId, currentUser.token));

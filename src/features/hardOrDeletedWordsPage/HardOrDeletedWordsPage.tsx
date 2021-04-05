@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, NavLink, useHistory } from 'react-router-dom';
-import * as t from 'types';
+import { CircularProgress, ListItemText, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import AttentionButton from 'app/./attentionButton/AttentionButton';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import {
+  selectAdjacentDeletedPages,
+  selectAdjacentHardPages,
+} from 'features/sectors/sectorsSlice';
+import Settings from 'features/settings/Settings';
+import { getCurrUser } from 'features/user/userSlice';
+import WordCard from 'features/wordCard/WordCard';
 import {
   getUserSpecialWords,
   getWords,
   getWordsLoadingStatus,
 } from 'features/words/wordsSlice';
-import { useSelector, useDispatch } from 'react-redux';
-import { getCurrUser } from 'features/user/userSlice';
-import {
-  selectAdjacentHardPages,
-  selectAdjacentDeletedPages,
-} from 'features/sectors/sectorsSlice';
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
-import { ListItemText, Typography, CircularProgress } from '@material-ui/core';
-import Settings from 'features/settings/Settings';
-import WordCard from 'features/wordCard/WordCard';
-import { makeStyles } from '@material-ui/core/styles';
-import AttentionButton from 'app/./attentionButton/AttentionButton';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useHistory, useParams } from 'react-router-dom';
+import * as t from 'types';
 import { SPECIAL_WORD_INDICATOR, WORD_OPTIONAL_MODE } from '../../constants';
 
 import './HardOrDeletedWordsPage.scss';
@@ -56,9 +56,9 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
     color,
   } = useParams<t.ISpecialSectionPageParams>();
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const currentUser: t.IUser = useSelector(getCurrUser);
-  const adjacentPages: Array<t.ISpecialSection | undefined> = useSelector(
+  const dispatch = useAppDispatch();
+  const currentUser: t.IUser = useAppSelector(getCurrUser);
+  const adjacentPages: Array<t.ISpecialSection | undefined> = useAppSelector(
     (state: any) => {
       if (indicator === SPECIAL_WORD_INDICATOR.HARD) {
         return selectAdjacentHardPages(state, {
@@ -72,9 +72,9 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
       });
     }
   );
-  const words = useSelector(getWords);
+  const words = useAppSelector(getWords);
   const history = useHistory();
-  const dataLoadStatus: t.IWordsStatus = useSelector(getWordsLoadingStatus);
+  const dataLoadStatus: t.IWordsStatus = useAppSelector(getWordsLoadingStatus);
   // loadProcessLaunched нужен для того, чтобы в коде, где рендериться компонент, определить,
   // побывали ли мы до этого в useEffect. Если не делать этой проверки, то рендеринг не дожидается
   // загрузки данных в useEffect и срабатывает не так, как хочется

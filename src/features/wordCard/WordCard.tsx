@@ -12,15 +12,15 @@ import {
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
-import React, { useRef, useState, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-import { useSelector, useDispatch } from 'react-redux';
-import { useRouteMatch, useParams } from 'react-router-dom';
-import { IWord, ISpecialSectionPageParams } from 'types';
-import { updateWordOptions } from 'features/words/wordsSlice';
-import { getCurrUser } from 'features/user/userSlice';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { selectSettings } from 'features/settings/settingsSlice';
-import { api, WORD_OPTIONAL_MODE, ROUTES } from '../../constants';
+import { getCurrUser } from 'features/user/userSlice';
+import { updateWordOptions } from 'features/words/wordsSlice';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams, useRouteMatch } from 'react-router-dom';
+import { ISpecialSectionPageParams, IWord } from 'types';
+import { api, ROUTES, WORD_OPTIONAL_MODE } from '../../constants';
 import { audioStart, audioStop } from './audio-helpers';
 import FormattedText from './FormattedText';
 import styles from './styles';
@@ -33,11 +33,11 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const WordCard = ({ classes, word }: Props): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false);
 
-  const { translation, buttons } = useSelector(selectSettings);
-  const { userId: isAuth } = useSelector(getCurrUser);
+  const { translation, buttons } = useAppSelector(selectSettings);
+  const { userId: isAuth } = useAppSelector(getCurrUser);
 
   const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
 
