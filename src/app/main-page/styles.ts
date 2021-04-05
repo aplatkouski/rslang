@@ -32,7 +32,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      maxWidth: theme.spacing(128),
+      maxWidth: theme.spacing(154),
       margin: theme.spacing(3, 'auto'),
       '& h1': {
         fontSize: theme.spacing(5),
