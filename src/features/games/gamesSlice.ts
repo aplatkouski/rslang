@@ -57,10 +57,10 @@ const gamesSlice = createSlice({
           state.status = meta.requestStatus;
         }
       })
-      .addCase(fetchGames.fulfilled, (state, { meta, payload: gameStatistics }) => {
+      .addCase(fetchGames.fulfilled, (state, { meta, payload: games }) => {
         if (state.status === 'pending') {
           state.status = meta.requestStatus;
-          gameStatisticsAdapter.setAll(state, gameStatistics);
+          gameStatisticsAdapter.setAll(state, games);
         }
       })
       .addCase(fetchGames.rejected, (state, { error }) => {
