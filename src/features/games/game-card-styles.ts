@@ -5,14 +5,12 @@ const gameCardStyles = (theme: Theme) =>
     root: {
       display: 'flex',
       width: theme.spacing(58),
-      margin: theme.spacing(2, 2),
-    },
-    details: {
-      display: 'flex',
-      flexDirection: 'column',
+      margin: theme.spacing(2),
+      borderRadius: theme.spacing(1.5),
     },
     content: {
-      flex: '1 0 auto',
+      display: 'flex',
+      flexDirection: 'column',
     },
     cover: {
       margin: theme.spacing(1, 'auto'),
