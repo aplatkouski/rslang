@@ -10,7 +10,7 @@ import {
   InputLabel,
   Typography,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
 import React, { useRef } from 'react';
 import { logIn, getErrLogInMessage, getLoginStatus } from 'features/user/userSlice';
 
@@ -30,9 +30,9 @@ const LogInForm = ({
 }: Props): JSX.Element => {
   const refEmailField = useRef<HTMLInputElement>(null);
   const refPasswordField = useRef<HTMLInputElement>(null);
-  const dispatch = useDispatch();
-  const errLogInMessage = useSelector(getErrLogInMessage);
-  const logInStatus = useSelector(getLoginStatus);
+  const dispatch = useAppDispatch();
+  const errLogInMessage = useAppSelector(getErrLogInMessage);
+  const logInStatus = useAppSelector(getLoginStatus);
 
   const handleLogInUser = () => {
     if (refEmailField.current && refPasswordField.current) {

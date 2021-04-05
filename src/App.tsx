@@ -4,6 +4,7 @@ import Navbar from 'app/navbar/Navbar';
 import SectionPage from 'app/sectionPage/SectionPage';
 import StatisticPage from 'app/statisticPage/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
+import { useAppDispatch } from 'common/hooks';
 import games from 'features/games';
 import { fetchGames } from 'features/games/gamesSlice';
 import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
@@ -12,12 +13,11 @@ import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
 
 const App = (): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(logInViaLocalStorage());
