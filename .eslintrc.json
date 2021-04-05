@@ -116,7 +116,8 @@
       }
     ],
     "react/jsx-props-no-multi-spaces": "error",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "react/require-default-props": "off"
   },
   "settings": {
     "react": {
