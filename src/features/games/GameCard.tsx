@@ -3,9 +3,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import { useImg } from 'common/hooks';
 import React from 'react';
 import { IGame } from 'types';
-import { useGameLogo } from '../../common/hooks';
 import gameCardStyles from './game-card-styles';
 
 interface Props extends WithStyles<typeof gameCardStyles> {
@@ -13,7 +13,7 @@ interface Props extends WithStyles<typeof gameCardStyles> {
 }
 
 const GameCard = ({ classes, game }: Props): JSX.Element => {
-  const gameLogo = useGameLogo(game.img);
+  const gameLogo = useImg(game.img);
 
   return (
     <Card className={classes.root}>

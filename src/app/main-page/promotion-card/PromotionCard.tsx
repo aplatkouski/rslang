@@ -7,7 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { useGameLogo } from 'common/hooks';
+import { useImg } from 'common/hooks';
 import React from 'react';
 import promotionCardStyles from './styles';
 
@@ -20,7 +20,7 @@ interface Props extends WithStyles<typeof promotionCardStyles> {
 
 const PromotionCard = (props: Props): JSX.Element => {
   const { classes, content, img, isReverse = false, title } = props;
-  const cover = useGameLogo(img);
+  const cover = useImg(img);
 
   return (
     <Card className={clsx(classes.root, isReverse && classes.reverse)}>
