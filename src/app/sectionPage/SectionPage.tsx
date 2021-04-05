@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, NavLink, useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { ListItemText, Typography, CircularProgress } from '@material-ui/core';
-import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
-import * as t from 'types';
-import {
-  getWords,
-  loadWords,
-  getWordsLoadingStatus,
-  areAllWordsDeleted,
-} from 'features/words/wordsSlice';
-import { getCurrUser } from 'features/user/userSlice';
-import Settings from 'features/settings/Settings';
-import WordCard from 'features/wordCard/WordCard';
+import { CircularProgress, ListItemText, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import AttentionButton from 'app/./attentionButton/AttentionButton';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
+import Settings from 'features/settings/Settings';
+import { getCurrUser } from 'features/user/userSlice';
+import WordCard from 'features/wordCard/WordCard';
+import {
+  areAllWordsDeleted,
+  getWords,
+  getWordsLoadingStatus,
+  loadWords,
+} from 'features/words/wordsSlice';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useHistory, useParams } from 'react-router-dom';
+import * as t from 'types';
 
 import './SectionPage.scss';
 
@@ -31,15 +31,15 @@ export default function SectionPage(): JSX.Element {
   const classes = useStyles();
   const { sector, page, color } = useParams<t.SectionPageParams>();
   const bgColor: string = color || 'white';
-  const adjacentPages: Array<t.Page | undefined> = useSelector((state: any) =>
+  const adjacentPages: Array<t.Page | undefined> = useAppSelector((state: any) =>
     selectAdjacentPages(state, { sectorNum: Number(sector), pageNum: Number(page) })
   );
-  const dispatch = useDispatch();
-  const words = useSelector(getWords);
-  const currentUser: t.IUser = useSelector(getCurrUser);
-  const dataLoadStatus: t.IWordsStatus = useSelector(getWordsLoadingStatus);
+  const dispatch = useAppDispatch();
+  const words = useAppSelector(getWords);
+  const currentUser: t.IUser = useAppSelector(getCurrUser);
+  const dataLoadStatus: t.IWordsStatus = useAppSelector(getWordsLoadingStatus);
   const history = useHistory();
-  const allWordsDeleted = useSelector(areAllWordsDeleted);
+  const allWordsDeleted = useAppSelector(areAllWordsDeleted);
   // loadProcessLaunched нужен для того, чтобы в коде, где рендериться компонент, определить,
   // побывали ли мы до этого в useEffect. Если не делать этой проверки, то рендеринг не дожидается
   // загрузки данных в useEffect и срабатывает не так, как хочется
