@@ -9,18 +9,17 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
-import React, { BaseSyntheticEvent } from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useAppDispatch, useAppSelector } from 'common/hooks';
+import React, { BaseSyntheticEvent } from 'react';
 import { changeSettings, selectSettings } from './settingsSlice';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
 
 const Settings = ({ classes }: Props): JSX.Element => {
-  const dispatch = useDispatch();
-  const settings = useSelector(selectSettings);
+  const dispatch = useAppDispatch();
+  const settings = useAppSelector(selectSettings);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event: BaseSyntheticEvent) => {

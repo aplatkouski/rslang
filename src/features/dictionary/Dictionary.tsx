@@ -1,5 +1,3 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
 import {
   Accordion,
   AccordionDetails,
@@ -8,19 +6,21 @@ import {
   CircularProgress,
   Typography,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useAppSelector } from 'common/hooks';
 import {
   selectDeletedSections,
   selectHardSections,
   selectSectorsReadyState,
   selectStudiedSections,
 } from 'features/sectors/sectorsSlice';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
-  STUDIED_WORDS_SECTOR_COLOR,
-  HARD_WORDS_SECTOR_COLOR,
   DELETED_WORDS_SECTOR_COLOR,
+  HARD_WORDS_SECTOR_COLOR,
+  STUDIED_WORDS_SECTOR_COLOR,
 } from '../../constants';
 
 import './Dictionary.scss';
@@ -37,10 +37,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dictionary(): JSX.Element {
   const classes = useStyles();
-  const sectorsReady = useSelector(selectSectorsReadyState);
-  const hardSections = useSelector(selectHardSections);
-  const deletedSections = useSelector(selectDeletedSections);
-  const studiedSections = useSelector(selectStudiedSections);
+  const sectorsReady = useAppSelector(selectSectorsReadyState);
+  const hardSections = useAppSelector(selectHardSections);
+  const deletedSections = useAppSelector(selectDeletedSections);
+  const studiedSections = useAppSelector(selectStudiedSections);
 
   return (
     <div className={classes.root}>

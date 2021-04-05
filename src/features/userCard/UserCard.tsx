@@ -1,9 +1,9 @@
-import userAltImg from 'assets/img/UnknownUser.png';
-import * as t from 'types';
-import React, { useRef } from 'react';
-import { getCurrUser } from 'features/user/userSlice';
-import { useSelector } from 'react-redux';
 import { withStyles, WithStyles } from '@material-ui/core';
+import userAltImg from 'assets/img/UnknownUser.png';
+import { useAppSelector } from 'common/hooks';
+import { getCurrUser } from 'features/user/userSlice';
+import React, { useRef } from 'react';
+import * as t from 'types';
 
 import styles from './styles';
 
@@ -11,7 +11,7 @@ interface Props extends WithStyles<typeof styles> {}
 
 const UserCard = ({ classes }: Props): JSX.Element => {
   const imgRef = useRef<HTMLImageElement | null>(null);
-  const currentUser: t.IUser = useSelector(getCurrUser);
+  const currentUser: t.IUser = useAppSelector(getCurrUser);
 
   function handleLoadAlternativeImg() {
     if (imgRef && imgRef.current) {
