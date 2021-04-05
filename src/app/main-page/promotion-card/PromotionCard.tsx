@@ -1,11 +1,14 @@
-import { WithStyles, withStyles } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
 import clsx from 'clsx';
+import { useGameLogo } from 'common/hooks';
 import React from 'react';
-import { useGameLogo } from '../../../common/hooks';
 import promotionCardStyles from './styles';
 
 interface Props extends WithStyles<typeof promotionCardStyles> {
