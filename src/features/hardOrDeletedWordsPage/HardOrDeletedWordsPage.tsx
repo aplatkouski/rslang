@@ -24,20 +24,14 @@ import './HardOrDeletedWordsPage.scss';
 
 const specialWordIndicatorValues = Object.values(SPECIAL_WORD_INDICATOR);
 type SpecialWordIndicatorValues = typeof specialWordIndicatorValues[number];
-const cardVisibilityCondition = (
+const isCardVisible = (
   optional: t.IWordOptions | undefined,
   indicator: SpecialWordIndicatorValues | undefined
-): boolean => {
-  if (
-    (optional?.deleted && indicator === SPECIAL_WORD_INDICATOR.DEL) ||
-    (optional?.mode === WORD_OPTIONAL_MODE.hard &&
-      !optional?.deleted &&
-      indicator === SPECIAL_WORD_INDICATOR.HARD)
-  ) {
-    return true;
-  }
-  return false;
-};
+): boolean =>
+  (optional?.deleted && indicator === SPECIAL_WORD_INDICATOR.DEL) ||
+  (optional?.mode === WORD_OPTIONAL_MODE.hard &&
+    !optional?.deleted &&
+    indicator === SPECIAL_WORD_INDICATOR.HARD);
 
 const useStyles = makeStyles((theme) => ({
   sectorTitle: {
@@ -170,7 +164,7 @@ export default function HardOrDeletedWordsPage(): JSX.Element {
       >
         {words.map(
           (word) =>
-            cardVisibilityCondition(word.optional, indicator) && (
+            isCardVisible(word.optional, indicator) && (
               <WordCard key={word.id} word={word} />
             )
         )}
