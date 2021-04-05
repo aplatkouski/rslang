@@ -17,7 +17,7 @@ export function useShallowEqualSelector(
   return useAppSelector(selector, shallowEqual);
 }
 
-export const useGameLogo = (gameImg?: string): string => {
+export const useImg = (gameImg?: string): string => {
   const [gameLogo, setGameLogo] = useState<string>(defaultLog);
 
   useEffect(() => {
