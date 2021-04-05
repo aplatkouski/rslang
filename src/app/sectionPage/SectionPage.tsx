@@ -1,11 +1,11 @@
 import { CircularProgress, ListItemText, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, makeStyles } from '@material-ui/core/styles';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import AttentionButton from 'app/./attentionButton/AttentionButton';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
 import Settings from 'features/settings/Settings';
-import { getCurrUser } from 'features/user/userSlice';
+import { getCurrUser, getCurrUser } from 'features/user/userSlice';
 import WordCard from 'features/wordCard/WordCard';
 import {
   areAllWordsDeleted,
@@ -16,6 +16,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import { NavLink, useHistory, useParams } from 'react-router-dom';
 import * as t from 'types';
+
+import GamesButton from 'features/gamesButton/GamesButton';
 
 import './SectionPage.scss';
 
@@ -107,6 +109,9 @@ export default function SectionPage(): JSX.Element {
               <ArrowForwardIos />
             </NavLink>
           )}
+        </div>
+        <div className="games-btn">
+          <GamesButton />
         </div>
         <div className="settings">
           <Settings />

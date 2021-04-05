@@ -14,6 +14,7 @@ import { logInViaLocalStorage } from 'features/user/userSlice';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import MyGame from 'features/myGame/MyGame';
 import { ROUTES } from './constants';
 
 const App = (): JSX.Element => {
@@ -45,6 +46,7 @@ const App = (): JSX.Element => {
           path="/studiedSection/:sector/:page/:color"
         />
         <Route component={StatisticPage} exact path={ROUTES.statistic} />
+        <Route component={MyGame} exact path="/games/myGame" />
         <Redirect to="/" />
       </Switch>
       <Footer />
