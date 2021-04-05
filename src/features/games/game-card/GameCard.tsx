@@ -3,9 +3,9 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { useImg } from 'common/hooks';
 import React from 'react';
 import { IGame } from 'types';
-import gameCardStyles from './game-card-styles';
+import styles from './styles';
 
-interface Props extends WithStyles<typeof gameCardStyles> {
+interface Props extends WithStyles<typeof styles> {
   game: IGame;
 }
 
@@ -27,4 +27,4 @@ const GameCard = ({ classes, game }: Props): JSX.Element => {
   );
 };
 
-export default withStyles(gameCardStyles, { withTheme: true })(GameCard);
+export default withStyles(styles, { withTheme: true })(GameCard);

@@ -1,6 +1,6 @@
 import { createStyles, Theme } from '@material-ui/core/styles';
 
-const gameCardStyles = (theme: Theme) =>
+const styles = (theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
@@ -19,4 +19,4 @@ const gameCardStyles = (theme: Theme) =>
     },
   });
 
-export default gameCardStyles;
+export default styles;
