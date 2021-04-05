@@ -12,6 +12,8 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import React, { BaseSyntheticEvent } from 'react';
+import { getCurrUser } from '../user/userSlice';
+
 import { changeSettings, selectSettings } from './settingsSlice';
 import styles from './styles';
 
@@ -20,8 +22,20 @@ type Props = WithStyles<typeof styles>;
 const Settings = ({ classes }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectSettings);
+  const user = useAppSelector(getCurrUser);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const checkboxSelector = (flag: boolean): JSX.Element => {
+    if (!flag) {
+      return (
+        <Tooltip title="Авторизуйтесь, чтобы изменять параметр">
+          <span>
+            <Checkbox checked={false} disabled />
+          </span>
+        </Tooltip>
+      );
+    }
+    return <Checkbox checked={buttons} name="buttons" onChange={handleChange} />;
+  };
   const handleClick = (event: BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -74,9 +88,7 @@ const Settings = ({ classes }: Props): JSX.Element => {
               />
               <FormControlLabel
                 className={classes.controls}
-                control={
-                  <Checkbox checked={buttons} name="buttons" onChange={handleChange} />
-                }
+                control={checkboxSelector(Boolean(user.token))}
                 label="Отображать кнопки на карточке слова"
               />
             </FormGroup>
