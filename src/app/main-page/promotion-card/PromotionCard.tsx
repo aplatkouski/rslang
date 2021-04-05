@@ -5,7 +5,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import React from 'react';
-import { useGameLogo } from '../../common/hooks';
+import { useGameLogo } from '../../../common/hooks';
 import promotionCardStyles from './promotion-card-styles';
 
 interface Props extends WithStyles<typeof promotionCardStyles> {
