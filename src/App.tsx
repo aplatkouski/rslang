@@ -1,5 +1,5 @@
 import Footer from 'app/footer/Footer';
-import MainPage from 'app/mainPage/MainPage';
+import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
 import SectionPage from 'app/sectionPage/SectionPage';
 import StatisticPage from 'app/statisticPage/StatisticPage';
