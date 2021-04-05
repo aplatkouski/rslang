@@ -1,8 +1,5 @@
-import { WithStyles, withStyles } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import { Card, CardContent, CardMedia, Typography } from '@material-ui/core';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { useImg } from 'common/hooks';
 import React from 'react';
 import { IGame } from 'types';
