@@ -199,3 +199,8 @@ export interface IWordStatistic {
   wrongAnswerTotal: number;
   studiedAt: string;
 }
+
+export interface IRouterPath {
+  group: string;
+  page: string;
+}

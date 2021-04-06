@@ -1,6 +1,6 @@
 import type { AppDispatch, RootState } from 'app/store';
 import defaultLog from 'assets/img/default.svg';
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import {
   shallowEqual,
   TypedUseSelectorHook,
@@ -40,4 +40,41 @@ export const useDate = (): string => {
     date.current = new Date().toISOString().substring(0, 10);
   }
   return date.current;
+};
+
+export const useHTMLElementWidth = <T extends HTMLElement>(elRef: RefObject<T>) => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (elRef.current) setWidth(elRef.current.offsetWidth);
+    };
+
+    if (elRef.current) {
+      setWidth(elRef.current.offsetWidth);
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [elRef]);
+
+  return width;
+};
+
+export const useCols = <T extends HTMLElement>(
+  tileWidth = 320
+): [RefObject<T>, number] => {
+  const elRef = useRef<T>(null);
+  const containerWidth = useHTMLElementWidth<T>(elRef);
+  const [cols, setCols] = useState(1);
+
+  useEffect(() => {
+    if (containerWidth && tileWidth) {
+      setCols(Math.floor(containerWidth / tileWidth));
+    } else {
+      setCols(1);
+    }
+  }, [containerWidth, tileWidth]);
+  return [elRef, cols];
 };

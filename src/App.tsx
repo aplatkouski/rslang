@@ -12,6 +12,8 @@ import SectorsPage from 'features/sectorsPage/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
+import words from 'features/words';
+import { fetchWords } from 'features/words/wordsAPSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
@@ -23,6 +25,7 @@ const App = (): JSX.Element => {
     dispatch(logInViaLocalStorage());
     dispatch(getSettingsFromLocalStorage());
     dispatch(fetchGames(null));
+    dispatch(fetchWords(null));
   }, [dispatch]);
 
   return (
@@ -34,6 +37,7 @@ const App = (): JSX.Element => {
         <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
         <Route component={TeamPage} exact path="/about-team" />
         <Route component={games.GamesPage} exact path="/games" />
+        <Route component={words.WordsPage} exact path="/textbook/:group/:page" />
         <Route
           component={HardOrDeletedWordsPage}
           exact
