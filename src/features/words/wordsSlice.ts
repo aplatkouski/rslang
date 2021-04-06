@@ -292,7 +292,8 @@ function getUserSpecialWordsPromise(
 ) {
   let filter: string = '';
   if (requestIndicator === SPECIAL_WORD_INDICATOR.HARD) {
-    filter = '{"userWord.optional.mode":"hard"}';
+    filter =
+      '{"$and":[{"userWord.optional.mode":"hard"},{"$or":[{"userWord.optional.deleted":false},{"userWord.optional.deleted":null}]}]}';
   } else if (requestIndicator === SPECIAL_WORD_INDICATOR.DEL) {
     filter = '{"userWord.optional.deleted":true}';
   }
@@ -341,7 +342,7 @@ export const getUserSpecialWords = (
       dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
     } else {
       const result: any = await response.json();
-
+      console.log(result);
       if (result && result[0].paginatedResults) {
         result[0].paginatedResults.forEach((word: any) => {
           if (word.userWord) {
