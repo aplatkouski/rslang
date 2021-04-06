@@ -1,11 +1,11 @@
 import { CircularProgress, ListItemText, Typography } from '@material-ui/core';
-import { makeStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
 import AttentionButton from 'app/./attentionButton/AttentionButton';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { selectAdjacentPages } from 'features/sectors/sectorsSlice';
 import Settings from 'features/settings/Settings';
-import { getCurrUser, getCurrUser } from 'features/user/userSlice';
+import { getCurrUser } from 'features/user/userSlice';
 import WordCard from 'features/wordCard/WordCard';
 import {
   areAllWordsDeleted,
