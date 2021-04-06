@@ -292,7 +292,8 @@ function getUserSpecialWordsPromise(
 ) {
   let filter: string = '';
   if (requestIndicator === SPECIAL_WORD_INDICATOR.HARD) {
-    filter = '{"userWord.optional.mode":"hard"}';
+    filter =
+      '{"$and":[{"userWord.optional.mode":"hard"},{"$or":[{"userWord.optional.deleted":false},{"userWord.optional.deleted":null}]}]}';
   } else if (requestIndicator === SPECIAL_WORD_INDICATOR.DEL) {
     filter = '{"userWord.optional.deleted":true}';
   }
