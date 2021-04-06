@@ -90,7 +90,7 @@ export default function SectionsPage(): JSX.Element {
                       </div>
                     ))
                   ) : (
-                    <Typography className="sector-title">Данный раздел пуст</Typography>
+                    <Typography>Данный раздел пуст</Typography>
                   )}
                 </Box>
               )}
