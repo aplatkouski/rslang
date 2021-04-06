@@ -14,6 +14,7 @@ import promotionCardStyles from './styles';
 interface Props extends WithStyles<typeof promotionCardStyles> {
   content: string;
   img: string;
+  // eslint-disable-next-line react/require-default-props
   isReverse?: boolean;
   title: string;
 }
