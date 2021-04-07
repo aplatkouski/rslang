@@ -1,21 +1,26 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 
 import MiniGameCard from './MiniGameCard';
 import { MINI_GAMES } from '../../constants';
 import styles from './styles';
 
-interface MiniGamesPageProps {
-  classes: any;
-}
+interface Props extends WithStyles<typeof styles> {}
 
-const MiniGamesPage = ({ classes }: MiniGamesPageProps) => {
+const MiniGamesPage = ({ classes }: Props) => {
   return (
     <div className={classes.miniGamesPage}>
       <div className={classes.title}> Mini Games</div>
       <div className={classes.games}>
         {MINI_GAMES.map(({ title, path, description }) => {
-          return <MiniGameCard description={description} path={path} title={title} />;
+          return (
+            <MiniGameCard
+              key={title}
+              description={description}
+              path={path}
+              title={title}
+            />
+          );
         })}
       </div>
     </div>

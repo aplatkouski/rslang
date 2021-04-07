@@ -10,11 +10,11 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
-      margin: 10,
-      maxHeight: 350,
-      maxWidth: 300,
+      margin: theme.spacing(1.25),
+      maxHeight: theme.spacing(43.75),
+      maxWidth: theme.spacing(37.5),
       height: '100vh',
-      padding: 10,
+      padding: theme.spacing(1.25),
       width: '100%',
     },
     games: {
@@ -42,8 +42,8 @@ const styles = (theme: Theme) =>
         color: theme.palette.text.secondary,
       },
       '& div': {
-        width: '100px',
-        height: '100px',
+        width: theme.spacing(12.5),
+        height: theme.spacing(12.5),
       },
     },
   });

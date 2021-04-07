@@ -1,11 +1,17 @@
-import { withStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { Button, Card, CardActions, CardContent, Typography } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 
 import styles from './styles';
 
-const MiniGameCard = ({ classes, description, path, title }: any) => {
+interface Props extends WithStyles<typeof styles> {
+  description: string;
+  path: string;
+  title: string;
+}
+
+const MiniGameCard = ({ classes, description, path, title }: Props) => {
   return (
     <Card className={classes.card}>
       <CardContent>
