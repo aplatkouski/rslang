@@ -53,6 +53,7 @@
         "patterns": ["@material-ui/*/*/*", "!@material-ui/core/test-utils/*"]
       }
     ],
+    "promise/catch-or-return": "warn",
     "promise/prefer-await-to-callbacks": "warn",
     "promise/prefer-await-to-then": "warn",
     "react/jsx-handler-names": [

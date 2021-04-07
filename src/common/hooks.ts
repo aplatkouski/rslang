@@ -1,12 +1,14 @@
 import type { AppDispatch, RootState } from 'app/store';
 import defaultLog from 'assets/img/default.svg';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import {
   shallowEqual,
   TypedUseSelectorHook,
   useDispatch,
   useSelector,
 } from 'react-redux';
+import { api } from '../constants';
+import { IWord } from '../types';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -77,4 +79,75 @@ export const useCols = <T extends HTMLElement>(
     }
   }, [containerWidth, tileWidth]);
   return [elRef, cols];
+};
+
+interface Audios {
+  name: string;
+  src: string;
+}
+
+type CurrentAudio = string | null;
+
+interface AudioReturn {
+  currentAudio: CurrentAudio;
+  start: (index?: number, all?: boolean) => void;
+  stop: () => void;
+}
+
+export const useAudio = (word: IWord): AudioReturn => {
+  const audioElRef = useRef<HTMLAudioElement>(new Audio());
+  const [audios, setAudios] = useState<Array<Audios>>([]);
+  const [currentAudio, setCurrentAudio] = useState<CurrentAudio>(null);
+  const indexAudio = useRef(0);
+
+  useEffect(() => {
+    setAudios(
+      Object.entries(word).reduce((a, [field, value]) => {
+        if (field.startsWith('audio')) {
+          return [...a, { name: field, src: value }];
+        }
+        return a;
+      }, [] as Array<Audios>)
+    );
+  }, [word]);
+
+  const stopAudio = useCallback((): void => {
+    indexAudio.current = 0;
+    audioElRef.current.pause();
+    setCurrentAudio(null);
+  }, []);
+
+  const startAudio = useCallback(
+    (index = 0): void => {
+      indexAudio.current = index;
+      if (index < audios.length) {
+        const { name, src } = audios[index];
+        audioElRef.current.src = `${api}/${src}`;
+        setCurrentAudio(name);
+        audioElRef.current.play();
+      } else {
+        stopAudio();
+      }
+    },
+    [audios, stopAudio]
+  );
+
+  useEffect(() => {
+    const playNext = () => {
+      startAudio(indexAudio.current + 1);
+    };
+
+    if (currentAudio) {
+      audioElRef.current.addEventListener('ended', playNext);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      return () => audioElRef.current.removeEventListener('ended', playNext);
+    }
+    return undefined;
+  }, [indexAudio, audioElRef, currentAudio, startAudio]);
+
+  return {
+    currentAudio,
+    start: startAudio,
+    stop: stopAudio,
+  };
 };
