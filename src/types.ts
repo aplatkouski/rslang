@@ -145,6 +145,17 @@ export interface IWordDifficulty {
   difficulty: string;
 }
 
+export interface IUserWord {
+  id: string;
+  wordId: string;
+  isDeleted?: boolean;
+  isDifficult?: boolean;
+  isStudied?: boolean;
+  group: number;
+  page: number;
+  addedAt?: string; // YYYY-MM-DD
+}
+
 export interface MiniGameStats {
   name: string;
   words: number;
