@@ -1,17 +1,80 @@
-.word {
-  text-align: center;
-  border: 1px solid rgb(247, 14, 14);
+@import "../../styles/shadowedBlock";
+
+.game-field {
+  flex: 1 0 auto;
+  padding: 10px;
+  background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }
 
-.answer {
+.full-width {
+  width: 100vw;
+}
+
+.game-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, .6);
   text-align: center;
-  border: 1px solid rgb(185, 185, 194);
+  text-shadow: 4px 3px 0 #fff, 9px 8px 0 rgba(0, 0, 0, .15);
+  letter-spacing: .5em;
+}
+
+.game-round {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.word-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guess-word {
+  @include block(
+    center,
+    center,
+    10px,
+    #313133,
+    500,
+    2rem,
+  );
+  text-shadow:
+    #cad5e2 1px 1px 0,
+    #cad5e2 2px 2px 0,
+    #cad5e2 3px 3px 0,
+    #cad5e2 4px 4px 0,
+    #cad5e2 5px 5px 0;
+  background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }
 
 .wrong-answer {
-  border: 3px solid rgb(247, 14, 14);
+  background-color: rgb(228, 170, 170);
 }
 
 .right-answer {
-  border: 3px solid rgb(7, 155, 7);
+  background-color: rgb(180, 216, 180);
+}
+
+.answer-btn {
+  @include block(
+    center,
+    center,
+    10px,
+    #313133,
+    500,
+    1rem,
+  );
+  background-color: #fff;
+}
+
+.answer-btn:hover {
+  color: #3f51b5;
+  box-shadow: 0 0 60px #3f51b5;
+  transform: translateY(-5px);
+}
+
+.answer-btn:hover::before {
+  opacity: 1;
 }

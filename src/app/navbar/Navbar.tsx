@@ -19,9 +19,6 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
   navBar: {
     backgroundColor: '#5A38FD',
   },
@@ -79,7 +76,7 @@ export default function Navbar(): JSX.Element {
   }, [dispatch, openLogInModal, user]);
 
   return (
-    <div className={classes.root}>
+    <div>
       <SideMenu handleCloseSideMenu={() => handleToggleSideMenu()} open={drawerState} />
       <LogInForm
         isOpen={openLogInModal}

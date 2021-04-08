@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { getWords } from 'features/words/wordsSlice';
 import { useSelector } from 'react-redux';
 import StartNewGameDlg from 'app/startNewGameDlg/StartNewGameDlg';
@@ -197,7 +197,7 @@ export default function MyGame(): JSX.Element {
   };
 
   return (
-    <div>
+    <div className="game-field">
       <StartNewGameDlg
         gameBtns={GAME_BUTTONS}
         gameHeader={GAME_TITLE}
@@ -209,24 +209,26 @@ export default function MyGame(): JSX.Element {
       {newGame && guessWord && hiddenWord && gameWords && gameWords.length && (
         <Grid container spacing={4}>
           <Grid item xs={12}>
-            <Typography>{GAME_TITLE}</Typography>
+            <p className="game-title">{GAME_TITLE}</p>
           </Grid>
           <Grid item xs={12}>
-            <Typography>{`Раунд ${round} из ${GAME_ROUNDS}`}</Typography>
+            <p className="game-round">{`Раунд ${round} из ${GAME_ROUNDS}`}</p>
           </Grid>
           <Grid item xs={12}>
-            <div className="word">{hiddenWord}</div>
+            <div className="word-block guess-word">{hiddenWord}</div>
           </Grid>
           {gameWords.map((word, index) => (
-            <Grid key={word.id} item xs={4}>
-              <div
-                className={`answer ${
-                  rightWordId && rightWordId === word.id ? 'right-answer' : ''
-                }${wrongWordId && wrongWordId === word.id ? 'wrong-answer' : ''}`}
-              >
-                <button onClick={() => handleUserAnswer(word.id)} type="button">{`${
-                  index + 1
-                }: ${word.wordTranslate}`}</button>
+            <Grid key={word.id} item sm={4} xs={6}>
+              <div className="word-block">
+                <button
+                  className={`answer-btn ${
+                    rightWordId && rightWordId === word.id ? 'right-answer' : ''
+                  }${wrongWordId && wrongWordId === word.id ? 'wrong-answer' : ''}`}
+                  onClick={() => handleUserAnswer(word.id)}
+                  type="button"
+                >
+                  {`${index + 1}: ${word.wordTranslate}`}
+                </button>
               </div>
             </Grid>
           ))}

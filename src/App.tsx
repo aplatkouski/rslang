@@ -17,6 +17,8 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import MyGame from 'features/myGame/MyGame';
 import { ROUTES } from './constants';
 
+import './App.scss';
+
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
 
@@ -28,28 +30,30 @@ const App = (): JSX.Element => {
 
   return (
     <BrowserRouter>
-      <Navbar />
-      <Switch>
-        <Route component={MainPage} exact path="/" />
-        <Route component={SectorsPage} exact path="/sectors" />
-        <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
-        <Route component={TeamPage} exact path="/about-team" />
-        <Route component={games.GamesPage} exact path="/games" />
-        <Route
-          component={HardOrDeletedWordsPage}
-          exact
-          path="/hardOrDeletedSection/:indicator/:sector/:page/:dbRefPage/:color"
-        />
-        <Route
-          component={StudiedWordsPage}
-          exact
-          path="/studiedSection/:sector/:page/:color"
-        />
-        <Route component={StatisticPage} exact path={ROUTES.statistic} />
-        <Route component={MyGame} exact path="/games/myGame" />
-        <Redirect to="/" />
-      </Switch>
-      <Footer />
+      <div className="app-container">
+        <Navbar />
+        <Switch>
+          <Route component={MainPage} exact path="/" />
+          <Route component={SectorsPage} exact path="/sectors" />
+          <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
+          <Route component={TeamPage} exact path="/about-team" />
+          <Route component={games.GamesPage} exact path="/games" />
+          <Route
+            component={HardOrDeletedWordsPage}
+            exact
+            path="/hardOrDeletedSection/:indicator/:sector/:page/:dbRefPage/:color"
+          />
+          <Route
+            component={StudiedWordsPage}
+            exact
+            path="/studiedSection/:sector/:page/:color"
+          />
+          <Route component={StatisticPage} exact path={ROUTES.statistic} />
+          <Route component={MyGame} exact path="/games/myGame" />
+          <Redirect to="/" />
+        </Switch>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 };
