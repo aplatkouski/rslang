@@ -1,6 +1,6 @@
 import { LinearProgress, WithStyles } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { memo } from 'react';
 import styles from './styles';
 
 interface IProps extends WithStyles<typeof styles> {
@@ -19,4 +19,4 @@ const LearningProgress = ({ classes, value }: IProps) => (
   />
 );
 
-export default withStyles(styles, { withTheme: true })(LearningProgress);
+export default withStyles(styles, { withTheme: true })(memo(LearningProgress));
