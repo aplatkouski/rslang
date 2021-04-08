@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Button, Grid } from '@material-ui/core';
 import { getWords } from 'features/words/wordsSlice';
 import { useSelector } from 'react-redux';
@@ -40,7 +40,7 @@ export default function MyGame(): JSX.Element {
   const [openStartGameModal, setOpenStartGameModal] = useState(true);
   // результаты игры (объект с полями [слово]: числовой результат узнавания его в игре)
   const [gameResults, setGameResults] = useState<gt.WordsRes>([]);
-  //
+  // id правильного слова-ответа раунда и id неправильного, если user ответил неправильно
   const [rightWordId, setRightWordId] = useState<string | null>(null);
   const [wrongWordId, setWrongWordId] = useState<string | null>(null);
 
@@ -170,10 +170,21 @@ export default function MyGame(): JSX.Element {
   };
 
   /**
+   * Пользователь может нажимать на кнопку ответа / давать ответ лишь
+   * если определено угадываемое слово и на него еще не дан ответ.
+   */
+  const userCanGiveAnswer = useCallback(() => {
+    return guessWord && !rightWordId;
+  }, [guessWord, rightWordId]);
+
+  /**
    * Обработка ответа пользователя
    */
   const handleUserAnswer = (answerWordId: string) => {
-    if (!guessWord || rightWordId) {
+    if (!userCanGiveAnswer()) {
+      return;
+    }
+    if (!guessWord) {
       return;
     }
 
@@ -195,6 +206,28 @@ export default function MyGame(): JSX.Element {
       }
     }, 2000);
   };
+
+  /**
+   * Настраиваем игру на работу с помощью клавиатуры
+   */
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent): any => {
+      if (!userCanGiveAnswer()) {
+        return;
+      }
+      if (['1', '2', '3'].includes(event.key)) {
+        handleUserAnswer(gameWords[Number(event.key) - 1].id);
+      } else if (event.key === 'b') {
+        handleGoBack();
+      }
+    };
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameWords, guessWord, userCanGiveAnswer]);
 
   return (
     <div className="game-field">
