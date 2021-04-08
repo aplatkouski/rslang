@@ -1,3 +1,3 @@
-import WordsPage from './WordGridList';
+import TextBook from './TextBook';
 
-export default { WordsPage };
+export default TextBook;

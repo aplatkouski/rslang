@@ -7,12 +7,14 @@ import {
   useDispatch,
   useSelector,
 } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { IRouterPath, IWord } from 'types';
 import { api } from '../constants';
-import { IWord } from '../types';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppParams = () => useParams<IRouterPath>();
 export function useShallowEqualSelector(
   selector: (state: RootState, ...rest: any) => any
 ) {

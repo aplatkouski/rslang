@@ -5,6 +5,12 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
+import {
+  selectDeletedWordIdsByChunk,
+  selectDeletedWordIdsByGroup,
+  selectDifficultWordIdsByChunk,
+  selectStudiedWordIdsByPage,
+} from 'features/user-words/userWordsSlice';
 import { IWord } from 'types';
 import { api } from '../../constants';
 
@@ -93,9 +99,32 @@ const selectWordsByGroup = createSelector(
   (words, group) => words.filter((word) => word.group === group)
 );
 
-export const selectWordsByPage = createSelector(
-  [selectWordsByGroup, (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page],
+export const selectActiveWordsByGroup = createSelector(
+  [selectWordsByGroup, selectDeletedWordIdsByGroup],
+  (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
+);
+
+export const selectActiveWordsByPage = createSelector(
+  [
+    selectActiveWordsByGroup,
+    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
+  ],
   (words, page) => words.filter((word) => word.page === page)
+);
+
+export const selectDeletedWordsByChunk = createSelector(
+  [selectWordsByGroup, selectDeletedWordIdsByChunk],
+  (words, deletedWordIds) => words.filter((word) => deletedWordIds.includes(word.id))
+);
+
+export const selectDifficultWordsByChunk = createSelector(
+  [selectActiveWordsByGroup, selectDifficultWordIdsByChunk],
+  (words, difficultWordIds) => words.filter((word) => difficultWordIds.includes(word.id))
+);
+
+export const selectStudiedWordsByPage = createSelector(
+  [selectActiveWordsByPage, selectStudiedWordIdsByPage],
+  (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
 );
 
 export default wordsSlice.reducer;

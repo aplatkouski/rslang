@@ -11,7 +11,7 @@ import {
   IRemoveThunkArguments,
   IUserWord,
 } from 'types';
-import { api, PAGES_PER_GROUP } from '../../constants';
+import { api, PAGES_PER_GROUP, WORDS_PER_PAGE } from '../../constants';
 
 export const name = 'userWords' as const;
 
@@ -146,8 +146,10 @@ export const {
 interface SelectWordsProps extends Partial<IUserWord> {
   [key: string]: unknown;
 }
-
 type SelectorProps<T extends string> = Required<Pick<SelectWordsProps, T>>;
+type SelectorWithChunkProps<T extends string> = Required<
+  Pick<SelectWordsProps, T> & { chunk: number }
+>;
 
 export const selectUserWordsByWordId = createSelector(
   [selectAllUserWords, (_: RootState, { wordId }: SelectorProps<'wordId'>) => wordId],
@@ -167,21 +169,81 @@ export const selectUserWordsByPage = createSelector(
   (userWords, page) => userWords.filter((word) => word.page === page)
 );
 
-export const selectAllDeletedWords = createSelector(selectAllUserWords, (userWords) =>
-  userWords.filter((word) => word.isDeleted)
+export const selectWordsIdsByPage = createSelector(selectUserWordsByPage, (userWords) =>
+  userWords.map((userWord) => userWord.wordId)
 );
 
-const selectNotDeletedWords = createSelector(selectAllUserWords, (userWords) =>
-  userWords.filter((word) => !word.isDeleted)
+export const selectDeletedUserWordsByGroup = createSelector(
+  selectUserWordsByGroup,
+  (userWords) => userWords.filter((word) => word.isDeleted)
 );
 
-export const selectAllStudiedWords = createSelector(selectNotDeletedWords, (userWords) =>
-  userWords.filter((word) => word.addedAt)
+export const selectNotDeletedUserWordsByGroup = createSelector(
+  selectUserWordsByGroup,
+  (userWords) => userWords.filter((word) => !word.isDeleted)
 );
 
-export const selectAllDifficultWords = createSelector(
-  selectNotDeletedWords,
+export const selectDifficultUserWordsByGroup = createSelector(
+  selectNotDeletedUserWordsByGroup,
   (userWords) => userWords.filter((word) => word.isDifficult)
+);
+
+export const selectStudiedUserWordsByGroup = createSelector(
+  selectNotDeletedUserWordsByGroup,
+  (userWords) => userWords.filter((word) => word.isStudied)
+);
+
+export const selectStudiedUserWordsByPage = createSelector(
+  [
+    selectStudiedUserWordsByGroup,
+    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
+  ],
+  (studiedUserWords, page) =>
+    studiedUserWords.filter((studiedWord) => studiedWord.page === page)
+);
+
+export const selectDeletedWordIdsByGroup = createSelector(
+  selectDeletedUserWordsByGroup,
+  (userWords) => userWords.map((userWord) => userWord.wordId)
+);
+
+export const selectStudiedWordIdsByGroup = createSelector(
+  selectStudiedUserWordsByGroup,
+  (userWords) => userWords.map((userWord) => userWord.wordId)
+);
+
+export const selectStudiedWordIdsByPage = createSelector(
+  [selectWordsIdsByPage, selectStudiedWordIdsByGroup],
+  (wordIdsByPage, studiedWordIdsByGroup) =>
+    wordIdsByPage.filter((wordId) => studiedWordIdsByGroup.includes(wordId))
+);
+
+export const selectDeletedUserWordsByChunk = createSelector(
+  [
+    selectDeletedUserWordsByGroup,
+    (_: RootState, { chunk }: SelectorWithChunkProps<'group'>) => chunk,
+  ],
+  (userWords, chunk) =>
+    userWords.slice(chunk * WORDS_PER_PAGE, (chunk + 1) * WORDS_PER_PAGE)
+);
+
+export const selectDifficultUserWordsByChunk = createSelector(
+  [
+    selectDifficultUserWordsByGroup,
+    (_: RootState, { chunk }: SelectorWithChunkProps<'group'>) => chunk,
+  ],
+  (userWords, chunk) =>
+    userWords.slice(chunk * WORDS_PER_PAGE, (chunk + 1) * WORDS_PER_PAGE)
+);
+
+export const selectDeletedWordIdsByChunk = createSelector(
+  selectDeletedUserWordsByChunk,
+  (difficultUserWords) => difficultUserWords.map((word) => word.wordId)
+);
+
+export const selectDifficultWordIdsByChunk = createSelector(
+  selectDifficultUserWordsByChunk,
+  (difficultUserWords) => difficultUserWords.map((word) => word.wordId)
 );
 
 export default userWordsSlice.reducer;
