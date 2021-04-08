@@ -6,15 +6,12 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import { IWord } from 'types';
-import { api, PAGES_PER_GROUP } from '../../constants';
+import { api } from '../../constants';
 
 export const name = 'wordsAP' as const;
 
 const wordsAdapter = createEntityAdapter<IWord>({
-  sortComparer: (a, b) =>
-    (a.group - b.group) * PAGES_PER_GROUP +
-    (a.page - b.page) +
-    a.word.localeCompare(b.word),
+  sortComparer: (a, b) => a.word.localeCompare(b.word),
 });
 
 interface State {
