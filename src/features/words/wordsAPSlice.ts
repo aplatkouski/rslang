@@ -8,7 +8,7 @@ import type { AppDispatch, RootState } from 'app/store';
 import { IWord } from 'types';
 import { api, PAGES_PER_GROUP } from '../../constants';
 
-const name = 'wordsAP' as const;
+export const name = 'wordsAP' as const;
 
 const wordsAdapter = createEntityAdapter<IWord>({
   sortComparer: (a, b) =>

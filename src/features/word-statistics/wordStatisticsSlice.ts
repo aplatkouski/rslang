@@ -15,7 +15,7 @@ import {
 } from 'types';
 import { api } from '../../constants';
 
-const name = 'wordStatistics';
+export const name = 'wordStatistics' as const;
 
 const getWordStatisticsApi = (userId: string, id?: string) =>
   `${api}/users/${userId}/statistic/words${id ? `/${id}` : ''}`;
@@ -152,7 +152,7 @@ const wordStatisticsSlice = createSlice({
 export const {
   selectAll: selectAllWordStatistics,
   selectById: selectWordStatisticById,
-} = wordStatisticsAdapter.getSelectors<RootState>((state) => state.wordStatistics);
+} = wordStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
 interface ReportWordCountByGames {
   [gameId: string]: number;
