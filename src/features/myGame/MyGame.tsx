@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { getWords } from 'features/words/wordsSlice';
 import { useSelector } from 'react-redux';
 import StartNewGameDlg from 'app/startNewGameDlg/StartNewGameDlg';
@@ -207,7 +207,7 @@ export default function MyGame(): JSX.Element {
         onStartGame={handleStartGame}
       />
       {newGame && guessWord && hiddenWord && gameWords && gameWords.length && (
-        <Grid container spacing={4}>
+        <Grid container spacing={4} style={{ width: '100%', margin: 0 }}>
           <Grid item xs={12}>
             <p className="game-title">{GAME_TITLE}</p>
           </Grid>
@@ -215,15 +215,22 @@ export default function MyGame(): JSX.Element {
             <p className="game-round">{`Раунд ${round} из ${GAME_ROUNDS}`}</p>
           </Grid>
           <Grid item xs={12}>
-            <div className="word-block guess-word">{hiddenWord}</div>
+            <div className="centered-content-block">
+              <div className="guess-word">{hiddenWord}</div>
+            </div>
           </Grid>
           {gameWords.map((word, index) => (
             <Grid key={word.id} item sm={4} xs={6}>
-              <div className="word-block">
+              <div className="centered-content-block">
                 <button
-                  className={`answer-btn ${
-                    rightWordId && rightWordId === word.id ? 'right-answer' : ''
-                  }${wrongWordId && wrongWordId === word.id ? 'wrong-answer' : ''}`}
+                  className={`answer-btn
+                    ${
+                      word.id !== rightWordId && word.id !== wrongWordId
+                        ? 'no-answer'
+                        : ''
+                    }
+                    ${rightWordId === word.id ? 'right-answer' : ''}
+                    ${wrongWordId === word.id ? 'wrong-answer' : ''}`}
                   onClick={() => handleUserAnswer(word.id)}
                   type="button"
                 >
@@ -232,9 +239,18 @@ export default function MyGame(): JSX.Element {
               </div>
             </Grid>
           ))}
-          <button onClick={handleGoBack} type="button">
-            Вернуться к учебнику
-          </button>
+          <Grid item xs={12}>
+            <div className="centered-content-block">
+              <Button
+                color="primary"
+                onClick={handleGoBack}
+                type="button"
+                variant="outlined"
+              >
+                Вернуться к учебнику
+              </Button>
+            </div>
+          </Grid>
         </Grid>
       )}
       {!openStartGameModal && !newGame && (

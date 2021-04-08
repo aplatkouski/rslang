@@ -6,10 +6,6 @@
   background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }
 
-.full-width {
-  width: 100vw;
-}
-
 .game-title {
   font-size: 2rem;
   font-weight: 600;
@@ -25,7 +21,7 @@
   text-align: center;
 }
 
-.word-block {
+.centered-content-block {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +45,10 @@
   background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }
 
+.no-answer {
+  background-color: #fff;
+}
+
 .wrong-answer {
   background-color: rgb(228, 170, 170);
 }
@@ -66,7 +66,6 @@
     500,
     1rem,
   );
-  background-color: #fff;
 }
 
 .answer-btn:hover {
