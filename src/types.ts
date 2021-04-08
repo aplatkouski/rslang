@@ -72,20 +72,12 @@ export interface IRegistrationErrors {
   password: string | null | undefined;
 }
 
-export interface ILoginErrors {
-  errLogInMessage: string | null | undefined;
-}
-
-export interface ILoginStatus {
-  inProgress: boolean;
-}
-
 export interface IUser {
-  token: string;
-  refreshToken: string;
-  userId: string;
   name: string;
-  photoSrc: string;
+  photoSrc?: string;
+  refreshToken: string;
+  token: string;
+  userId: string;
 }
 
 export interface IUserLogInData {

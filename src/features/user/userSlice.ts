@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import userAltImg from 'assets/img/UnknownUser.png';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
+import { ICredentials, IUser, IUserLogInData } from 'types';
 import {
   api,
   GET_USER_API,
@@ -11,24 +12,25 @@ import {
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
 } from '../../constants';
-import {
-  ICredentials,
-  ILoginErrors,
-  ILoginStatus,
-  IUser,
-  IUserLogInData,
-} from '../../types';
 
-interface IUserState extends IUser, ILoginErrors, ILoginStatus {}
+export const status = {
+  idle: 'idle' as const,
+  fulfilled: 'fulfilled' as const,
+  pending: 'pending' as const,
+};
 
-const initialState: IUserState = {
-  token: '',
-  refreshToken: '',
-  userId: '',
-  name: '',
-  errLogInMessage: undefined,
-  inProgress: false,
-  photoSrc: userAltImg,
+type Status = keyof typeof status;
+
+interface IState {
+  current?: IUser;
+  error?: string;
+  status: Status;
+  defaultPhoto: string;
+}
+
+const initialState: IState = {
+  status: 'idle',
+  defaultPhoto: userAltImg,
 };
 
 export const userSlice = createSlice({
@@ -36,40 +38,29 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUserWithDefPhoto: (state, action: PayloadAction<IUser>) => {
-      state.token = action.payload.token;
-      state.refreshToken = action.payload.refreshToken;
-      state.userId = action.payload.userId;
-      state.name = action.payload.name;
-      state.errLogInMessage = undefined;
-      state.inProgress = false;
-      state.photoSrc = userAltImg;
+      state.current = action.payload;
+      state.current.photoSrc = userAltImg;
+      state.error = undefined;
+      state.status = status.fulfilled;
     },
     unsetUser: (state) => {
-      state.token = '';
-      state.refreshToken = '';
-      state.userId = '';
-      state.name = '';
-      state.errLogInMessage = undefined;
-      state.inProgress = false;
-      state.photoSrc = userAltImg;
+      state.current = undefined;
+      state.error = undefined;
+      state.status = status.idle;
     },
     setLogInError: (state, action: PayloadAction<string>) => {
-      state.token = '';
-      state.refreshToken = '';
-      state.userId = '';
-      state.name = '';
-      state.errLogInMessage = action.payload;
-      state.inProgress = false;
-      state.photoSrc = userAltImg;
+      state.current = undefined;
+      state.error = action.payload;
+      state.status = status.idle;
     },
     delLogInErrMessage: (state) => {
-      state.errLogInMessage = undefined;
+      state.error = undefined;
     },
-    setLoginProgress: (state, action: PayloadAction<boolean>) => {
-      state.inProgress = action.payload;
+    setLoginStatus: (state, action: PayloadAction<Status>) => {
+      state.status = action.payload;
     },
     setUserPhoto: (state, action: PayloadAction<string>) => {
-      state.photoSrc = action.payload;
+      if (state.current) state.current.photoSrc = action.payload;
     },
   },
 });
@@ -82,7 +73,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
   // Если после перезагрузки в localstorage что-то о пользователе обнаруживается,
   // то пробуем получить от сервера информацию о данном пользователе.
   if (savedUserData) {
-    const { token, refreshToken, userId, name } = savedUserData;
+    const { token, userId } = savedUserData;
 
     const options = {
       method: 'GET',
@@ -100,14 +91,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
     // аутентификации.
     // В противном случае пользователь успешно входит в систему, и мы подгружаем его фото.
     if (response.status === SERVER_OK_STATUS) {
-      const userData: IUser = {
-        token,
-        refreshToken,
-        userId,
-        name,
-        photoSrc: '',
-      };
-      dispatch(setUserWithDefPhoto(userData));
+      dispatch(setUserWithDefPhoto(savedUserData));
       dispatch(getUserPhotoSrc(userId, token));
       dispatch(fetchUserWords({ userId, userToken: token }));
     } else {
@@ -117,7 +101,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
 };
 
 export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) => {
-  dispatch(setLoginProgress(true));
+  dispatch(setLoginStatus(status.pending));
 
   try {
     const options = {
@@ -134,37 +118,23 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
       dispatch(setLogInError(WRONG_AUTHENTICATION_DATA_MESSAGE));
     } else {
       const user = (await response.json()) as IUser;
+      localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(user));
 
       dispatch(setUserWithDefPhoto(user));
-      dispatch(getUserPhotoSrc(user.userId, user.token));
-      dispatch(fetchUserWords({ userId: user.userId, userToken: user.token }));
-
-      const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
-      const savedUserData = lsItem ? (JSON.parse(lsItem) as IUser) : {};
-
-      localStorage.setItem(
-        LOCALSTORAGE_KEY,
-        JSON.stringify({
-          ...savedUserData,
-          ...user,
-        })
-      );
+      const { userId, token: userToken } = user;
+      dispatch(getUserPhotoSrc(userId, userToken));
+      dispatch(fetchUserWords({ userId, userToken }));
     }
   } catch (e) {
     dispatch(setLogInError(e.message));
   }
-  dispatch(setLoginProgress(false));
+  dispatch(setLoginStatus(status.fulfilled));
 };
 
 export const logOut = (): AppThunk => async (dispatch) => {
-  const noUserData: IUserState = {
-    token: '',
-    refreshToken: '',
-    userId: '',
-    name: '',
-    errLogInMessage: undefined,
-    inProgress: false,
-    photoSrc: userAltImg,
+  const noUserData: IState = {
+    status: status.idle,
+    defaultPhoto: userAltImg,
   };
 
   const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
@@ -185,26 +155,18 @@ export const getUserPhotoSrc = (userId: string, userToken: string): AppThunk => 
   dispatch
 ) => {
   if (userId && userToken) {
-    try {
-      const options = {
-        method: 'GET',
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          Accept: 'application/json',
-        },
-      };
+    const options = {
+      method: 'GET',
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        Accept: 'application/json',
+      },
+    };
+    const response = await fetch(`${api}/${GET_USER_PHOTO_API(userId)}`, options);
+    const blob = await response.blob();
 
-      const response = await fetch(`${api}/${GET_USER_PHOTO_API(userId)}`, options);
-
-      const blob = await response.blob();
-
-      dispatch(setUserPhoto(URL.createObjectURL(blob)));
-    } catch {
-      dispatch(setUserPhoto(userAltImg));
-    }
-  } else {
-    dispatch(setUserPhoto(userAltImg));
+    dispatch(setUserPhoto(URL.createObjectURL(blob)));
   }
 };
 
@@ -213,27 +175,30 @@ export const {
   unsetUser,
   setLogInError,
   delLogInErrMessage,
-  setLoginProgress,
+  setLoginStatus,
   setUserPhoto,
 } = userSlice.actions;
 
-export const getCurrUser = (state: RootState): IUser => {
-  return {
-    token: state.user.token,
-    refreshToken: state.user.refreshToken,
-    userId: state.user.userId,
-    name: state.user.name,
-    photoSrc: state.user.photoSrc,
-  };
+const fakeUse: IUser = {
+  token: '',
+  refreshToken: '',
+  userId: '',
+  name: '',
+  photoSrc: '',
 };
 
-export const getErrLogInMessage = (state: RootState) => state.user.errLogInMessage;
+export const getCurrUser = (state: RootState): IUser => state.user.current || fakeUse;
 
-export const getLoginStatus = (state: RootState) => state.user.inProgress;
+export const getErrLogInMessage = (state: RootState) => state.user.error;
 
-export const selectCredentials = (state: RootState): ICredentials => ({
-  userToken: state.user.token,
-  userId: state.user.userId,
-});
+export const getLoginStatus = (state: RootState) => state.user.status;
+
+export const selectCredentials = (state: RootState): ICredentials => {
+  const { token: userToken, userId } = state.user.current || fakeUse;
+  return {
+    userToken,
+    userId,
+  };
+};
 
 export default userSlice.reducer;
