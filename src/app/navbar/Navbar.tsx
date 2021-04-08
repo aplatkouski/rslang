@@ -13,6 +13,7 @@ import {
   getCurrUser,
   getLoginStatus,
   logOut,
+  status,
 } from 'features/user/userSlice';
 import UserCard from 'features/userCard/UserCard';
 import React, { useEffect, useState } from 'react';
@@ -51,7 +52,7 @@ export default function Navbar(): JSX.Element {
   };
 
   const handleCloseLogInModal = () => {
-    if (!logInStatus) {
+    if (!(logInStatus === status.pending)) {
       setOpenLogInModal(false);
       dispatch(delLogInErrMessage());
     }
