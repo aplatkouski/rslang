@@ -14,6 +14,7 @@ import {
   GAME_TITLE,
   GAME_RULES,
   GAME_BUTTONS,
+  // LOCALSTORAGE_KEY,
 } from './constants';
 import * as t from '../../types';
 import * as gt from './types';
@@ -48,6 +49,13 @@ export default function MyGame(): JSX.Element {
   const [playLoseGameSound] = useSound(loseGameSound);
 
   const history = useHistory();
+
+  /**
+   * Подгружаем состояние игры из localstorage при первом рендере (если оно там есть).
+   */
+  useEffect(() => {
+    //
+  }, []);
 
   /**
    * Для данного слова (wordId) обновляет результат его изучения
