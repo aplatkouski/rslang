@@ -33,9 +33,8 @@ const MainPage = ({ classes }: Props): JSX.Element => {
             <Typography variant="h3">Наши преимущества</Typography>
           </Grid>
           {promotions.map(({ content, img, title }, index) => (
-            <Grid item md={6} sm={12} xs={12}>
+            <Grid key={title} item md={6} sm={12} xs={12}>
               <PromotionCard
-                key={title}
                 content={content}
                 img={img}
                 isReverse={Boolean(index % 2)}
