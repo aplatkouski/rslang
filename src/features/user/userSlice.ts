@@ -222,4 +222,9 @@ export const getErrLogInMessage = (state: RootState) => state.user.errLogInMessa
 
 export const getLoginStatus = (state: RootState) => state.user.inProgress;
 
+export const selectCredentials = (state: RootState): ICredentials => ({
+  userToken: state.user.token,
+  userId: state.user.userId,
+});
+
 export default userSlice.reducer;
