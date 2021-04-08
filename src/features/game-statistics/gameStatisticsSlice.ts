@@ -14,7 +14,7 @@ import {
 } from 'types';
 import { api } from '../../constants';
 
-const name = 'gameStatistics';
+export const name = 'gameStatistics' as const;
 
 const getGameStatisticsApi = (userId: string, id?: string) =>
   `${api}/users/${userId}/statistic/games${id ? `/${id}` : ''}`;
@@ -117,8 +117,9 @@ export const updateGameStatistic = createAsyncThunk(
       },
       body: JSON.stringify(gameStatistic),
     };
-    await fetch(getGameStatisticsApi(userId, gameStatistic.id), options);
-    return { id: gameStatistic.id, changes: gameStatistic };
+    const response = await fetch(getGameStatisticsApi(userId, gameStatistic.id), options);
+    const changes = (await response.json()) as IGameStatistic;
+    return { id: changes.id, changes };
   }
 );
 
@@ -129,17 +130,17 @@ const gameStatisticsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchGameStatistics.pending, (state, { meta }) => {
-        state.status = meta.requestStatus;
+        state.status = `${meta.requestStatus}`;
       })
       .addCase(
         fetchGameStatistics.fulfilled,
         (state, { meta, payload: gameStatistics }) => {
-          state.status = meta.requestStatus;
+          state.status = `${meta.requestStatus}`;
           gameStatisticsAdapter.setAll(state, gameStatistics);
         }
       )
       .addCase(fetchGameStatistics.rejected, (state, { meta, error }) => {
-        state.status = meta.requestStatus;
+        state.status = `${meta.requestStatus}`;
         state.error = error.message;
       })
       .addCase(saveNewGameStatistic.fulfilled, gameStatisticsAdapter.addOne)
@@ -151,7 +152,7 @@ const gameStatisticsSlice = createSlice({
 export const {
   selectAll: selectAllGameStatistics,
   selectById: selectGameStatisticById,
-} = gameStatisticsAdapter.getSelectors<RootState>((state) => state.gameStatistics);
+} = gameStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
 export const selectBestSeriesByGame = createSelector(
   [selectAllGameStatistics, (_: RootState, gameId: string) => gameId],
