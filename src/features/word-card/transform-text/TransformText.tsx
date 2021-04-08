@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface IProps {
   text: string;
@@ -26,4 +26,4 @@ const TransformText = ({ text }: IProps) => {
   return <>{text}</>;
 };
 
-export default TransformText;
+export default memo(TransformText);
