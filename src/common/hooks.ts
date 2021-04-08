@@ -65,7 +65,8 @@ export const useHTMLElementWidth = <T extends HTMLElement>(elRef: RefObject<T>) 
 };
 
 export const useCols = <T extends HTMLElement>(
-  tileWidth = 320
+  tileWidth = 320,
+  maxCols = 4
 ): [RefObject<T>, number] => {
   const elRef = useRef<T>(null);
   const containerWidth = useHTMLElementWidth<T>(elRef);
@@ -73,11 +74,11 @@ export const useCols = <T extends HTMLElement>(
 
   useEffect(() => {
     if (containerWidth && tileWidth) {
-      setCols(Math.floor(containerWidth / tileWidth));
+      setCols(Math.min(Math.floor(containerWidth / tileWidth), maxCols || 1));
     } else {
       setCols(1);
     }
-  }, [containerWidth, tileWidth]);
+  }, [containerWidth, maxCols, tileWidth]);
   return [elRef, cols];
 };
 
