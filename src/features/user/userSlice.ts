@@ -1,16 +1,23 @@
-import userAltImg from 'assets/img/UnknownUser.png';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
-import { IUser, IUserLogInData, ILoginErrors, ILoginStatus } from '../../types';
+import userAltImg from 'assets/img/UnknownUser.png';
+import { fetchUserWords } from 'features/user-words/userWordsSlice';
 import {
   api,
   GET_USER_API,
+  GET_USER_PHOTO_API,
   LOCALSTORAGE_KEY,
   LOG_IN_API,
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
-  GET_USER_PHOTO_API,
 } from '../../constants';
+import {
+  ICredentials,
+  ILoginErrors,
+  ILoginStatus,
+  IUser,
+  IUserLogInData,
+} from '../../types';
 
 interface IUserState extends IUser, ILoginErrors, ILoginStatus {}
 
@@ -102,6 +109,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
       };
       dispatch(setUserWithDefPhoto(userData));
       dispatch(getUserPhotoSrc(userId, token));
+      dispatch(fetchUserWords({ userId, userToken: token }));
     } else {
       dispatch(logOut());
     }
@@ -129,6 +137,7 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
 
       dispatch(setUserWithDefPhoto(user));
       dispatch(getUserPhotoSrc(user.userId, user.token));
+      dispatch(fetchUserWords({ userId: user.userId, userToken: user.token }));
 
       const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
       const savedUserData = lsItem ? (JSON.parse(lsItem) as IUser) : {};

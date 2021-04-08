@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IRouterPath, IWord } from 'types';
 import { WORD_CARD_WIDTH } from '../../constants';
+import { selectUserWordsByPage } from '../user-words/userWordsSlice';
 import WordCard from '../word-card/WordCard';
 import styles from './styles';
 import { selectWordsByPage } from './wordsAPSlice';
@@ -23,14 +24,15 @@ interface Chunks {
 
 const WordGridList = ({ classes }: Props): JSX.Element => {
   const [chunks, setChunks] = useState<Chunks>({});
-  const [containerRef, cols] = useCols<HTMLDivElement>(WORD_CARD_WIDTH);
   const { group, page } = useParams<IRouterPath>();
-  const words = useAppSelector((state) =>
-    selectWordsByPage(state, {
-      group: extractRouterParam(group, 0),
-      page: extractRouterParam(page, 0),
-    })
-  );
+  const selectProps = {
+    group: extractRouterParam(group, 0),
+    page: extractRouterParam(page, 0),
+  };
+
+  const words = useAppSelector((state) => selectWordsByPage(state, selectProps));
+  const [containerRef, cols] = useCols<HTMLDivElement>(WORD_CARD_WIDTH, words.length);
+  const userWords = useAppSelector((state) => selectUserWordsByPage(state, selectProps));
 
   useEffect(() => {
     const c: Chunks = {};
@@ -53,7 +55,11 @@ const WordGridList = ({ classes }: Props): JSX.Element => {
               // because all tiles have the same width, we check only first
               <GridListTile key={i} classes={{ tile: classes.tile }}>
                 {chunks[i].map((word) => (
-                  <WordCard key={word.id} word={word} />
+                  <WordCard
+                    key={word.id}
+                    userWord={userWords.find((userWord) => userWord.wordId === word.id)}
+                    word={word}
+                  />
                 ))}
               </GridListTile>
             )
