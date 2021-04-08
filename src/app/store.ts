@@ -5,6 +5,7 @@ import gameStatisticsReducer, {
 import gamesReducer from 'features/games/gamesSlice';
 import sectorsReducer from 'features/sectors/sectorsSlice';
 import settingsReducer from 'features/settings/settingsSlice';
+import userWordsReducer, { name as userWords } from 'features/user-words/userWordsSlice';
 import userReducer from 'features/user/userSlice';
 import wordStatisticsReducer, {
   name as wordStats,
@@ -22,6 +23,7 @@ export const store = configureStore({
     [wordStats]: wordStatisticsReducer,
     words: wordsReducer,
     [wordsAP]: wordsAPReducer,
+    [userWords]: userWordsReducer,
   },
 });
 

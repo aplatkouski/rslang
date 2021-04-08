@@ -14,33 +14,110 @@ import BookIcon from '@material-ui/icons/Book';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
+import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import StopIcon from '@material-ui/icons/Stop';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import clsx from 'clsx';
 import React, { memo, useCallback } from 'react';
-import { IWord } from 'types';
-import { useAudio } from '../../common/hooks';
+import { IUserWord, IWord } from 'types';
+import { useAppDispatch, useAppSelector, useAudio } from '../../common/hooks';
 import { api } from '../../constants';
+import { removeUserWord, upsertUserWord } from '../user-words/userWordsSlice';
+import { selectCredentials } from '../user/userSlice';
 import LearningProgress from './learning-progress/LearningProgress';
 import styles from './styles';
 import TransformText from './transform-text/TransformText';
+import extractUserWord from './utils/extract-user-word';
+import isAllRequiredFieldEmpty from './utils/is-all-required-field-empty';
 
 interface Props extends WithStyles<typeof styles> {
   word: IWord;
+  userWord?: IUserWord;
 }
 
-const WordCard = ({ classes, word }: Props) => {
-  const [expanded, setExpanded] = React.useState(false);
+const WordCard = ({ classes, word, userWord }: Props) => {
   const [types, setTypes] = React.useState(() => ['bold', 'italic']);
   const { currentAudio, start, stop } = useAudio(word);
+  const credentials = useAppSelector(selectCredentials);
+  const dispatch = useAppDispatch();
+
+  const { isDeleted, isDifficult, isStudied } = userWord || {};
 
   const handleSetType = (_: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
     setTypes(newFormats);
   };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  const handleToggleDelete = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+
+      if (userWord && isAllRequiredFieldEmpty('isDeleted', userWord)) {
+        dispatch(
+          removeUserWord({
+            id: userWord.id,
+            ...credentials,
+          })
+        );
+      } else {
+        dispatch(
+          upsertUserWord({
+            obj: { ...extractUserWord(word, userWord), isDeleted: !isDeleted },
+            ...credentials,
+          })
+        );
+      }
+    },
+    [credentials, dispatch, isDeleted, userWord, word]
+  );
+
+  const handleToggleDifficult = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+
+      if (userWord && isAllRequiredFieldEmpty('isDifficult', userWord)) {
+        dispatch(
+          removeUserWord({
+            id: userWord.id,
+            ...credentials,
+          })
+        );
+      } else {
+        dispatch(
+          upsertUserWord({
+            obj: { ...extractUserWord(word, userWord), isDifficult: !isDifficult },
+            ...credentials,
+          })
+        );
+      }
+    },
+    [credentials, dispatch, isDifficult, userWord, word]
+  );
+
+  const handleToggleStudied = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+
+      if (userWord && isAllRequiredFieldEmpty('isStudied', userWord)) {
+        dispatch(
+          removeUserWord({
+            id: userWord.id,
+            ...credentials,
+          })
+        );
+      } else {
+        dispatch(
+          upsertUserWord({
+            obj: {
+              ...extractUserWord(word, userWord),
+              addedAt: !isStudied ? new Date().toISOString().substring(0, 10) : undefined,
+              isStudied: !isStudied,
+            },
+            ...credentials,
+          })
+        );
+      }
+    },
+    [credentials, dispatch, isStudied, userWord, word]
+  );
 
   const handlePlayAudio = useCallback(() => start(), [start]);
 
@@ -111,21 +188,29 @@ const WordCard = ({ classes, word }: Props) => {
           onChange={handleSetType}
           value={types}
         >
-          <ToggleButton aria-label="add word to training list" value="isStudied">
+          <ToggleButton
+            aria-label="add word to training list"
+            onClick={handleToggleStudied}
+            selected={isStudied}
+            value="isStudied"
+          >
             <BookIcon />
           </ToggleButton>
-          <ToggleButton aria-label="mark word as difficult" value="isDifficult">
+          <ToggleButton
+            aria-label="mark word as difficult"
+            onClick={handleToggleDifficult}
+            selected={isDifficult}
+            value="isDifficult"
+          >
             <PriorityHighIcon />
           </ToggleButton>
         </ToggleButtonGroup>
         <IconButton
           aria-label="mark word as deleted"
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
+          className={classes.expand}
+          onClick={handleToggleDelete}
         >
-          <DeleteIcon />
+          {isDeleted ? <RestoreFromTrashIcon /> : <DeleteIcon />}
         </IconButton>
       </CardActions>
       <CardContent>
