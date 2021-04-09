@@ -1,6 +1,6 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-import { IGame } from 'types';
+import { IGame, IGameStatistic, IWordStatistic } from 'types';
 import { api } from '../../constants';
 
 const name = 'games' as const;
@@ -12,6 +12,11 @@ const gameStatisticsAdapter = createEntityAdapter<IGame>({
 interface State {
   status: 'idle' | string;
   error?: string;
+  current?: {
+    data?: unknown;
+    wordStatistics: Array<IWordStatistic>;
+    gameStatistic: IGameStatistic;
+  };
 }
 
 const initialState: State = {
