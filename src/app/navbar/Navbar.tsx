@@ -14,10 +14,10 @@ import {
   getCurrUser,
   getLoginStatus,
   logOut,
-  status,
 } from 'features/user/userSlice';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { requestStatus } from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +52,7 @@ export default function Navbar(): JSX.Element {
   };
 
   const handleCloseLogInModal = () => {
-    if (!(logInStatus === status.pending)) {
+    if (!(logInStatus === requestStatus.pending)) {
       setOpenLogInModal(false);
       dispatch(delLogInErrMessage());
     }

@@ -9,17 +9,10 @@ import {
   GET_USER_PHOTO_API,
   LOCALSTORAGE_KEY,
   LOG_IN_API,
+  requestStatus,
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
 } from '../../constants';
-
-export const status = {
-  idle: 'idle' as const,
-  fulfilled: 'fulfilled' as const,
-  pending: 'pending' as const,
-};
-
-type Status = keyof typeof status;
 
 interface IState extends IStatus {
   current?: IUser;
@@ -27,7 +20,7 @@ interface IState extends IStatus {
 }
 
 const initialState: IState = {
-  status: 'idle',
+  status: requestStatus.idle,
   defaultPhoto: userAltImg,
 };
 
@@ -39,22 +32,22 @@ export const userSlice = createSlice({
       state.current = action.payload;
       state.current.photoSrc = userAltImg;
       state.error = undefined;
-      state.status = status.fulfilled;
+      state.status = requestStatus.fulfilled;
     },
     unsetUser: (state) => {
       state.current = undefined;
       state.error = undefined;
-      state.status = status.idle;
+      state.status = requestStatus.idle;
     },
     setLogInError: (state, action: PayloadAction<string>) => {
       state.current = undefined;
       state.error = action.payload;
-      state.status = status.idle;
+      state.status = requestStatus.idle;
     },
     delLogInErrMessage: (state) => {
       state.error = undefined;
     },
-    setLoginStatus: (state, action: PayloadAction<Status>) => {
+    setLoginStatus: (state, action: PayloadAction<keyof typeof requestStatus>) => {
       state.status = action.payload;
     },
     setUserPhoto: (state, action: PayloadAction<string>) => {
@@ -99,7 +92,7 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
 };
 
 export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) => {
-  dispatch(setLoginStatus(status.pending));
+  dispatch(setLoginStatus(requestStatus.pending));
 
   try {
     const options = {
@@ -126,12 +119,12 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
   } catch (e) {
     dispatch(setLogInError(e.message));
   }
-  dispatch(setLoginStatus(status.fulfilled));
+  dispatch(setLoginStatus(requestStatus.fulfilled));
 };
 
 export const logOut = (): AppThunk => async (dispatch) => {
   const noUserData: IState = {
-    status: status.idle,
+    status: requestStatus.idle,
     defaultPhoto: userAltImg,
   };
 

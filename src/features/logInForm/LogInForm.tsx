@@ -11,15 +11,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
-import {
-  getErrLogInMessage,
-  getLoginStatus,
-  logIn,
-  status,
-} from 'features/user/userSlice';
+import { getErrLogInMessage, getLoginStatus, logIn } from 'features/user/userSlice';
 import React, { useRef } from 'react';
-
 import 'styles/animate.min.css';
+import { requestStatus } from '../../constants';
 import './LogInForm.scss';
 
 interface Props {
@@ -69,7 +64,7 @@ const LogInForm = ({
       >
         <DialogTitle id="form-dialog-title">Войти в систему</DialogTitle>
         <DialogContent>
-          {logInStatus === status.pending && <CircularProgress />}
+          {logInStatus === requestStatus.pending && <CircularProgress />}
           {errLogInMessage && (
             <Typography
               className="animate__animated animate__bounceInLeft error"
@@ -107,14 +102,14 @@ const LogInForm = ({
           <DialogActions className="dlg-actions">
             <Button
               color="primary"
-              disabled={logInStatus === status.fulfilled}
+              disabled={logInStatus === requestStatus.fulfilled}
               onClick={handleClose}
             >
               Отмена
             </Button>
             <Button
               color="primary"
-              disabled={!(logInStatus === status.idle)}
+              disabled={!(logInStatus === requestStatus.idle)}
               onClick={handleLogInUser}
               type="submit"
               variant="outlined"
@@ -123,7 +118,7 @@ const LogInForm = ({
             </Button>
             <Button
               color="primary"
-              disabled={!(logInStatus === status.idle)}
+              disabled={!(logInStatus === requestStatus.idle)}
               onClick={handleRegister}
             >
               Зарегистрироваться
