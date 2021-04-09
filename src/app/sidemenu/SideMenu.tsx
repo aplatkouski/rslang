@@ -35,7 +35,7 @@ const useStyles = makeStyles({
 });
 
 const upperMenu = [
-  { key: 1, title: 'Учебник', url: '/sectors', icon: <LocalLibrary /> },
+  { key: 1, title: 'Учебник', url: '/textbook', icon: <LocalLibrary /> },
   { key: 2, title: 'Мини-игры', url: '', icon: <Games /> },
   {
     key: 3,

@@ -31,7 +31,7 @@ const WordGridList = ({ classes, userWords, words }: Props): JSX.Element => {
 
   useEffect(() => {
     if (request.status === requestStatus.fulfilled && !words.length)
-      history.push('/sectors');
+      history.push('/textbook');
   }, [words, history, request.status]);
 
   const [chunks, setChunks] = useState<Chunks>({});

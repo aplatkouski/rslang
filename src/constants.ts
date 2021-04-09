@@ -77,7 +77,7 @@ export const WORD_OPTIONAL_MODE = {
 export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 export const ROUTES = {
   main: '/',
-  sector: '/sectors',
+  sector: '/textbook',
   sections: '/textbook/:sector/:page',
   team: '/about-team',
   statistic: '/statistic',

@@ -33,7 +33,7 @@ const App = (): JSX.Element => {
       <Navbar />
       <Switch>
         <Route component={MainPage} exact path="/" />
-        <Route component={SectorsPage} exact path="/sectors" />
+        <Route component={SectorsPage} exact path="/textbook" />
         <Route component={TeamPage} exact path="/about-team" />
         <Route component={games.GamesPage} exact path="/games" />
         <Route component={TextBook} exact path="/textbook/:group/:page" />
