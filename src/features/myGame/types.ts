@@ -16,6 +16,8 @@ export interface IMyGameStatus {
   gameWords: t.WordsList;
   guessWord: t.IWord | null;
   hiddenWord: string | null;
+  hiddenLetter: string | null;
+  showHiddenLetter: boolean;
   openStartGameModal: boolean;
   gameResults: WordsRes;
   rightWordId: string | null;

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import StartNewGameDlg from 'app/startNewGameDlg/StartNewGameDlg';
 import { useHistory } from 'react-router-dom';
 import useSound from 'use-sound';
 import loseGameSound from 'assets/sounds/lose.mp3';
 import winGameSound from 'assets/sounds/win.mp3';
 import { getWords } from 'features/words/wordsSlice';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from 'common/hooks';
+import FullScreenButton from 'app/FullScreenButton/FullScreenButton';
 import { shuffle } from './shuffleAlgorithm';
 import {
   GAME_WORDS_NUMBER,
@@ -23,7 +24,7 @@ import * as gt from './types';
 import './MyGame.scss';
 
 export default function MyGame(): JSX.Element {
-  const words = useSelector(getWords);
+  const words = useAppSelector(getWords);
 
   const [myGameStatus, setMyGameStatus] = useState<gt.IMyGameStatus>({
     // Слова, которые должны участвовать в играх
@@ -40,6 +41,10 @@ export default function MyGame(): JSX.Element {
     guessWord: null,
     // английское слово (из guessWord), в котором "спрятана" одна буква
     hiddenWord: null,
+    // "спрятанная" буква
+    hiddenLetter: null,
+    // показать "спрятанную" букву
+    showHiddenLetter: false,
     // true - открыто модальное окно запуска игры, false - данное окно закрыто
     openStartGameModal: true,
     // результаты игры (объект с полями [слово]: числовой результат узнавания его в игре)
@@ -186,8 +191,14 @@ export default function MyGame(): JSX.Element {
    * Для данного слова заменяет произвольную его букву на "..."
    */
   const hideLetter = (word: string) => {
+    // рандомно выбираю номер буквы в слове для замены
     const letterNumber = Math.floor(Math.random() * word.length);
-    return word.replace(word[letterNumber], '...');
+    // "спрятанная" буква
+    const hiddenLetter = word[letterNumber];
+    // replace заменяет только первое вхождение подстроки в строку
+    const wordWithHiddenLetter = word.replace(word[letterNumber], '...');
+
+    return { hiddenLetter, wordWithHiddenLetter };
   };
 
   /**
@@ -223,14 +234,25 @@ export default function MyGame(): JSX.Element {
     const generatedWords = arrayOfUniqueNumbers.map(
       (number) => myGameStatus.words[number]
     );
+
+    // Определяем слово, которое предстоит угадать
+    const wordToGuess = generatedWords[0];
+    // "Прячем" в этом слове букву
+    const { hiddenLetter, wordWithHiddenLetter } = hideLetter(generatedWords[0].word);
+
+    // Первые GAME_WORDS_NUMBER слов из generatedWords перетасовываем и пускаем в игру
+    const shuffledWords = getShuffledGameWords(generatedWords);
+
     // Меняем статус игры
     setMyGameStatus((status) => {
       return {
         ...status,
         round: status.round + 1, // Следующий "раунд"
-        guessWord: generatedWords[0], // Определяем слово, которое предстоит угадать
-        hiddenWord: hideLetter(generatedWords[0].word), // "Прячем" в этом слове букву
-        gameWords: getShuffledGameWords(generatedWords), // Первые GAME_WORDS_NUMBER слов из generatedWords перетасовываем и пускаем в игру
+        guessWord: wordToGuess,
+        hiddenWord: wordWithHiddenLetter,
+        hiddenLetter,
+        showHiddenLetter: false,
+        gameWords: shuffledWords,
         rightWordId: null,
         wrongWordId: null,
         continue: false,
@@ -336,6 +358,7 @@ export default function MyGame(): JSX.Element {
       return {
         ...status,
         rightWordId: status.guessWord ? status.guessWord.id : null,
+        showHiddenLetter: true,
       };
     });
 
@@ -383,6 +406,7 @@ export default function MyGame(): JSX.Element {
 
   return (
     <div className="game-field">
+      <FullScreenButton />
       <StartNewGameDlg
         gameBtns={GAME_BUTTONS}
         gameHeader={GAME_TITLE}
@@ -405,7 +429,14 @@ export default function MyGame(): JSX.Element {
             </Grid>
             <Grid item xs={12}>
               <div className="centered-content-block">
-                <div className="guess-word">{myGameStatus.hiddenWord}</div>
+                <div className="guess-word">
+                  {!myGameStatus.showHiddenLetter
+                    ? myGameStatus.hiddenWord
+                    : myGameStatus.hiddenWord.replace(
+                        '...',
+                        String(myGameStatus.hiddenLetter)
+                      )}
+                </div>
               </div>
             </Grid>
             {myGameStatus.gameWords.map((word, index) => (
@@ -429,18 +460,6 @@ export default function MyGame(): JSX.Element {
                 </div>
               </Grid>
             ))}
-            <Grid item xs={12}>
-              <div className="centered-content-block">
-                <Button
-                  color="primary"
-                  onClick={handleGoBack}
-                  type="button"
-                  variant="outlined"
-                >
-                  Вернуться к учебнику
-                </Button>
-              </div>
-            </Grid>
           </Grid>
         )}
       {!myGameStatus.openStartGameModal && !myGameStatus.newGame && (
