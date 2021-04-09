@@ -13,7 +13,7 @@ import TextBook from 'features/words';
 import DeletedWordsSection from 'features/words/DeletedWordsSection';
 import DifficultWordsSection from 'features/words/DifficultWordsSection';
 import StudiedWordsSection from 'features/words/StudiedWordsSection';
-import { fetchWords } from 'features/words/wordsAPSlice';
+import { fetchWords } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';

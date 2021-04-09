@@ -14,7 +14,7 @@ import CustomizedSnackbars from '../../app/show-status/CustomizedSnackbars';
 import { requestStatus, WORD_CARD_WIDTH } from '../../constants';
 import Settings from '../settings/Settings';
 import styles from './styles';
-import { selectWordsRequestStatus } from './wordsAPSlice';
+import { selectWordsRequestStatus } from './wordsSlice';
 
 interface Props extends WithStyles<typeof styles> {
   words: Array<IWord>;

@@ -3,7 +3,7 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDifficultUserWordsByChunk } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectDifficultWordsByChunk } from './wordsAPSlice';
+import { selectDifficultWordsByChunk } from './wordsSlice';
 
 interface SelectProps {
   group: number;

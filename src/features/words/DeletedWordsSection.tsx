@@ -3,7 +3,7 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDeletedUserWordsByChunk } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectDeletedWordsByChunk } from './wordsAPSlice';
+import { selectDeletedWordsByChunk } from './wordsSlice';
 
 interface SelectProps {
   group: number;

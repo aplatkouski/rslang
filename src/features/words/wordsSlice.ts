@@ -1,396 +1,129 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { AppThunk, RootState } from 'app/store';
 import {
-  api,
-  COULD_NOT_GET_WORDS,
-  COULD_NOT_UPDATE_WORD,
-  CREATE_USER_WORDS_API,
-  GET_STUDIED_USER_WORDS_API,
-  GET_USER_WORDS_API,
-  GET_WORDS_API,
-  SERVER_OK_STATUS,
-  SPECIAL_WORD_INDICATOR,
-  WORDS_PER_PAGE,
-} from '../../constants';
-import * as t from '../../types';
-import { IDefiniteWordOptions, IWord, IWords, WordsList } from '../../types';
-import { getCurrUser } from '../user/userSlice';
+  createAsyncThunk,
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
+import type { AppDispatch, RootState } from 'app/store';
+import {
+  selectDeletedWordIdsByChunk,
+  selectDeletedWordIdsByGroup,
+  selectDifficultWordIdsByChunk,
+  selectStudiedWordIdsByPage,
+} from 'features/user-words/userWordsSlice';
+import { IStatus, IWord } from 'types';
+import { api, requestStatus } from '../../constants';
 
-const initialState: IWords = {
-  data: [],
-  loading: false, // true в момент начала загрузки; false по окончании загрузки
-  loaded: false, // false с момента начала загрузки; true по окончании загрузки, вне зависимости от ее успеха
-  error: undefined,
+export const name = 'wordsAP' as const;
+
+const wordsAdapter = createEntityAdapter<IWord>({
+  sortComparer: (a, b) => a.word.localeCompare(b.word),
+});
+
+const initialState: IStatus = {
+  status: requestStatus.idle,
 };
 
-export const updateWordOptions = createAsyncThunk<
-  IDefiniteWordOptions | undefined,
-  IDefiniteWordOptions,
+export const fetchWords = createAsyncThunk<
+  Array<IWord>,
+  unknown,
   {
+    dispatch: AppDispatch;
     state: RootState;
-    rejectValue: { errorMessage: string };
   }
 >(
-  'words/updateWordOptions',
-  async ({ wordId, options }: IDefiniteWordOptions, { getState, rejectWithValue }) => {
-    const { userId, token } = getCurrUser(getState());
-    const word = getWords(getState()).find(({ id }) => id === wordId);
-
-    if (!userId || !word) {
-      return undefined;
-    }
-
-    const body = word?.optional
-      ? {
-          difficulty: 'none',
-          optional: { ...word.optional, ...options },
-          group: word.group,
-          page: word.page,
-        }
-      : {
-          difficulty: 'none',
-          optional: { ...options },
-          group: word.group,
-          page: word.page,
-          // addedAt: new Date().toISOString().substring(0, 10),
-        };
-
-    const fetchOptions = {
-      method: word?.optional ? 'PUT' : 'POST',
-      withCredentials: true,
+  `${name}/fetch`,
+  async () => {
+    const options = {
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: JSON.stringify(body),
     };
-
-    try {
-      const response = await fetch(
-        `${api}/users/${userId}/words/${word.id}`,
-        fetchOptions
-      );
-      if (response.status !== SERVER_OK_STATUS) {
-        return rejectWithValue({ errorMessage: COULD_NOT_UPDATE_WORD(word?.word) });
-      }
-      return { wordId, options } as IDefiniteWordOptions;
-    } catch (err) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue(err.response.data);
-    }
+    const response = await fetch(`${api}/words/all`, options);
+    return (await response.json()) as Array<IWord>;
+  },
+  {
+    condition: (_: unknown, { getState }) =>
+      getState()[name].status === requestStatus.idle ||
+      getState()[name].status === requestStatus.rejected,
   }
 );
 
-export const wordsSlice = createSlice({
-  name: 'words',
-  initialState,
-  reducers: {
-    setStartWordsLoading: (state) => {
-      state.data = [];
-      state.loading = true;
-      state.loaded = false;
-      state.error = undefined;
-    },
-    setEndWordsLoading: (state) => {
-      state.loading = false;
-      state.loaded = true;
-    },
-    setWordsLoadError: (state, action: PayloadAction<string | undefined>) => {
-      state.error = action.payload;
-    },
-    setWords: (state, action: PayloadAction<Array<IWord>>) => {
-      state.data = action.payload;
-    },
-    setWordOptions: (state, action: PayloadAction<IDefiniteWordOptions>) => {
-      const index = state.data.findIndex((el) => String(el.id) === action.payload.wordId);
-      if (index > -1) {
-        state.data[index].optional = {
-          ...state.data[index].optional,
-          ...action.payload.options,
-        };
-      }
-    },
-  },
+const wordsSlice = createSlice({
+  name,
+  initialState: wordsAdapter.getInitialState(initialState),
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateWordOptions.pending, (state) => {
-      state.error = undefined;
-    });
-    builder.addCase(updateWordOptions.fulfilled, (state, { payload }) => {
-      if (payload) {
-        const index = state.data.findIndex(({ id }) => id === payload.wordId);
-        if (index > -1) {
-          state.data[index].optional = {
-            ...state.data[index].optional,
-            ...payload.options,
-          };
+    builder
+      .addCase(fetchWords.pending, (state, { meta }) => {
+        if (state.status === requestStatus.idle) {
+          state.status = meta.requestStatus;
         }
-      }
-    });
-    builder.addCase(updateWordOptions.rejected, (state, action) => {
-      if (action.payload) {
-        state.error = action.payload.errorMessage;
-      } else {
-        state.error = action.error.message;
-      }
-    });
+      })
+      .addCase(fetchWords.fulfilled, (state, { meta, payload: words }) => {
+        if (state.status === requestStatus.pending) {
+          state.status = meta.requestStatus;
+          wordsAdapter.setAll(state, words);
+        }
+      })
+      .addCase(fetchWords.rejected, (state, { meta, error }) => {
+        if (state.status === requestStatus.pending) {
+          state.status = meta.requestStatus;
+          state.error = error.message;
+        }
+      });
   },
 });
 
-function getWordsPromise(sectorNum: number, pageNum: number) {
-  const params = new URLSearchParams([
-    ['page', `${pageNum}`],
-    ['group', `${sectorNum}`],
-  ]);
-  const options = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  };
-  return fetch(`${api}/${GET_WORDS_API}?${params}`, options);
-}
-
-function getUserWordsPromise(
-  userId: string,
-  userToken: string,
-  group: number,
-  page: number
-) {
-  const params = new URLSearchParams([
-    ['group', `${group}`],
-    ['page', `${page}`],
-  ]);
-  const options = {
-    method: 'GET',
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${userToken}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  };
-  return fetch(`${api}/${GET_USER_WORDS_API(userId)}?${params}`, options);
-}
-
-export const loadWords = (
-  sectorNum: number,
-  pageNum: number,
-  userId?: string,
-  userToken?: string
-): AppThunk => async (dispatch) => {
-  dispatch(setStartWordsLoading());
-
-  let words: WordsList = [];
-
-  try {
-    if (!userId || !userToken) {
-      const response = await getWordsPromise(sectorNum, pageNum);
-
-      if (response.status !== SERVER_OK_STATUS) {
-        dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
-      } else {
-        words = (await response.json()) as WordsList;
-        dispatch(setWords(words));
-      }
-    } else {
-      const response = await getUserWordsPromise(
-        String(userId),
-        String(userToken),
-        sectorNum,
-        pageNum
-      );
-
-      if (response.status !== SERVER_OK_STATUS) {
-        dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
-      } else {
-        words = (await response.json()) as WordsList;
-        words.forEach((word) => {
-          if (word.userWord) {
-            word.optional = word.userWord.optional;
-            delete word.userWord;
-          }
-        });
-        dispatch(setWords(words));
-      }
-    }
-  } catch (e) {
-    dispatch(setWordsLoadError(e.message));
-  }
-
-  dispatch(setEndWordsLoading());
-};
-
-function getUserStudiedWordsPromise(
-  userId: string,
-  userToken: string,
-  group: number,
-  page: number
-) {
-  const params = new URLSearchParams([
-    ['group', `${group}`],
-    ['page', `${page}`],
-  ]);
-  const options = {
-    method: 'GET',
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${userToken}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  };
-  return fetch(`${api}/${GET_STUDIED_USER_WORDS_API(userId)}?${params}`, options);
-}
-
-export const loadStudiedWords = (
-  sectorNum: number,
-  pageNum: number,
-  userId: string,
-  userToken: string
-): AppThunk => async (dispatch) => {
-  dispatch(setStartWordsLoading());
-
-  let words: WordsList = [];
-
-  try {
-    const response = await getUserStudiedWordsPromise(
-      userId,
-      userToken,
-      sectorNum,
-      pageNum
-    );
-
-    if (response.status !== SERVER_OK_STATUS) {
-      dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
-    } else {
-      words = (await response.json()) as WordsList;
-      words.forEach((word) => {
-        if (word.userWord) {
-          word.optional = word.userWord.optional;
-          delete word.userWord;
-        }
-      });
-      dispatch(setWords(words));
-    }
-  } catch (e) {
-    dispatch(setWordsLoadError(e.message));
-  }
-
-  dispatch(setEndWordsLoading());
-};
-
-function getUserSpecialWordsPromise(
-  userId: string,
-  userToken: string,
-  group: number,
-  page: number,
-  requestIndicator: string
-) {
-  let filter: string = '';
-  if (requestIndicator === SPECIAL_WORD_INDICATOR.HARD) {
-    filter =
-      '{"$and":[{"userWord.optional.mode":"hard"},{"$or":[{"userWord.optional.deleted":false},{"userWord.optional.deleted":null}]}]}';
-  } else if (requestIndicator === SPECIAL_WORD_INDICATOR.DEL) {
-    filter = '{"userWord.optional.deleted":true}';
-  }
-
-  const params = new URLSearchParams([
-    ['page', `${page}`],
-    ['group', `${group}`],
-    ['wordsPerPage', `${WORDS_PER_PAGE}`],
-    ['filter', filter],
-  ]);
-
-  const options = {
-    method: 'GET',
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${userToken}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  };
-
-  return fetch(`${api}/${CREATE_USER_WORDS_API(userId)}?${params}`, options);
-}
-
-export const getUserSpecialWords = (
-  sectorNum: number,
-  pageNum: number,
-  userId: string,
-  userToken: string,
-  requestIndicator: string
-): AppThunk => async (dispatch) => {
-  dispatch(setStartWordsLoading());
-
-  const words: WordsList = [];
-
-  try {
-    const response = await getUserSpecialWordsPromise(
-      userId,
-      userToken,
-      sectorNum,
-      pageNum,
-      requestIndicator
-    );
-
-    if (response.status !== SERVER_OK_STATUS) {
-      dispatch(setWordsLoadError(COULD_NOT_GET_WORDS));
-    } else {
-      const result: any = await response.json();
-
-      if (result && result[0].paginatedResults) {
-        result[0].paginatedResults.forEach((word: any) => {
-          if (word.userWord) {
-            word.optional = word.userWord.optional;
-            delete word.userWord;
-            words.push(word);
-          }
-        });
-      }
-      dispatch(setWords(words));
-    }
-  } catch (e) {
-    dispatch(setWordsLoadError(e.message));
-  }
-
-  dispatch(setEndWordsLoading());
-};
-
 export const {
-  setStartWordsLoading,
-  setWords,
-  setEndWordsLoading,
-  setWordsLoadError,
-  setWordOptions,
-} = wordsSlice.actions;
+  selectAll: selectAllWords,
+  selectById: selectWordById,
+} = wordsAdapter.getSelectors<RootState>((state) => state[name]);
 
-export const getWords = (state: RootState) => state.words.data;
+interface SelectWordsProps extends Partial<IWord> {
+  [key: string]: unknown;
+}
 
-export const getWordsLoadErrMessage = (state: RootState) => state.words.error;
+type SelectorProps<T extends string> = Required<Pick<SelectWordsProps, T>>;
 
-export const selectWordsRequestStatus = (state: RootState): t.IWordsStatus => {
-  return {
-    loading: state.words.loading,
-    loaded: state.words.loaded,
-    error: state.words.error,
-  };
-};
+const selectWordsByGroup = createSelector(
+  [selectAllWords, (_: RootState, { group }: SelectorProps<'group'>) => group],
+  (words, group) => words.filter((word) => word.group === group)
+);
 
-export const areAllWordsDeleted = (state: RootState): boolean => {
-  if (!state.words.data.length) {
-    return false;
-  }
-  for (let i = 0; i < state.words.data.length; i += 1) {
-    if (!state.words.data[i].optional || !state.words.data[i].optional?.deleted) {
-      return false;
-    }
-  }
-  return true;
-};
+export const selectActiveWordsByGroup = createSelector(
+  [selectWordsByGroup, selectDeletedWordIdsByGroup],
+  (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
+);
+
+export const selectActiveWordsByPage = createSelector(
+  [
+    selectActiveWordsByGroup,
+    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
+  ],
+  (words, page) => words.filter((word) => word.page === page)
+);
+
+export const selectDeletedWordsByChunk = createSelector(
+  [selectWordsByGroup, selectDeletedWordIdsByChunk],
+  (words, deletedWordIds) => words.filter((word) => deletedWordIds.includes(word.id))
+);
+
+export const selectDifficultWordsByChunk = createSelector(
+  [selectActiveWordsByGroup, selectDifficultWordIdsByChunk],
+  (words, difficultWordIds) => words.filter((word) => difficultWordIds.includes(word.id))
+);
+
+export const selectStudiedWordsByPage = createSelector(
+  [selectActiveWordsByPage, selectStudiedWordIdsByPage],
+  (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
+);
+
+export const selectWordsRequestStatus = (state: RootState) => ({
+  status: state[name].status,
+  error: state[name].error,
+});
 
 export default wordsSlice.reducer;

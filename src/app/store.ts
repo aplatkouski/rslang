@@ -10,8 +10,7 @@ import userReducer from 'features/user/userSlice';
 import wordStatisticsReducer, {
   name as wordStats,
 } from 'features/word-statistics/wordStatisticsSlice';
-import wordsAPReducer, { name as wordsAP } from 'features/words/wordsAPSlice';
-import wordsReducer from 'features/words/wordsSlice';
+import wordsReducer, { name as wordsAP } from 'features/words/wordsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,8 +20,7 @@ export const store = configureStore({
     settings: settingsReducer,
     user: userReducer,
     [wordStats]: wordStatisticsReducer,
-    words: wordsReducer,
-    [wordsAP]: wordsAPReducer,
+    [wordsAP]: wordsReducer,
     [userWords]: userWordsReducer,
   },
 });

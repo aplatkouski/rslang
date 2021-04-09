@@ -3,7 +3,7 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectUserWordsByPage } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectActiveWordsByPage } from './wordsAPSlice';
+import { selectActiveWordsByPage } from './wordsSlice';
 
 const TextBook = (): JSX.Element => {
   const { group, page } = useAppParams();
