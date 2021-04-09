@@ -1,15 +1,15 @@
-import React from 'react';
 import {
+  Divider,
   Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
 } from '@material-ui/core';
-import clsx from 'clsx';
-import { LocalLibrary, Games, EventNote, People } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import { EventNote, Games, LocalLibrary, People } from '@material-ui/icons';
+import clsx from 'clsx';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { ROUTES } from '../../constants';
@@ -37,7 +37,25 @@ const useStyles = makeStyles({
 const upperMenu = [
   { key: 1, title: 'Учебник', url: '/sectors', icon: <LocalLibrary /> },
   { key: 2, title: 'Мини-игры', url: '', icon: <Games /> },
-  { key: 3, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
+  {
+    key: 3,
+    title: 'Удалённые',
+    url: '/textbook/dictionary/deleted/0/0',
+    icon: <Games />,
+  },
+  {
+    key: 4,
+    title: 'Трудные',
+    url: '/textbook/dictionary/difficult/0/0',
+    icon: <Games />,
+  },
+  {
+    key: 5,
+    title: 'Изучаемые',
+    url: '/textbook/dictionary/studied/0/0',
+    icon: <Games />,
+  },
+  { key: 6, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];
 
 const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];
