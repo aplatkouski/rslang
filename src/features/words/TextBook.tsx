@@ -18,7 +18,7 @@ const TextBook = (): JSX.Element => {
   );
   const userWords = useAppSelector((state) => selectUserWordsByPage(state, selectProps));
 
-  return <WordGridList userWords={userWords} words={activeWords} />;
+  return <WordGridList baseUrl="textbook" userWords={userWords} words={activeWords} />;
 };
 
 export default TextBook;
