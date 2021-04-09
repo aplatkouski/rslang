@@ -1,7 +1,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-import { IGame, IGameStatistic, IWordStatistic } from 'types';
-import { api } from '../../constants';
+import { IGame, IGameStatistic, IStatus, IWordStatistic } from 'types';
+import { api, requestStatus } from '../../constants';
 
 const name = 'games' as const;
 
@@ -9,9 +9,7 @@ const gameStatisticsAdapter = createEntityAdapter<IGame>({
   sortComparer: (a, b) => a.num - b.num,
 });
 
-interface State {
-  status: 'idle' | string;
-  error?: string;
+interface State extends IStatus {
   current?: {
     data?: unknown;
     wordStatistics: Array<IWordStatistic>;
@@ -20,7 +18,7 @@ interface State {
 }
 
 const initialState: State = {
-  status: 'idle',
+  status: requestStatus.idle,
 };
 
 export const fetchGames = createAsyncThunk<
@@ -44,10 +42,8 @@ export const fetchGames = createAsyncThunk<
     return (await response.json()) as Array<IGame>;
   },
   {
-    condition: (_: unknown, { getState }) => {
-      const { status } = getState()[name];
-      return status === 'idle';
-    },
+    condition: (_: unknown, { getState }) =>
+      getState()[name].status === requestStatus.idle,
   }
 );
 
@@ -58,19 +54,19 @@ const gamesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchGames.pending, (state, { meta }) => {
-        if (state.status === 'idle') {
+        if (state.status === requestStatus.idle) {
           state.status = meta.requestStatus;
         }
       })
       .addCase(fetchGames.fulfilled, (state, { meta, payload: games }) => {
-        if (state.status === 'pending') {
+        if (state.status === requestStatus.pending) {
           state.status = meta.requestStatus;
           gameStatisticsAdapter.setAll(state, games);
         }
       })
       .addCase(fetchGames.rejected, (state, { error }) => {
-        if (state.status === 'pending') {
-          state.status = 'idle';
+        if (state.status === requestStatus.pending) {
+          state.status = requestStatus.idle;
           state.error = error.message;
         }
       });

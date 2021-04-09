@@ -6,34 +6,23 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import { selectAllGames } from 'features/games/gamesSlice';
-import {
-  ICreateThunkArguments,
-  ICredentials,
-  IRemoveThunkArguments,
-  IUpdateThunkArguments,
-  IWordStatistic,
-} from 'types';
-import { api } from '../../constants';
+import * as t from 'types';
+import { api, requestStatus } from '../../constants';
 
 export const name = 'wordStatistics' as const;
 
 const getWordStatisticsApi = (userId: string, id?: string) =>
   `${api}/users/${userId}/statistic/words${id ? `/${id}` : ''}`;
 
-const wordStatisticsAdapter = createEntityAdapter<IWordStatistic>();
+const wordStatisticsAdapter = createEntityAdapter<t.IWordStatistic>();
 
-interface State {
-  status: 'idle' | string;
-  error?: string;
-}
-
-const initialState: State = {
-  status: 'idle',
+const initialState: t.IStatus = {
+  status: requestStatus.idle,
 };
 
 export const fetchWordStatistics = createAsyncThunk<
-  Array<IWordStatistic>,
-  ICredentials,
+  Array<t.IWordStatistic>,
+  t.ICredentials,
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -52,13 +41,10 @@ export const fetchWordStatistics = createAsyncThunk<
     };
 
     const response = await fetch(getWordStatisticsApi(userId), options);
-    return (await response.json()) as Array<IWordStatistic>;
+    return (await response.json()) as Array<t.IWordStatistic>;
   },
   {
-    condition: (_, { getState }) => {
-      const { status } = getState()[name];
-      return status === 'idle';
-    },
+    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
   }
 );
 
@@ -68,7 +54,7 @@ export const saveNewWordStatistic = createAsyncThunk(
     obj: wordStatistic,
     userId,
     userToken,
-  }: ICreateThunkArguments<IWordStatistic>) => {
+  }: t.ICreateThunkArguments<t.IWordStatistic>) => {
     const options = {
       method: 'POST',
       withCredentials: true,
@@ -80,13 +66,13 @@ export const saveNewWordStatistic = createAsyncThunk(
       body: JSON.stringify(wordStatistic),
     };
     const response = await fetch(getWordStatisticsApi(userId), options);
-    return (await response.json()) as IWordStatistic;
+    return (await response.json()) as t.IWordStatistic;
   }
 );
 
 export const removeWordStatistic = createAsyncThunk(
   `${name}/remove`,
-  async ({ id: wordStatisticId, userId, userToken }: IRemoveThunkArguments) => {
+  async ({ id: wordStatisticId, userId, userToken }: t.IRemoveThunkArguments) => {
     const options = {
       method: 'DELETE',
       withCredentials: true,
@@ -107,7 +93,7 @@ export const updateWordStatistic = createAsyncThunk(
     obj: wordStatistic,
     userId,
     userToken,
-  }: IUpdateThunkArguments<IWordStatistic>) => {
+  }: t.IUpdateThunkArguments<t.IWordStatistic>) => {
     const options = {
       method: 'PUT',
       withCredentials: true,
@@ -203,14 +189,14 @@ interface ReportCorrectVsWrongAnswers {
   wrongAnswerTotal: number;
 }
 
-interface SelectWordStatisticsProps extends Partial<IWordStatistic> {
+interface SelectWordStatisticsProps extends Partial<t.IWordStatistic> {
   [key: string]: unknown;
 }
 
 type SelectorProps<T extends string> = Required<Pick<SelectWordStatisticsProps, T>>;
 
 const correctVsWrongAnswersCombiner = (
-  wordStatistics: Array<IWordStatistic>
+  wordStatistics: Array<t.IWordStatistic>
 ): ReportCorrectVsWrongAnswers => {
   const total = {
     correctAnswerTotal: 0,
@@ -306,8 +292,9 @@ export const selectCorrectVsWrongGroupByGameAndDate = createSelector(
     const totals = [] as Array<GroupByGameAndDate>;
     wordStatistics.forEach((statistic) => {
       const total = totals.find(
-        (t) =>
-          statistic.gameId === t.gameId && !statistic.studiedAt.localeCompare(t.studiedAt)
+        (totalByGameAndDate) =>
+          statistic.gameId === totalByGameAndDate.gameId &&
+          !statistic.studiedAt.localeCompare(totalByGameAndDate.studiedAt)
       );
       if (total) {
         total.correctAnswerTotal += statistic.correctAnswerTotal;
@@ -331,7 +318,9 @@ export const selectCorrectVsWrongGroupByGame = createSelector(
   (wordStatistics) => {
     const totals = [] as Array<Omit<GroupByGameAndDate, 'studiedAt'>>;
     wordStatistics.forEach((statistic) => {
-      const total = totals.find((t) => t.gameId === statistic.gameId);
+      const total = totals.find(
+        (totalByGameAndDate) => totalByGameAndDate.gameId === statistic.gameId
+      );
       if (total) {
         total.correctAnswerTotal += statistic.correctAnswerTotal;
         total.wrongAnswerTotal += statistic.wrongAnswerTotal;

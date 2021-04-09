@@ -9,9 +9,10 @@ import {
   ICreateThunkArguments,
   ICredentials,
   IRemoveThunkArguments,
+  IStatus,
   IUserWord,
 } from 'types';
-import { api, PAGES_PER_GROUP, WORDS_PER_PAGE } from '../../constants';
+import { api, PAGES_PER_GROUP, requestStatus, WORDS_PER_PAGE } from '../../constants';
 
 export const name = 'userWords' as const;
 
@@ -22,13 +23,8 @@ const userWordsAdapter = createEntityAdapter<IUserWord>({
   sortComparer: (a, b) => (a.group - b.group) * PAGES_PER_GROUP + (a.page - b.page),
 });
 
-interface State {
-  status: 'idle' | string;
-  error?: string;
-}
-
-const initialState: State = {
-  status: 'idle',
+const initialState: IStatus = {
+  status: requestStatus.idle,
 };
 
 export const fetchUserWords = createAsyncThunk<
@@ -55,10 +51,7 @@ export const fetchUserWords = createAsyncThunk<
     return (await response.json()) as Array<IUserWord>;
   },
   {
-    condition: (_, { getState }) => {
-      const { status } = getState()[name];
-      return status === 'idle';
-    },
+    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
   }
 );
 
@@ -110,25 +103,25 @@ const userWordsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserWords.pending, (state, { meta }) => {
-        if (state.status === 'idle') {
-          state.status = `${meta.requestStatus}`;
+        if (state.status === requestStatus.idle) {
+          state.status = meta.requestStatus;
         }
       })
       .addCase(fetchUserWords.fulfilled, (state, { meta, payload: userWords }) => {
-        if (state.status === 'pending') {
-          state.status = `${meta.requestStatus}`;
+        if (state.status === requestStatus.pending) {
+          state.status = meta.requestStatus;
           userWordsAdapter.setAll(state, userWords);
         }
       })
       .addCase(fetchUserWords.rejected, (state, { error }) => {
-        if (state.status === 'pending') {
-          state.status = 'idle';
+        if (state.status === requestStatus.pending) {
+          state.status = requestStatus.idle;
           state.error = error.message;
         }
       })
       .addCase(removeUserWord.fulfilled, userWordsAdapter.removeOne)
       .addCase(removeUserWord.rejected, (state, { error }) => {
-        state.status = 'idle';
+        state.status = requestStatus.idle;
         state.error = error.message;
       })
       .addCase(upsertUserWord.fulfilled, (state, { payload: userWord }) => {
@@ -245,5 +238,10 @@ export const selectDifficultWordIdsByChunk = createSelector(
   selectDifficultUserWordsByChunk,
   (difficultUserWords) => difficultUserWords.map((word) => word.wordId)
 );
+
+export const selectUserWordsRequestStatus = (state: RootState) => ({
+  status: state[name].status,
+  error: state[name].error,
+});
 
 export default userWordsSlice.reducer;

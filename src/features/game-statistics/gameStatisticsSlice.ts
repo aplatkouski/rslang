@@ -5,13 +5,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-import {
-  ICreateThunkArguments,
-  ICredentials,
-  IGameStatistic,
-  IRemoveThunkArguments,
-  IUpdateThunkArguments,
-} from 'types';
+import * as t from 'types';
 import { api } from '../../constants';
 
 export const name = 'gameStatistics' as const;
@@ -19,20 +13,15 @@ export const name = 'gameStatistics' as const;
 const getGameStatisticsApi = (userId: string, id?: string) =>
   `${api}/users/${userId}/statistic/games${id ? `/${id}` : ''}`;
 
-const gameStatisticsAdapter = createEntityAdapter<IGameStatistic>();
+const gameStatisticsAdapter = createEntityAdapter<t.IGameStatistic>();
 
-interface State {
-  status: 'idle' | string;
-  error?: string;
-}
-
-const initialState: State = {
+const initialState: t.IStatus = {
   status: 'idle',
 };
 
 export const fetchGameStatistics = createAsyncThunk<
-  Array<IGameStatistic>,
-  ICredentials,
+  Array<t.IGameStatistic>,
+  t.ICredentials,
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -51,7 +40,7 @@ export const fetchGameStatistics = createAsyncThunk<
     };
 
     const response = await fetch(getGameStatisticsApi(userId), options);
-    return (await response.json()) as Array<IGameStatistic>;
+    return (await response.json()) as Array<t.IGameStatistic>;
   },
   {
     condition: (_, { getState }) => {
@@ -67,7 +56,7 @@ export const saveNewGameStatistic = createAsyncThunk(
     obj: gameStatistic,
     userId,
     userToken,
-  }: ICreateThunkArguments<IGameStatistic>) => {
+  }: t.ICreateThunkArguments<t.IGameStatistic>) => {
     const options = {
       method: 'POST',
       withCredentials: true,
@@ -79,13 +68,13 @@ export const saveNewGameStatistic = createAsyncThunk(
       body: JSON.stringify(gameStatistic),
     };
     const response = await fetch(getGameStatisticsApi(userId), options);
-    return (await response.json()) as IGameStatistic;
+    return (await response.json()) as t.IGameStatistic;
   }
 );
 
 export const removeGameStatistic = createAsyncThunk(
   `${name}/remove`,
-  async ({ id: gameStatisticId, userId, userToken }: IRemoveThunkArguments) => {
+  async ({ id: gameStatisticId, userId, userToken }: t.IRemoveThunkArguments) => {
     const options = {
       method: 'DELETE',
       withCredentials: true,
@@ -106,7 +95,7 @@ export const updateGameStatistic = createAsyncThunk(
     obj: gameStatistic,
     userId,
     userToken,
-  }: IUpdateThunkArguments<IGameStatistic>) => {
+  }: t.IUpdateThunkArguments<t.IGameStatistic>) => {
     const options = {
       method: 'PUT',
       withCredentials: true,
@@ -118,7 +107,7 @@ export const updateGameStatistic = createAsyncThunk(
       body: JSON.stringify(gameStatistic),
     };
     const response = await fetch(getGameStatisticsApi(userId, gameStatistic.id), options);
-    const changes = (await response.json()) as IGameStatistic;
+    const changes = (await response.json()) as t.IGameStatistic;
     return { id: changes.id, changes };
   }
 );
@@ -130,17 +119,17 @@ const gameStatisticsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchGameStatistics.pending, (state, { meta }) => {
-        state.status = `${meta.requestStatus}`;
+        state.status = meta.requestStatus;
       })
       .addCase(
         fetchGameStatistics.fulfilled,
         (state, { meta, payload: gameStatistics }) => {
-          state.status = `${meta.requestStatus}`;
+          state.status = meta.requestStatus;
           gameStatisticsAdapter.setAll(state, gameStatistics);
         }
       )
       .addCase(fetchGameStatistics.rejected, (state, { meta, error }) => {
-        state.status = `${meta.requestStatus}`;
+        state.status = meta.requestStatus;
         state.error = error.message;
       })
       .addCase(saveNewGameStatistic.fulfilled, gameStatisticsAdapter.addOne)

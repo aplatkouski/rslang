@@ -1,25 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as t from 'types';
 import type { AppThunk, RootState } from 'app/store';
-import { LOCALSTORAGE_KEY } from '../../constants';
+import * as t from 'types';
 
-interface SettingsState {
-  value: t.Settings;
-}
+const LOCALSTORAGE_KEY = 'settings';
 
-const initialState: SettingsState = {
-  value: {
-    translation: true,
-    buttons: true,
-  },
+const initialState: t.Settings = {
+  isShowTranslations: true,
+  isShowButtons: false,
 };
 
 export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    changeSettings: (state, action: PayloadAction<t.Settings>) => {
-      state.value = action.payload;
+    changeSettings: (state, { payload: settings }: PayloadAction<t.Settings>) => {
+      state.isShowButtons = settings.isShowButtons;
+      state.isShowTranslations = settings.isShowTranslations;
 
       const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
       const savedSettings = lsItem ? (JSON.parse(lsItem) as t.Settings) : {};
@@ -28,7 +24,7 @@ export const settingsSlice = createSlice({
         LOCALSTORAGE_KEY,
         JSON.stringify({
           ...savedSettings,
-          ...action.payload,
+          ...settings,
         })
       );
     },
@@ -41,16 +37,13 @@ export const getSettingsFromLocalStorage = (): AppThunk => (dispatch) => {
   ) as t.Settings | null;
 
   if (savedSettings) {
-    const { translation, buttons } = savedSettings;
-    const settings: t.Settings = {
-      translation,
-      buttons,
-    };
-    dispatch(changeSettings(settings));
+    const { isShowTranslations, isShowButtons } = savedSettings;
+    dispatch(changeSettings({ isShowTranslations, isShowButtons }));
   }
 };
 
 export const { changeSettings } = settingsSlice.actions;
 
-export const selectSettings = (state: RootState) => state.settings.value;
+export const selectSettings = (state: RootState) => state.settings;
+
 export default settingsSlice.reducer;

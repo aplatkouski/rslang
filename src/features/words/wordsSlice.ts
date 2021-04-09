@@ -1,26 +1,26 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
-import { getCurrUser } from '../user/userSlice';
-import { IWord, IWords, IDefiniteWordOptions, WordsList } from '../../types';
 import {
   api,
   COULD_NOT_GET_WORDS,
+  COULD_NOT_UPDATE_WORD,
   CREATE_USER_WORDS_API,
-  GET_WORDS_API,
   GET_STUDIED_USER_WORDS_API,
-  SERVER_OK_STATUS,
   GET_USER_WORDS_API,
+  GET_WORDS_API,
+  SERVER_OK_STATUS,
   SPECIAL_WORD_INDICATOR,
   WORDS_PER_PAGE,
-  COULD_NOT_UPDATE_WORD,
 } from '../../constants';
 import * as t from '../../types';
+import { IDefiniteWordOptions, IWord, IWords, WordsList } from '../../types';
+import { getCurrUser } from '../user/userSlice';
 
 const initialState: IWords = {
   data: [],
   loading: false, // true в момент начала загрузки; false по окончании загрузки
   loaded: false, // false с момента начала загрузки; true по окончании загрузки, вне зависимости от ее успеха
-  loadError: undefined,
+  error: undefined,
 };
 
 export const updateWordOptions = createAsyncThunk<
@@ -92,14 +92,14 @@ export const wordsSlice = createSlice({
       state.data = [];
       state.loading = true;
       state.loaded = false;
-      state.loadError = undefined;
+      state.error = undefined;
     },
     setEndWordsLoading: (state) => {
       state.loading = false;
       state.loaded = true;
     },
     setWordsLoadError: (state, action: PayloadAction<string | undefined>) => {
-      state.loadError = action.payload;
+      state.error = action.payload;
     },
     setWords: (state, action: PayloadAction<Array<IWord>>) => {
       state.data = action.payload;
@@ -116,7 +116,7 @@ export const wordsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(updateWordOptions.pending, (state) => {
-      state.loadError = undefined;
+      state.error = undefined;
     });
     builder.addCase(updateWordOptions.fulfilled, (state, { payload }) => {
       if (payload) {
@@ -131,9 +131,9 @@ export const wordsSlice = createSlice({
     });
     builder.addCase(updateWordOptions.rejected, (state, action) => {
       if (action.payload) {
-        state.loadError = action.payload.errorMessage;
+        state.error = action.payload.errorMessage;
       } else {
-        state.loadError = action.error.message;
+        state.error = action.error.message;
       }
     });
   },
@@ -371,13 +371,13 @@ export const {
 
 export const getWords = (state: RootState) => state.words.data;
 
-export const getWordsLoadErrMessage = (state: RootState) => state.words.loadError;
+export const getWordsLoadErrMessage = (state: RootState) => state.words.error;
 
-export const getWordsLoadingStatus = (state: RootState): t.IWordsStatus => {
+export const selectWordsRequestStatus = (state: RootState): t.IWordsStatus => {
   return {
     loading: state.words.loading,
     loaded: state.words.loaded,
-    loadError: state.words.loadError,
+    error: state.words.error,
   };
 };
 

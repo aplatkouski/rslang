@@ -12,6 +12,7 @@ interface SelectProps {
 
 const StudiedWordsSection = (): JSX.Element => {
   const { group, page } = useAppParams();
+
   const selectProps: SelectProps = {
     group: extractRouterParam(group, 0),
     page: extractRouterParam(page, 0),

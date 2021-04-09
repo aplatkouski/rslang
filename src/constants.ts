@@ -78,7 +78,7 @@ export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 export const ROUTES = {
   main: '/',
   sector: '/sectors',
-  sections: '/section/:sector/:page/:color',
+  sections: '/textbook/:sector/:page',
   team: '/about-team',
   statistic: '/statistic',
 };
@@ -122,3 +122,10 @@ export const initialStats = [
   },
 ];
 export const GAME_PART_URL_PATH = 'game';
+
+export const requestStatus = {
+  idle: 'idle' as const,
+  fulfilled: 'fulfilled' as const,
+  pending: 'pending' as const,
+  rejected: 'rejected' as const,
+};

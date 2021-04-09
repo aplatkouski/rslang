@@ -17,10 +17,12 @@ import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import StopIcon from '@material-ui/icons/Stop';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import clsx from 'clsx';
 import React, { memo, useCallback } from 'react';
 import { IUserWord, IWord } from 'types';
 import { useAppDispatch, useAppSelector, useAudio } from '../../common/hooks';
 import { api } from '../../constants';
+import { selectSettings } from '../settings/settingsSlice';
 import { removeUserWord, upsertUserWord } from '../user-words/userWordsSlice';
 import { selectCredentials } from '../user/userSlice';
 import LearningProgress from './learning-progress/LearningProgress';
@@ -38,6 +40,8 @@ const WordCard = ({ classes, word, userWord }: Props) => {
   const [types, setTypes] = React.useState(() => ['bold', 'italic']);
   const { currentAudio, start, stop } = useAudio(word);
   const credentials = useAppSelector(selectCredentials);
+  const { isShowTranslations, isShowButtons } = useAppSelector(selectSettings);
+
   const dispatch = useAppDispatch();
 
   const { isDeleted, isDifficult, isStudied } = userWord || {};
@@ -130,7 +134,7 @@ const WordCard = ({ classes, word, userWord }: Props) => {
     if (currentAudio) {
       return (
         <IconButton
-          aria-label="play/pause"
+          aria-label="pause"
           className={classes.actionButton}
           onClick={handleStopAudio}
         >
@@ -140,7 +144,7 @@ const WordCard = ({ classes, word, userWord }: Props) => {
     }
     return (
       <IconButton
-        aria-label="play/pause"
+        aria-label="play"
         className={classes.actionButton}
         onClick={handlePlayAudio}
       >
@@ -162,7 +166,7 @@ const WordCard = ({ classes, word, userWord }: Props) => {
           action: classes.action,
           title: blinkIfPlaying('audio'),
         }}
-        subheader={word.wordTranslate}
+        subheader={isShowTranslations && word.wordTranslate}
         title={
           <>
             <b>{word.word}</b>
@@ -177,45 +181,50 @@ const WordCard = ({ classes, word, userWord }: Props) => {
         title={word.word}
       />
       <CardContent>
-        <Typography className={blinkIfPlaying('audioMeaning')} paragraph>
+        <Typography
+          className={clsx(blinkIfPlaying('audioMeaning'), classes.paragraph)}
+          paragraph
+        >
           <TransformText text={word.textMeaning} />
         </Typography>
-        <Typography>{word.textMeaningTranslate}</Typography>
+        {isShowTranslations && <Typography>{word.textMeaningTranslate}</Typography>}
       </CardContent>
-      <CardActions disableSpacing>
-        <ToggleButtonGroup
-          aria-label="set word type"
-          onChange={handleSetType}
-          value={types}
-        >
-          <ToggleButton
-            aria-label="add word to training list"
-            onClick={handleToggleStudied}
-            selected={isStudied}
-            value="isStudied"
+      {isShowButtons && (
+        <CardActions disableSpacing>
+          <ToggleButtonGroup
+            aria-label="set word type"
+            onChange={handleSetType}
+            value={types}
           >
-            <BookIcon />
-          </ToggleButton>
-          <ToggleButton
-            aria-label="mark word as difficult"
-            onClick={handleToggleDifficult}
-            selected={isDifficult}
-            value="isDifficult"
+            <ToggleButton
+              aria-label="add word to training list"
+              onClick={handleToggleStudied}
+              selected={isStudied}
+              value="isStudied"
+            >
+              <BookIcon />
+            </ToggleButton>
+            <ToggleButton
+              aria-label="mark word as difficult"
+              onClick={handleToggleDifficult}
+              selected={isDifficult}
+              value="isDifficult"
+            >
+              <PriorityHighIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <IconButton
+            aria-label="mark word as deleted"
+            className={classes.expand}
+            onClick={handleToggleDelete}
           >
-            <PriorityHighIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <IconButton
-          aria-label="mark word as deleted"
-          className={classes.expand}
-          onClick={handleToggleDelete}
-        >
-          {isDeleted ? <RestoreFromTrashIcon /> : <DeleteIcon />}
-        </IconButton>
-      </CardActions>
+            {isDeleted ? <RestoreFromTrashIcon /> : <DeleteIcon />}
+          </IconButton>
+        </CardActions>
+      )}
       <CardContent>
         <Typography
-          className={blinkIfPlaying('audioExample')}
+          className={clsx(blinkIfPlaying('audioExample'), classes.paragraph)}
           color="textSecondary"
           component="p"
           paragraph
@@ -223,9 +232,11 @@ const WordCard = ({ classes, word, userWord }: Props) => {
         >
           <TransformText text={word.textExample} />
         </Typography>
-        <Typography color="textSecondary" component="p" variant="body2">
-          {word.textExampleTranslate}
-        </Typography>
+        {isShowTranslations && (
+          <Typography color="textSecondary" component="p" variant="body2">
+            {word.textExampleTranslate}
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

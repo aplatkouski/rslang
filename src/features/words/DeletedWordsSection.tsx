@@ -12,6 +12,7 @@ interface SelectProps {
 
 const DeletedWordsSection = (): JSX.Element => {
   const { group, page } = useAppParams();
+
   const selectProps: SelectProps = {
     group: extractRouterParam(group, 0),
     chunk: extractRouterParam(page, 0),

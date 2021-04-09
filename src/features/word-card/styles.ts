@@ -28,7 +28,9 @@ const gameCardStyles = (theme: Theme) =>
       transform: 'rotate(180deg)',
     },
     paragraph: {
-      marginBottom: theme.spacing(1),
+      '&:last-child': {
+        marginBottom: theme.spacing(0),
+      },
     },
     avatar: {
       backgroundColor: red[theme.palette.type === 'light' ? 200 : 700],

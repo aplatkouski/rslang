@@ -1,24 +1,4 @@
-import { WORD_OPTIONAL_MODE } from './constants';
-
-export type SectionPageParams = {
-  sector?: string;
-  page?: string;
-  color?: string;
-};
-
-export interface ISpecialSectionPageParams extends SectionPageParams {
-  indicator?: string;
-  dbRefPage?: string;
-}
-
-export interface SectorPage {
-  sectorNum: number;
-  pageNum: number;
-}
-
-export interface SectorPageVisibility extends SectorPage {
-  visible: boolean;
-}
+import { requestStatus, WORD_OPTIONAL_MODE } from './constants';
 
 export interface Page {
   key: number;
@@ -30,39 +10,18 @@ export interface Page {
 export interface Sector {
   key: number;
   title: string;
-  color: string;
   pages: Array<Page>;
 }
 
 export type SectorsState = Array<Sector>;
 
-export interface ISpecialSection {
-  group: number;
-  page: number;
-  dbRefPage: number;
-  url: string;
-}
-
-export type SpecialSections = Array<ISpecialSection>;
-
-export interface IStudiedWordsSection extends SectorPage {
-  count: number;
-  url: string;
-}
-
-export type StudiedWordsSections = Array<IStudiedWordsSection>;
-
 export interface ISectorsInfo {
   sectors: SectorsState;
-  sectorsReady: boolean;
-  deletedSections: SpecialSections;
-  hardSections: SpecialSections;
-  studiedWordsSections: StudiedWordsSections;
 }
 
 export interface Settings {
-  translation: boolean;
-  buttons: boolean;
+  isShowTranslations: boolean;
+  isShowButtons: boolean;
 }
 
 export interface IRegistrationErrors {
@@ -125,16 +84,16 @@ export type WordsList = Array<IWord>;
 export interface IWordsStatus {
   loading: boolean;
   loaded: boolean;
-  loadError?: string;
+  error?: string;
 }
 
 export interface IWords extends IWordsStatus {
   data: WordsList;
 }
 
-export interface IWordDifficulty {
-  wordId: string;
-  difficulty: string;
+export interface IStatus {
+  error?: string;
+  status: keyof typeof requestStatus;
 }
 
 export interface IUserWord {

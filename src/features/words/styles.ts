@@ -5,6 +5,7 @@ const styles = (theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'wrap',
+      position: 'relative',
       justifyContent: 'space-around',
       overflow: 'hidden',
       backgroundColor: theme.palette.background.paper,
@@ -15,6 +16,12 @@ const styles = (theme: Theme) =>
     },
     tile: {
       padding: theme.spacing(0, 1),
+    },
+    settings: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      zIndex: 1,
     },
   });
 

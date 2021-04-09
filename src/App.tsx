@@ -1,25 +1,22 @@
 import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
-import SectionPage from 'app/sectionPage/SectionPage';
 import StatisticPage from 'app/statisticPage/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch } from 'common/hooks';
 import games from 'features/games';
 import { fetchGames } from 'features/games/gamesSlice';
-import HardOrDeletedWordsPage from 'features/hardOrDeletedWordsPage/HardOrDeletedWordsPage';
 import SectorsPage from 'features/sectorsPage/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
-import StudiedWordsPage from 'features/studiedWordsPage/StudiedWordsPage';
 import { logInViaLocalStorage } from 'features/user/userSlice';
 import TextBook from 'features/words';
+import DeletedWordsSection from 'features/words/DeletedWordsSection';
+import DifficultWordsSection from 'features/words/DifficultWordsSection';
+import StudiedWordsSection from 'features/words/StudiedWordsSection';
 import { fetchWords } from 'features/words/wordsAPSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
-import DeletedWordsSection from './features/words/DeletedWordsSection';
-import DifficultWordsSection from './features/words/DifficultWordsSection';
-import StudiedWordsSection from './features/words/StudiedWordsSection';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -37,7 +34,6 @@ const App = (): JSX.Element => {
       <Switch>
         <Route component={MainPage} exact path="/" />
         <Route component={SectorsPage} exact path="/sectors" />
-        <Route component={SectionPage} exact path="/section/:sector/:page/:color" />
         <Route component={TeamPage} exact path="/about-team" />
         <Route component={games.GamesPage} exact path="/games" />
         <Route component={TextBook} exact path="/textbook/:group/:page" />
@@ -55,16 +51,6 @@ const App = (): JSX.Element => {
           component={DeletedWordsSection}
           exact
           path="/textbook/dictionary/deleted/:group/:page"
-        />
-        <Route
-          component={HardOrDeletedWordsPage}
-          exact
-          path="/hardOrDeletedSection/:indicator/:sector/:page/:dbRefPage/:color"
-        />
-        <Route
-          component={StudiedWordsPage}
-          exact
-          path="/studiedSection/:sector/:page/:color"
         />
         <Route component={StatisticPage} exact path={ROUTES.statistic} />
         <Redirect to="/" />

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import userAltImg from 'assets/img/UnknownUser.png';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
-import { ICredentials, IUser, IUserLogInData } from 'types';
+import { ICredentials, IStatus, IUser, IUserLogInData } from 'types';
 import {
   api,
   GET_USER_API,
@@ -21,10 +21,8 @@ export const status = {
 
 type Status = keyof typeof status;
 
-interface IState {
+interface IState extends IStatus {
   current?: IUser;
-  error?: string;
-  status: Status;
   defaultPhoto: string;
 }
 

@@ -11,9 +11,8 @@ import {
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
-import React, { BaseSyntheticEvent } from 'react';
-import { getCurrUser } from '../user/userSlice';
-
+import { getCurrUser } from 'features/user/userSlice';
+import React, { BaseSyntheticEvent, useCallback } from 'react';
 import { changeSettings, selectSettings } from './settingsSlice';
 import styles from './styles';
 
@@ -24,8 +23,20 @@ const Settings = ({ classes }: Props): JSX.Element => {
   const settings = useAppSelector(selectSettings);
   const user = useAppSelector(getCurrUser);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const checkboxSelector = (flag: boolean): JSX.Element => {
-    if (!flag) {
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(
+        changeSettings({ ...settings, [event.target.name]: event.target.checked })
+      );
+    },
+    [dispatch, settings]
+  );
+
+  const { isShowTranslations, isShowButtons } = settings;
+
+  const checkboxSelector = useCallback((): JSX.Element => {
+    if (!user) {
       return (
         <Tooltip title="Авторизуйтесь, чтобы изменять параметр">
           <span>
@@ -34,20 +45,19 @@ const Settings = ({ classes }: Props): JSX.Element => {
         </Tooltip>
       );
     }
-    return <Checkbox checked={buttons} name="buttons" onChange={handleChange} />;
-  };
-  const handleClick = (event: BaseSyntheticEvent) => {
+    return (
+      <Checkbox checked={isShowButtons} name="isShowButtons" onChange={handleChange} />
+    );
+  }, [handleChange, isShowButtons, user]);
+
+  const handleClick = useCallback((event: BaseSyntheticEvent) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeSettings({ ...settings, [event.target.name]: event.target.checked }));
-  };
-  const { translation, buttons } = settings;
   return (
     <>
       <Tooltip title="Настройки">
@@ -79,8 +89,8 @@ const Settings = ({ classes }: Props): JSX.Element => {
                 className={classes.controls}
                 control={
                   <Checkbox
-                    checked={translation}
-                    name="translation"
+                    checked={isShowTranslations}
+                    name="isShowTranslations"
                     onChange={handleChange}
                   />
                 }
@@ -88,7 +98,7 @@ const Settings = ({ classes }: Props): JSX.Element => {
               />
               <FormControlLabel
                 className={classes.controls}
-                control={checkboxSelector(Boolean(user.token))}
+                control={checkboxSelector()}
                 label="Отображать кнопки на карточке слова"
               />
             </FormGroup>

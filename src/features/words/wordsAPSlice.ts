@@ -11,8 +11,8 @@ import {
   selectDifficultWordIdsByChunk,
   selectStudiedWordIdsByPage,
 } from 'features/user-words/userWordsSlice';
-import { IWord } from 'types';
-import { api } from '../../constants';
+import { IStatus, IWord } from 'types';
+import { api, requestStatus } from '../../constants';
 
 export const name = 'wordsAP' as const;
 
@@ -20,13 +20,8 @@ const wordsAdapter = createEntityAdapter<IWord>({
   sortComparer: (a, b) => a.word.localeCompare(b.word),
 });
 
-interface State {
-  status: 'idle' | string;
-  error?: string;
-}
-
-const initialState: State = {
-  status: 'idle',
+const initialState: IStatus = {
+  status: requestStatus.idle,
 };
 
 export const fetchWords = createAsyncThunk<
@@ -50,10 +45,9 @@ export const fetchWords = createAsyncThunk<
     return (await response.json()) as Array<IWord>;
   },
   {
-    condition: (_: unknown, { getState }) => {
-      const { status } = getState()[name];
-      return status === 'idle';
-    },
+    condition: (_: unknown, { getState }) =>
+      getState()[name].status === requestStatus.idle ||
+      getState()[name].status === requestStatus.rejected,
   }
 );
 
@@ -64,19 +58,19 @@ const wordsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchWords.pending, (state, { meta }) => {
-        if (state.status === 'idle') {
+        if (state.status === requestStatus.idle) {
           state.status = meta.requestStatus;
         }
       })
       .addCase(fetchWords.fulfilled, (state, { meta, payload: words }) => {
-        if (state.status === 'pending') {
+        if (state.status === requestStatus.pending) {
           state.status = meta.requestStatus;
           wordsAdapter.setAll(state, words);
         }
       })
-      .addCase(fetchWords.rejected, (state, { error }) => {
-        if (state.status === 'pending') {
-          state.status = 'idle';
+      .addCase(fetchWords.rejected, (state, { meta, error }) => {
+        if (state.status === requestStatus.pending) {
+          state.status = meta.requestStatus;
           state.error = error.message;
         }
       });
@@ -126,5 +120,10 @@ export const selectStudiedWordsByPage = createSelector(
   [selectActiveWordsByPage, selectStudiedWordIdsByPage],
   (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
 );
+
+export const selectWordsRequestStatus = (state: RootState) => ({
+  status: state[name].status,
+  error: state[name].error,
+});
 
 export default wordsSlice.reducer;

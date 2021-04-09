@@ -8,6 +8,7 @@ import SideMenu from 'app/sidemenu/SideMenu';
 import Logo from 'assets/img/MainPageLogo.jpg';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import LogInForm from 'features/logInForm/LogInForm';
+import UserCard from 'features/user/UserCard';
 import {
   delLogInErrMessage,
   getCurrUser,
@@ -15,7 +16,6 @@ import {
   logOut,
   status,
 } from 'features/user/userSlice';
-import UserCard from 'features/userCard/UserCard';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
