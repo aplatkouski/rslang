@@ -29,7 +29,13 @@ const StudiedWordsSection = (): JSX.Element => {
     })
   );
 
-  return <WordGridList userWords={userWords} words={studiedWords} />;
+  return (
+    <WordGridList
+      baseUrl="textbook/dictionary/studied"
+      userWords={userWords}
+      words={studiedWords}
+    />
+  );
 };
 
 export default StudiedWordsSection;

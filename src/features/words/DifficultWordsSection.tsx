@@ -26,7 +26,13 @@ const DifficultWordsSection = (): JSX.Element => {
     selectDifficultUserWordsByChunk(state, selectProps)
   );
 
-  return <WordGridList userWords={userWords} words={difficultWords} />;
+  return (
+    <WordGridList
+      baseUrl="textbook/dictionary/difficult"
+      userWords={userWords}
+      words={difficultWords}
+    />
+  );
 };
 
 export default DifficultWordsSection;

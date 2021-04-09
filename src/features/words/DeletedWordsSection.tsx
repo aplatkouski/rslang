@@ -26,7 +26,13 @@ const DeletedWordsSection = (): JSX.Element => {
     selectDeletedUserWordsByChunk(state, selectProps)
   );
 
-  return <WordGridList userWords={userWords} words={deletedWords} />;
+  return (
+    <WordGridList
+      baseUrl="textbook/dictionary/deleted"
+      userWords={userWords}
+      words={deletedWords}
+    />
+  );
 };
 
 export default DeletedWordsSection;
