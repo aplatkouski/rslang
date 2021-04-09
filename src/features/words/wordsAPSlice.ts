@@ -85,7 +85,7 @@ const wordsSlice = createSlice({
 
 export const {
   selectAll: selectAllWords,
-  selectById: selectWordsById,
+  selectById: selectWordById,
 } = wordsAdapter.getSelectors<RootState>((state) => state[name]);
 
 interface SelectWordsProps extends Partial<IWord> {
