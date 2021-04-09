@@ -1,4 +1,4 @@
-// const MIN_GAME_WORDS_NUMBER = 6;
+export const MIN_GAME_WORDS_NUMBER = 6;
 
 export const GAME_TITLE = 'СВОЯ ИГРА';
 
@@ -14,3 +14,5 @@ export const GAME_BUTTONS =
 export const GAME_WORDS_NUMBER = 3;
 
 export const GAME_ROUNDS = 10;
+
+export const LOCALSTORAGE_KEY = 'MyGameKey';

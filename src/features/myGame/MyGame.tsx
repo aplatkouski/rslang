@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button, Grid } from '@material-ui/core';
-import { getWords } from 'features/words/wordsSlice';
-import { useSelector } from 'react-redux';
 import StartNewGameDlg from 'app/startNewGameDlg/StartNewGameDlg';
 import { useHistory } from 'react-router-dom';
 import useSound from 'use-sound';
 import loseGameSound from 'assets/sounds/lose.mp3';
 import winGameSound from 'assets/sounds/win.mp3';
+import { getWords } from 'features/words/wordsSlice';
+import { useSelector } from 'react-redux';
 import { shuffle } from './shuffleAlgorithm';
 import {
   GAME_WORDS_NUMBER,
@@ -14,7 +14,8 @@ import {
   GAME_TITLE,
   GAME_RULES,
   GAME_BUTTONS,
-  // LOCALSTORAGE_KEY,
+  LOCALSTORAGE_KEY,
+  MIN_GAME_WORDS_NUMBER,
 } from './constants';
 import * as t from '../../types';
 import * as gt from './types';
@@ -22,70 +23,163 @@ import * as gt from './types';
 import './MyGame.scss';
 
 export default function MyGame(): JSX.Element {
-  // слова, участвующие в игре
   const words = useSelector(getWords);
 
-  // true - начата новая игра, false - игра не начата
-  const [newGame, setNewGame] = useState(false);
-  // номер текущего раунда в рамках текущей игры
-  const [round, setRound] = useState(0);
-  // слова, участвующие в текущем раунде
-  const [gameWords, setGameWords] = useState<t.WordsList>([]);
-  // слово, которое необходимо угадать
-  const [guessWord, setGuessWord] = useState<t.IWord | null>(null);
-  // английское слово (из guessWord), в котором "спрятана" одна буква
-  const [hiddenWord, setHiddenWord] = useState<string | null>(null);
-  // массив целых чисел от нуля до значения "количество слов words - 1"
-  const numbersArr = useMemo(() => words.map((_el, index) => index), [words]);
-  // true - открыто модальное окно запуска игры, false - данное окно закрыто
-  const [openStartGameModal, setOpenStartGameModal] = useState(true);
-  // результаты игры (объект с полями [слово]: числовой результат узнавания его в игре)
-  const [gameResults, setGameResults] = useState<gt.WordsRes>([]);
-  // id правильного слова-ответа раунда и id неправильного, если user ответил неправильно
-  const [rightWordId, setRightWordId] = useState<string | null>(null);
-  const [wrongWordId, setWrongWordId] = useState<string | null>(null);
+  const [myGameStatus, setMyGameStatus] = useState<gt.IMyGameStatus>({
+    // Слова, которые должны участвовать в играх
+    words: words && words.length ? words : [],
+    // true - слов в words достаточно для игры, false - не достаточно
+    enoughWords: words && words.length >= MIN_GAME_WORDS_NUMBER,
+    // true - начата новая игра, false - игра не начата
+    newGame: false,
+    // номер текущего раунда в рамках текущей игры
+    round: 0,
+    // слова, участвующие в текущем раунде
+    gameWords: [],
+    // слово, которое необходимо угадать
+    guessWord: null,
+    // английское слово (из guessWord), в котором "спрятана" одна буква
+    hiddenWord: null,
+    // true - открыто модальное окно запуска игры, false - данное окно закрыто
+    openStartGameModal: true,
+    // результаты игры (объект с полями [слово]: числовой результат узнавания его в игре)
+    gameResults: [],
+    // id правильного слова-ответа раунда и id неправильного, если user ответил неправильно
+    rightWordId: null,
+    wrongWordId: null,
+    // true - необходимо продолжить игру (устанавливается в true после того как пользователь даст ответ)
+    continue: false,
+  });
 
+  // Звуки победы и поражения
   const [playWinGameSound] = useSound(winGameSound);
   const [playLoseGameSound] = useSound(loseGameSound);
 
+  // ???
   const history = useHistory();
 
+  // Хук для определения факта первого рендера
+  const useFirstRender = () => {
+    const firstRender = useRef(true);
+
+    useEffect(() => {
+      firstRender.current = false;
+    }, []);
+
+    return firstRender.current;
+  };
+
+  // true - первый рендер, false - повторный
+  const firstRender = useFirstRender();
+
   /**
-   * Подгружаем состояние игры из localstorage при первом рендере (если оно там есть).
+   * Позволяет получить состояние игры из localstorage
+   */
+  const getGameStatusFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY) || '{}');
+  };
+
+  /**
+   * Позволяет сохранить текущее состояние игры в localstorage
+   */
+  const saveCurrGameStatusInLocalStorage = () => {
+    const savedUserData = getGameStatusFromLocalStorage();
+    localStorage.setItem(
+      LOCALSTORAGE_KEY,
+      JSON.stringify({
+        ...savedUserData,
+        ...myGameStatus,
+      })
+    );
+  };
+
+  /**
+   * Подгружаем состояние игры из localstorage при первом рендере (если оно там есть),
+   * при повторных рендерах сохраняю текущее состояние.
    */
   useEffect(() => {
-    //
-  }, []);
+    let saveCurrentStatus = false;
+
+    if (firstRender) {
+      // При первом рендере проверяю, предоставлены ли слова для игры.
+      // Если да - то ничего далее не делаю, даже если их недостаточно.
+      // Если нет - то пытаюсь найти последнюю игру в localstorage.
+      if (!myGameStatus.words || !myGameStatus.words.length) {
+        // Смотрим, что есть в localstorage
+        const savedUserData = getGameStatusFromLocalStorage();
+        // Ранее сохраненные данные игры есть в localstorage => обновляю ими состояние игры
+        if (savedUserData && Object.keys(savedUserData).length) {
+          setMyGameStatus({ ...savedUserData });
+          // Может оказаться так, что пользователь перезагрузил игру в момент, когда он дал ответ,
+          // но еще не был установлен флаг продолжения игры. В этом случае его необходимо установить,
+          // чтобы игру можно было продолжить
+          if (savedUserData.rightWordId && !savedUserData.continue) {
+            setMyGameStatus((status) => {
+              return {
+                ...status,
+                continue: true,
+              };
+            });
+          }
+        } else {
+          // В localstorage нет ранее сохраненных данных игры => сохраняю туда текущее состояние
+          saveCurrentStatus = true;
+        }
+      }
+    } else {
+      // При повторных рендерах просто сохраняю текущее измененное состояние
+      saveCurrentStatus = true;
+    }
+
+    if (saveCurrentStatus) {
+      saveCurrGameStatusInLocalStorage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRender, myGameStatus]);
 
   /**
    * Для данного слова (wordId) обновляет результат его изучения
    * (+1 - если угадано, -1 - в противном случае)
    */
   const updateGameResults = (wordId: string, isGuessed: boolean) => {
-    setGameResults((value) => {
-      const wordResIndex = value.findIndex((word) => word.wordId === wordId);
-      if (wordResIndex === -1) {
-        return [
-          ...value,
-          {
-            wordId,
-            guessed: isGuessed ? 1 : 0,
-            notGuessed: isGuessed ? 0 : 1,
-          },
-        ];
-      }
+    const wordResIndex = myGameStatus.gameResults.findIndex(
+      (word) => word.wordId === wordId
+    );
+
+    // Слово еще не угадывалось в текущей игре
+    if (wordResIndex === -1) {
+      setMyGameStatus((status) => {
+        return {
+          ...status,
+          gameResults: [
+            ...status.gameResults,
+            {
+              wordId,
+              guessed: isGuessed ? 1 : 0,
+              notGuessed: isGuessed ? 0 : 1,
+            },
+          ],
+        };
+      });
+    } else {
+      // Это уже не первая попытка угадать слово в рамках одной игры
       const guessed: number = isGuessed
-        ? value[wordResIndex].guessed + 1
-        : value[wordResIndex].guessed;
+        ? myGameStatus.gameResults[wordResIndex].guessed + 1
+        : myGameStatus.gameResults[wordResIndex].guessed;
       const notGuessed: number = !isGuessed
-        ? value[wordResIndex].notGuessed + 1
-        : value[wordResIndex].notGuessed;
-      return [
-        ...value.slice(0, wordResIndex),
-        { wordId, guessed, notGuessed },
-        ...value.slice(wordResIndex + 1),
-      ];
-    });
+        ? myGameStatus.gameResults[wordResIndex].notGuessed + 1
+        : myGameStatus.gameResults[wordResIndex].notGuessed;
+      setMyGameStatus((status) => {
+        return {
+          ...status,
+          gameResults: [
+            ...status.gameResults.slice(0, wordResIndex),
+            { wordId, guessed, notGuessed },
+            ...status.gameResults.slice(wordResIndex + 1),
+          ],
+        };
+      });
+    }
   };
 
   /**
@@ -101,6 +195,7 @@ export default function MyGame(): JSX.Element {
    * рандомно из чисел от 1 до words.length (границы не включены)
    */
   const numberGenerator = () => {
+    const numbersArr = myGameStatus.words.map((_el, index) => index);
     const randomNums = shuffle(numbersArr);
     return randomNums.slice(0, GAME_WORDS_NUMBER);
   };
@@ -121,26 +216,26 @@ export default function MyGame(): JSX.Element {
    * Начинает очередной раунд игры
    */
   const nextRound = () => {
-    // Следующий "раунд"
-    setRound((value) => value + 1);
-
     // Генерируем случайные числа от 0 до words.length - 1
     const arrayOfUniqueNumbers = numberGenerator();
 
     // Используя сгенерированные числа, определяем случайную перестановку слов, участвующих в игре
-    const generatedWords = arrayOfUniqueNumbers.map((number) => words[number]);
-
-    // Определяем слово, которое предстоит угадать
-    setGuessWord(generatedWords[0]);
-
-    // "Прячем" в этом слове букву
-    setHiddenWord(hideLetter(generatedWords[0].word));
-
-    // Первые GAME_WORDS_NUMBER слов из generatedWords перетасовываем и пускаем в игру
-    setGameWords(getShuffledGameWords(generatedWords));
-
-    setRightWordId(null);
-    setWrongWordId(null);
+    const generatedWords = arrayOfUniqueNumbers.map(
+      (number) => myGameStatus.words[number]
+    );
+    // Меняем статус игры
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        round: status.round + 1, // Следующий "раунд"
+        guessWord: generatedWords[0], // Определяем слово, которое предстоит угадать
+        hiddenWord: hideLetter(generatedWords[0].word), // "Прячем" в этом слове букву
+        gameWords: getShuffledGameWords(generatedWords), // Первые GAME_WORDS_NUMBER слов из generatedWords перетасовываем и пускаем в игру
+        rightWordId: null,
+        wrongWordId: null,
+        continue: false,
+      };
+    });
   };
 
   /**
@@ -156,14 +251,21 @@ export default function MyGame(): JSX.Element {
    * Начинает игру
    */
   const handleStartGame = () => {
-    // Если открыто модальное окно запуска мини-игры, то его необходимо закрыть
-    if (openStartGameModal) {
-      setOpenStartGameModal(false);
+    if (!myGameStatus.enoughWords) {
+      return;
     }
-    // Сбрасываем все параметры игры
-    setNewGame(true);
-    setRound(0);
-    setGameResults([]);
+
+    // Меняем статус игры
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        openStartGameModal: false, // Если открыто модальное окно запуска мини-игры, то его необходимо закрыть
+        newGame: true,
+        round: 0,
+        gameResults: [],
+      };
+    });
+
     // Начинаем первый раунд
     nextRound();
   };
@@ -172,7 +274,13 @@ export default function MyGame(): JSX.Element {
    * Завершает игру
    */
   const finishGame = () => {
-    setNewGame(false);
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        newGame: false,
+        continue: false,
+      };
+    });
 
     // ... Сохранение результатов игры
   };
@@ -182,8 +290,31 @@ export default function MyGame(): JSX.Element {
    * если определено угадываемое слово и на него еще не дан ответ.
    */
   const userCanGiveAnswer = useCallback(() => {
-    return guessWord && !rightWordId;
-  }, [guessWord, rightWordId]);
+    return myGameStatus.guessWord && !myGameStatus.rightWordId;
+  }, [myGameStatus.guessWord, myGameStatus.rightWordId]);
+
+  /**
+   * Завершение раунда / игры
+   */
+  const goToNextRoundOrGame = () => {
+    setTimeout(() => {
+      if (myGameStatus.round === GAME_ROUNDS) {
+        finishGame();
+      } else {
+        nextRound();
+      }
+    }, 2000);
+  };
+
+  /**
+   * Реакция на установку флага продолжения игры
+   */
+  useEffect(() => {
+    if (myGameStatus.continue) {
+      goToNextRoundOrGame();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myGameStatus.continue]);
 
   /**
    * Обработка ответа пользователя
@@ -192,27 +323,40 @@ export default function MyGame(): JSX.Element {
     if (!userCanGiveAnswer()) {
       return;
     }
-    if (!guessWord) {
+    if (!myGameStatus.guessWord) {
       return;
     }
 
-    updateGameResults(guessWord.id, guessWord.id === answerWordId);
+    updateGameResults(
+      myGameStatus.guessWord.id,
+      myGameStatus.guessWord.id === answerWordId
+    );
 
-    setRightWordId(guessWord.id);
-    if (guessWord.id !== answerWordId) {
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        rightWordId: status.guessWord ? status.guessWord.id : null,
+      };
+    });
+
+    if (myGameStatus.guessWord.id !== answerWordId) {
       playLoseGameSound();
-      setWrongWordId(answerWordId);
+      setMyGameStatus((status) => {
+        return {
+          ...status,
+          wrongWordId: answerWordId,
+        };
+      });
     } else {
       playWinGameSound();
     }
 
-    setTimeout(() => {
-      if (round === GAME_ROUNDS) {
-        finishGame();
-      } else {
-        nextRound();
-      }
-    }, 2000);
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        continue: true,
+      };
+    });
   };
 
   /**
@@ -224,7 +368,7 @@ export default function MyGame(): JSX.Element {
         return;
       }
       if (['1', '2', '3'].includes(event.key)) {
-        handleUserAnswer(gameWords[Number(event.key) - 1].id);
+        handleUserAnswer(myGameStatus.gameWords[Number(event.key) - 1].id);
       } else if (event.key === 'b') {
         handleGoBack();
       }
@@ -235,7 +379,7 @@ export default function MyGame(): JSX.Element {
       window.removeEventListener('keydown', handleKeyPress);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameWords, guessWord, userCanGiveAnswer]);
+  }, [myGameStatus.gameWords, myGameStatus.guessWord, userCanGiveAnswer]);
 
   return (
     <div className="game-field">
@@ -243,60 +387,65 @@ export default function MyGame(): JSX.Element {
         gameBtns={GAME_BUTTONS}
         gameHeader={GAME_TITLE}
         gameRules={GAME_RULES}
-        isOpen={openStartGameModal}
+        isOpen={myGameStatus.openStartGameModal}
         onGoBack={handleGoBack}
         onStartGame={handleStartGame}
       />
-      {newGame && guessWord && hiddenWord && gameWords && gameWords.length && (
-        <Grid container spacing={4} style={{ width: '100%', margin: 0 }}>
-          <Grid item xs={12}>
-            <p className="game-title">{GAME_TITLE}</p>
-          </Grid>
-          <Grid item xs={12}>
-            <p className="game-round">{`Раунд ${round} из ${GAME_ROUNDS}`}</p>
-          </Grid>
-          <Grid item xs={12}>
-            <div className="centered-content-block">
-              <div className="guess-word">{hiddenWord}</div>
-            </div>
-          </Grid>
-          {gameWords.map((word, index) => (
-            <Grid key={word.id} item sm={4} xs={6}>
+      {myGameStatus.newGame &&
+        myGameStatus.guessWord &&
+        myGameStatus.hiddenWord &&
+        myGameStatus.gameWords &&
+        myGameStatus.gameWords.length && (
+          <Grid container spacing={4} style={{ width: '100%', margin: 0 }}>
+            <Grid item xs={12}>
+              <p className="game-title">{GAME_TITLE}</p>
+            </Grid>
+            <Grid item xs={12}>
+              <p className="game-round">{`Раунд ${myGameStatus.round} из ${GAME_ROUNDS}`}</p>
+            </Grid>
+            <Grid item xs={12}>
               <div className="centered-content-block">
-                <button
-                  className={`answer-btn
+                <div className="guess-word">{myGameStatus.hiddenWord}</div>
+              </div>
+            </Grid>
+            {myGameStatus.gameWords.map((word, index) => (
+              <Grid key={word.id} item sm={4} xs={6}>
+                <div className="centered-content-block">
+                  <button
+                    className={`answer-btn
                     ${
-                      word.id !== rightWordId && word.id !== wrongWordId
+                      word.id !== myGameStatus.rightWordId &&
+                      word.id !== myGameStatus.wrongWordId
                         ? 'no-answer'
                         : ''
                     }
-                    ${rightWordId === word.id ? 'right-answer' : ''}
-                    ${wrongWordId === word.id ? 'wrong-answer' : ''}`}
-                  onClick={() => handleUserAnswer(word.id)}
+                    ${myGameStatus.rightWordId === word.id ? 'right-answer' : ''}
+                    ${myGameStatus.wrongWordId === word.id ? 'wrong-answer' : ''}`}
+                    onClick={() => handleUserAnswer(word.id)}
+                    type="button"
+                  >
+                    {`${index + 1}: ${word.wordTranslate}`}
+                  </button>
+                </div>
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <div className="centered-content-block">
+                <Button
+                  color="primary"
+                  onClick={handleGoBack}
                   type="button"
+                  variant="outlined"
                 >
-                  {`${index + 1}: ${word.wordTranslate}`}
-                </button>
+                  Вернуться к учебнику
+                </Button>
               </div>
             </Grid>
-          ))}
-          <Grid item xs={12}>
-            <div className="centered-content-block">
-              <Button
-                color="primary"
-                onClick={handleGoBack}
-                type="button"
-                variant="outlined"
-              >
-                Вернуться к учебнику
-              </Button>
-            </div>
           </Grid>
-        </Grid>
-      )}
-      {!openStartGameModal && !newGame && (
+        )}
+      {!myGameStatus.openStartGameModal && !myGameStatus.newGame && (
         <div>
-          {JSON.stringify(gameResults)}
+          {JSON.stringify(myGameStatus.gameResults)}
           <button onClick={handleStartGame} type="button">
             Играть еще
           </button>
