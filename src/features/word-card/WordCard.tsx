@@ -85,15 +85,26 @@ const WordCard = ({ classes, word, userWord }: Props) => {
           })
         );
       } else {
+        const studied =
+          !isDifficult && !isStudied
+            ? {
+                addedAt: new Date().toISOString().substring(0, 10),
+                isStudied: true,
+              }
+            : {};
         dispatch(
           upsertUserWord({
-            obj: { ...extractUserWord(word, userWord), isDifficult: !isDifficult },
+            obj: {
+              ...extractUserWord(word, userWord),
+              isDifficult: !isDifficult,
+              ...studied,
+            },
             ...credentials,
           })
         );
       }
     },
-    [credentials, dispatch, isDifficult, userWord, word]
+    [credentials, dispatch, isDifficult, isStudied, userWord, word]
   );
 
   const handleToggleStudied = useCallback(
