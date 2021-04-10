@@ -18,13 +18,12 @@ import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import StopIcon from '@material-ui/icons/Stop';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
+import { useAppDispatch, useAppSelector, useAudio } from 'common/hooks';
+import { selectSettings } from 'features/settings/settingsSlice';
+import { removeUserWord, upsertUserWord } from 'features/user-words/userWordsSlice';
 import React, { memo, useCallback } from 'react';
 import { IUserWord, IWord } from 'types';
-import { useAppDispatch, useAppSelector, useAudio } from '../../common/hooks';
 import { api } from '../../constants';
-import { selectSettings } from '../settings/settingsSlice';
-import { removeUserWord, upsertUserWord } from '../user-words/userWordsSlice';
-import { selectCredentials } from '../user/userSlice';
 import LearningProgress from './learning-progress/LearningProgress';
 import styles from './styles';
 import TransformText from './transform-text/TransformText';
@@ -40,7 +39,6 @@ interface Props extends WithStyles<typeof styles> {
 const WordCard = ({ classes, word, userWord }: Props) => {
   const [types, setTypes] = React.useState(() => ['bold', 'italic']);
   const { currentAudio, start, stop } = useAudio(word);
-  const credentials = useAppSelector(selectCredentials);
   const { isShowTranslations, isShowButtons } = useAppSelector(selectSettings);
 
   const dispatch = useAppDispatch();
@@ -56,22 +54,14 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       event.preventDefault();
 
       if (userWord && isAllRequiredFieldEmpty('isDeleted', userWord)) {
-        dispatch(
-          removeUserWord({
-            id: userWord.id,
-            ...credentials,
-          })
-        );
+        dispatch(removeUserWord(userWord.id));
       } else {
         dispatch(
-          upsertUserWord({
-            obj: { ...extractUserWord(word, userWord), isDeleted: !isDeleted },
-            ...credentials,
-          })
+          upsertUserWord({ ...extractUserWord(word, userWord), isDeleted: !isDeleted })
         );
       }
     },
-    [credentials, dispatch, isDeleted, userWord, word]
+    [dispatch, isDeleted, userWord, word]
   );
 
   const handleToggleDifficult = useCallback(
@@ -79,12 +69,7 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       event.preventDefault();
 
       if (userWord && isAllRequiredFieldEmpty('isDifficult', userWord)) {
-        dispatch(
-          removeUserWord({
-            id: userWord.id,
-            ...credentials,
-          })
-        );
+        dispatch(removeUserWord(userWord.id));
       } else {
         const studied =
           !isDifficult && !isStudied
@@ -95,17 +80,14 @@ const WordCard = ({ classes, word, userWord }: Props) => {
             : {};
         dispatch(
           upsertUserWord({
-            obj: {
-              ...extractUserWord(word, userWord),
-              isDifficult: !isDifficult,
-              ...studied,
-            },
-            ...credentials,
+            ...extractUserWord(word, userWord),
+            isDifficult: !isDifficult,
+            ...studied,
           })
         );
       }
     },
-    [credentials, dispatch, isDifficult, isStudied, userWord, word]
+    [dispatch, isDifficult, isStudied, userWord, word]
   );
 
   const handleToggleStudied = useCallback(
@@ -113,26 +95,18 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       event.preventDefault();
 
       if (userWord && isAllRequiredFieldEmpty('isStudied', userWord)) {
-        dispatch(
-          removeUserWord({
-            id: userWord.id,
-            ...credentials,
-          })
-        );
+        dispatch(removeUserWord(userWord.id));
       } else {
         dispatch(
           upsertUserWord({
-            obj: {
-              ...extractUserWord(word, userWord),
-              addedAt: !isStudied ? new Date().toISOString().substring(0, 10) : undefined,
-              isStudied: !isStudied,
-            },
-            ...credentials,
+            ...extractUserWord(word, userWord),
+            addedAt: !isStudied ? new Date().toISOString().substring(0, 10) : undefined,
+            isStudied: !isStudied,
           })
         );
       }
     },
-    [credentials, dispatch, isStudied, userWord, word]
+    [dispatch, isStudied, userWord, word]
   );
 
   const handlePlayAudio = useCallback(() => start(), [start]);
