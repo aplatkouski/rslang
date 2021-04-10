@@ -68,7 +68,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "typescript": "~3.8.2",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "recharts": "^2.0.9"
   },
   "scripts": {
     "build": "react-scripts build",
