@@ -10,26 +10,23 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import styles from './styles';
 
-// Это пока костыль (чтобы проверить работу). Надо разбираться с роутами
 const breadcrumbNameMap: { [key: string]: string } = {
   main: 'Главная',
-  sectors: 'Учебник',
   games: 'Игры',
-  section: 'Учебник',
-  studiedSection: 'Изучаемые слова',
-  hardOrDeletedSection: 'Сложные|Удаленные слова',
+  textbook: 'Учебник',
+  dictionary: 'Словарь',
+  studied: 'Изучаемые слова',
+  difficult: 'Сложные слова',
+  deleted: 'Удаленные слова',
+  statistic: 'Статистика',
   'about-team': 'О команде',
-  ':sector': 'Раздел',
-  ':indicator': 'Индикатор',
+  ':group': 'Раздел',
   ':page': 'Страница',
-  ':dbRefPage': 'dbRefPage',
-  ':color': 'Цвет',
 };
 
-// изменить, когда с роутами будет порядок
 const getPathName = (url: string, path: string): string => {
   const paramsPathName =
-    path === ':sector' || path === ':page'
+    path === ':group' || path === ':page'
       ? `${breadcrumbNameMap[path]} ${Number(url) + 1}`
       : `${breadcrumbNameMap[path]} ${url}`;
 
