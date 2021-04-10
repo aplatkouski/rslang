@@ -3,11 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
-import RegistrationForm from 'app/registrationForm/RegistrationForm';
+import RegistrationForm from 'app/registration-form/RegistrationForm';
 import SideMenu from 'app/sidemenu/SideMenu';
 import Logo from 'assets/img/MainPageLogo.jpg';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
-import LogInForm from 'features/logInForm/LogInForm';
+import LogInForm from 'features/log-in-form/LogInForm';
 import UserCard from 'features/user/UserCard';
 import {
   delLogInErrMessage,

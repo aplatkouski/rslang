@@ -13,9 +13,11 @@ import {
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { getErrLogInMessage, getLoginStatus, logIn } from 'features/user/userSlice';
 import React, { useRef } from 'react';
-import 'styles/animate.min.css';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { requestStatus } from '../../constants';
-import './LogInForm.scss';
+
+import 'styles/animate.min.css';
 
 interface Props {
   isOpen: boolean;
@@ -23,11 +25,25 @@ interface Props {
   onRegister: () => void;
 }
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    dlgActions: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    error: {
+      color: 'rgb(255, 0, 0)',
+    },
+  })
+);
+
 const LogInForm = ({
   isOpen,
   onClose: handleClose,
   onRegister: handleRegister,
 }: Props): JSX.Element => {
+  const classes = useStyles();
   const refEmailField = useRef<HTMLInputElement>(null);
   const refPasswordField = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
@@ -67,7 +83,7 @@ const LogInForm = ({
           {logInStatus === requestStatus.pending && <CircularProgress />}
           {errLogInMessage && (
             <Typography
-              className="animate__animated animate__bounceInLeft error"
+              className={clsx('animate__animated animate__bounceInLeft', classes.error)}
               gutterBottom
             >
               {errLogInMessage}
@@ -99,7 +115,7 @@ const LogInForm = ({
               type="password"
             />
           </FormControl>
-          <DialogActions className="dlg-actions">
+          <DialogActions className={classes.dlgActions}>
             <Button
               color="primary"
               disabled={logInStatus === requestStatus.fulfilled}

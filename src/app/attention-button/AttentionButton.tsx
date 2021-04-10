@@ -7,7 +7,7 @@ interface Props {
   handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function UserCard({ btnTitle, handleClick }: Props): JSX.Element {
+export default function AttentionButton({ btnTitle, handleClick }: Props): JSX.Element {
   return (
     <div className="btn-wrap">
       <button className="effect-btn" onClick={handleClick} type="button">

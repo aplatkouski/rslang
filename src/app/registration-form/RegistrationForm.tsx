@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import * as t from 'types';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import {
   api,
   USER_REGISTRATION_API,
@@ -26,7 +28,16 @@ interface Props {
   onClose: () => void;
 }
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    error: {
+      color: 'rgb(255, 0, 0)',
+    },
+  })
+);
+
 const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element => {
+  const classes = useStyles();
   const [registrationInProgress, setRegistrationInProgress] = useState(false);
   const [registrationErrors, setRegistrationErrors] = useState<t.IRegistrationErrors>({
     general: null,
@@ -132,7 +143,7 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
           <DialogContent>
             {registrationErrors.general && (
               <Typography
-                className="animate__animated animate__bounceIn error"
+                className={clsx('animate__animated animate__bounceIn', classes.error)}
                 gutterBottom
               >
                 {registrationErrors.general}
@@ -156,7 +167,10 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.name && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft error"
+                  className={clsx(
+                    'animate__animated animate__bounceInLeft',
+                    classes.error
+                  )}
                   gutterBottom
                 >
                   {registrationErrors.name}
@@ -172,7 +186,10 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.email && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft error"
+                  className={clsx(
+                    'animate__animated animate__bounceInLeft',
+                    classes.error
+                  )}
                   gutterBottom
                 >
                   {registrationErrors.email}
@@ -188,7 +205,10 @@ const RegistrationForm = ({ isOpen, onClose: handleClose }: Props): JSX.Element 
               />
               {registrationErrors.password && (
                 <Typography
-                  className="animate__animated animate__bounceInLeft error"
+                  className={clsx(
+                    'animate__animated animate__bounceInLeft',
+                    classes.error
+                  )}
                   gutterBottom
                 >
                   {registrationErrors.password}

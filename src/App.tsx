@@ -1,12 +1,12 @@
 import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
-import StatisticPage from 'app/statisticPage/StatisticPage';
+import StatisticPage from 'app/statistic-page/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch } from 'common/hooks';
 import games from 'features/games';
 import { fetchGames } from 'features/games/gamesSlice';
-import SectorsPage from 'features/sectorsPage/SectorsPage';
+import SectorsPage from 'features/sectors-page/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { logInViaLocalStorage } from 'features/user/userSlice';
 import TextBook from 'features/words';
