@@ -6,13 +6,12 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import { selectAllGames } from 'features/games/gamesSlice';
+import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
-import { api, requestStatus } from '../../constants';
+import { IWordStatistic } from 'types';
+import { requestMethods, requestStatus } from '../../constants';
 
 export const name = 'wordStatistics' as const;
-
-const getWordStatisticsApi = (userId: string, id?: string) =>
-  `${api}/users/${userId}/statistic/words${id ? `/${id}` : ''}`;
 
 const wordStatisticsAdapter = createEntityAdapter<t.IWordStatistic>();
 
@@ -22,92 +21,74 @@ const initialState: t.IStatus = {
 
 export const fetchWordStatistics = createAsyncThunk<
   Array<t.IWordStatistic>,
-  t.ICredentials,
+  unknown,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
 >(
   `${name}/fetch`,
-  async ({ userId, userToken }) => {
-    const options = {
-      method: 'GET',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-
-    const response = await fetch(getWordStatisticsApi(userId), options);
-    return (await response.json()) as Array<t.IWordStatistic>;
-  },
+  async (_, { getState }) =>
+    fetchUserData<Array<t.IWordStatistic>>({
+      method: requestMethods.GET,
+      path: 'statistic/words',
+      currentUser: getState().user.current,
+    }),
   {
     condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
   }
 );
 
-export const saveNewWordStatistic = createAsyncThunk(
-  `${name}/save`,
-  async ({
-    obj: wordStatistic,
-    userId,
-    userToken,
-  }: t.ICreateThunkArguments<t.IWordStatistic>) => {
-    const options = {
-      method: 'POST',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(wordStatistic),
-    };
-    const response = await fetch(getWordStatisticsApi(userId), options);
-    return (await response.json()) as t.IWordStatistic;
+export const saveNewWordStatistic = createAsyncThunk<
+  t.IWordStatistic,
+  Omit<t.IWordStatistic, 'id'>,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
+>(`${name}/save`, async (wordStatistic, { getState }) =>
+  fetchUserData<t.IWordStatistic>({
+    method: requestMethods.POST,
+    path: 'statistic/words',
+    body: wordStatistic,
+    currentUser: getState().user.current,
+  })
 );
 
-export const removeWordStatistic = createAsyncThunk(
-  `${name}/remove`,
-  async ({ id: wordStatisticId, userId, userToken }: t.IRemoveThunkArguments) => {
-    const options = {
-      method: 'DELETE',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-    await fetch(getWordStatisticsApi(userId, wordStatisticId), options);
-    return wordStatisticId;
+export const removeWordStatistic = createAsyncThunk<
+  string,
+  string,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>(`${name}/remove`, async (wordStatisticId, { getState }) => {
+  await fetchUserData<null>({
+    method: requestMethods.DELETE,
+    path: 'statistic/words',
+    id: wordStatisticId,
+    currentUser: getState().user.current,
+  });
+  return wordStatisticId;
+});
 
-export const updateWordStatistic = createAsyncThunk(
-  `${name}/update`,
-  async ({
-    obj: wordStatistic,
-    userId,
-    userToken,
-  }: t.IUpdateThunkArguments<t.IWordStatistic>) => {
-    const options = {
-      method: 'PUT',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(wordStatistic),
-    };
-    await fetch(getWordStatisticsApi(userId, wordStatistic.id), options);
-    return { id: wordStatistic.id, changes: wordStatistic };
+export const updateWordStatistic = createAsyncThunk<
+  { id: string; changes: IWordStatistic },
+  IWordStatistic,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>(`${name}/update`, async (wordStatistic, { getState }) => {
+  await fetchUserData<t.IWordStatistic>({
+    method: requestMethods.PUT,
+    path: 'statistic/words',
+    body: wordStatistic,
+    id: wordStatistic.id,
+    currentUser: getState().user.current,
+  });
+  return { id: wordStatistic.id, changes: wordStatistic };
+});
 
 const wordStatisticsSlice = createSlice({
   name,

@@ -17,6 +17,7 @@ import { fetchWords } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
+import { fetchUserWords } from './features/user-words/userWordsSlice';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -26,6 +27,7 @@ const App = (): JSX.Element => {
     dispatch(getSettingsFromLocalStorage());
     dispatch(fetchGames(null));
     dispatch(fetchWords(null));
+    dispatch(fetchUserWords(null));
   }, [dispatch]);
 
   return (
