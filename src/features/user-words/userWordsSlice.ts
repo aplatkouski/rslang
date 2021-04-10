@@ -5,19 +5,16 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
+import { fetchUserData } from 'features/user/utils';
+import { IStatus, IUserWord } from 'types';
 import {
-  ICreateThunkArguments,
-  ICredentials,
-  IRemoveThunkArguments,
-  IStatus,
-  IUserWord,
-} from 'types';
-import { api, PAGES_PER_GROUP, requestStatus, WORDS_PER_PAGE } from '../../constants';
+  PAGES_PER_GROUP,
+  requestMethods,
+  requestStatus,
+  WORDS_PER_PAGE,
+} from '../../constants';
 
 export const name = 'userWords' as const;
-
-const getUserWordsApi = (userId: string, id?: string) =>
-  `${api}/users/${userId}/words${id ? `/${id}` : ''}`;
 
 const userWordsAdapter = createEntityAdapter<IUserWord>({
   sortComparer: (a, b) => (a.group - b.group) * PAGES_PER_GROUP + (a.page - b.page),
@@ -29,27 +26,19 @@ const initialState: IStatus = {
 
 export const fetchUserWords = createAsyncThunk<
   Array<IUserWord>,
-  ICredentials,
+  unknown,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
 >(
   `${name}/fetch`,
-  async ({ userId, userToken }) => {
-    const options = {
-      method: 'GET',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-
-    const response = await fetch(getUserWordsApi(userId), options);
-    return (await response.json()) as Array<IUserWord>;
-  },
+  async (_, { getState }) =>
+    fetchUserData<Array<IUserWord>>({
+      method: requestMethods.GET,
+      path: 'words',
+      currentUser: getState().user.current,
+    }),
   {
     condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
   }
@@ -57,44 +46,41 @@ export const fetchUserWords = createAsyncThunk<
 
 export const removeUserWord = createAsyncThunk<
   string,
-  IRemoveThunkArguments,
+  string,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->(`${name}/remove`, async ({ id: userWordId, userId, userToken }, { getState }) => {
-  const { wordId } = getState()[name].entities[userWordId]!;
-  const options = {
-    method: 'DELETE',
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${userToken}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  };
-  await fetch(getUserWordsApi(userId, wordId), options);
+>(`${name}/remove`, async (userWordId, { getState }) => {
+  const userWord = selectUserWordById(getState(), userWordId);
+  if (userWord) {
+    await fetchUserData<null>({
+      method: requestMethods.DELETE,
+      path: 'words',
+      id: userWord.wordId,
+      currentUser: getState().user.current,
+    });
+  }
   return userWordId;
 });
 
-export const upsertUserWord = createAsyncThunk(
-  `${name}/upsert`,
-  async ({ obj: userWord, userId, userToken }: ICreateThunkArguments<IUserWord>) => {
-    const { wordId, ...body } = userWord;
-    const options = {
-      method: 'PUT',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(body),
-    };
-    const response = await fetch(getUserWordsApi(userId, wordId), options);
-    return (await response.json()) as IUserWord;
+export const upsertUserWord = createAsyncThunk<
+  IUserWord,
+  Omit<IUserWord, 'id'>,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>(`${name}/upsert`, async (userWord, { getState }) => {
+  const { wordId, ...body } = userWord;
+  return fetchUserData<IUserWord>({
+    method: requestMethods.PUT,
+    path: 'words',
+    id: wordId,
+    body,
+    currentUser: getState().user.current,
+  });
+});
 
 const userWordsSlice = createSlice({
   name,
