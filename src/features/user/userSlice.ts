@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import userAltImg from 'assets/img/UnknownUser.png';
-import { fetchUserWords } from 'features/user-words/userWordsSlice';
 import { ICredentials, IStatus, IUser, IUserLogInData } from 'types';
 import {
   api,
@@ -84,7 +83,6 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
     if (response.status === SERVER_OK_STATUS) {
       dispatch(setUserWithDefPhoto(savedUserData));
       dispatch(getUserPhotoSrc(userId, token));
-      dispatch(fetchUserWords(null));
     } else {
       dispatch(logOut());
     }
@@ -114,7 +112,6 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
       dispatch(setUserWithDefPhoto(user));
       const { userId, token: userToken } = user;
       dispatch(getUserPhotoSrc(userId, userToken));
-      dispatch(fetchUserWords(null));
     }
   } catch (e) {
     dispatch(setLogInError(e.message));

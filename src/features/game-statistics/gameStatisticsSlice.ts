@@ -5,112 +5,89 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
+import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
-import { api } from '../../constants';
+import { IGameStatistic } from 'types';
+import { requestMethods, requestStatus } from '../../constants';
 
 export const name = 'gameStatistics' as const;
-
-const getGameStatisticsApi = (userId: string, id?: string) =>
-  `${api}/users/${userId}/statistic/games${id ? `/${id}` : ''}`;
 
 const gameStatisticsAdapter = createEntityAdapter<t.IGameStatistic>();
 
 const initialState: t.IStatus = {
-  status: 'idle',
+  status: requestStatus.idle,
 };
 
 export const fetchGameStatistics = createAsyncThunk<
   Array<t.IGameStatistic>,
-  t.ICredentials,
+  unknown,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
 >(
   `${name}/fetch`,
-  async ({ userId, userToken }) => {
-    const options = {
-      method: 'GET',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-
-    const response = await fetch(getGameStatisticsApi(userId), options);
-    return (await response.json()) as Array<t.IGameStatistic>;
-  },
+  async (_, { getState }) =>
+    fetchUserData<Array<t.IGameStatistic>>({
+      method: requestMethods.GET,
+      path: 'statistic/games',
+      currentUser: getState().user.current,
+    }),
   {
-    condition: (_, { getState }) => {
-      const { status } = getState()[name];
-      return status === 'idle';
-    },
+    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
   }
 );
 
-export const saveNewGameStatistic = createAsyncThunk(
-  `${name}/save`,
-  async ({
-    obj: gameStatistic,
-    userId,
-    userToken,
-  }: t.ICreateThunkArguments<t.IGameStatistic>) => {
-    const options = {
-      method: 'POST',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(gameStatistic),
-    };
-    const response = await fetch(getGameStatisticsApi(userId), options);
-    return (await response.json()) as t.IGameStatistic;
+export const saveNewGameStatistic = createAsyncThunk<
+  t.IGameStatistic,
+  Omit<t.IGameStatistic, 'id'>,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
+>(`${name}/save`, async (gameStatistic, { getState }) =>
+  fetchUserData<t.IGameStatistic>({
+    method: requestMethods.POST,
+    path: 'statistic/games',
+    body: gameStatistic,
+    currentUser: getState().user.current,
+  })
 );
 
-export const removeGameStatistic = createAsyncThunk(
-  `${name}/remove`,
-  async ({ id: gameStatisticId, userId, userToken }: t.IRemoveThunkArguments) => {
-    const options = {
-      method: 'DELETE',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    };
-    await fetch(getGameStatisticsApi(userId, gameStatisticId), options);
-    return gameStatisticId;
+export const removeGameStatistic = createAsyncThunk<
+  string,
+  string,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>(`${name}/remove`, async (gameStatisticId, { getState }) => {
+  await fetchUserData<null>({
+    method: requestMethods.DELETE,
+    path: 'statistic/games',
+    id: gameStatisticId,
+    currentUser: getState().user.current,
+  });
+  return gameStatisticId;
+});
 
-export const updateGameStatistic = createAsyncThunk(
-  `${name}/update`,
-  async ({
-    obj: gameStatistic,
-    userId,
-    userToken,
-  }: t.IUpdateThunkArguments<t.IGameStatistic>) => {
-    const options = {
-      method: 'PUT',
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(gameStatistic),
-    };
-    const response = await fetch(getGameStatisticsApi(userId, gameStatistic.id), options);
-    const changes = (await response.json()) as t.IGameStatistic;
-    return { id: changes.id, changes };
+export const updateGameStatistic = createAsyncThunk<
+  { id: string; changes: IGameStatistic },
+  IGameStatistic,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
   }
-);
+>(`${name}/update`, async (gameStatistic, { getState }) => {
+  await fetchUserData<t.IGameStatistic>({
+    method: requestMethods.PUT,
+    path: 'statistic/games',
+    body: gameStatistic,
+    id: gameStatistic.id,
+    currentUser: getState().user.current,
+  });
+  return { id: gameStatistic.id, changes: gameStatistic };
+});
 
 const gameStatisticsSlice = createSlice({
   name,
