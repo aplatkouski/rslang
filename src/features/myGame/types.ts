@@ -23,4 +23,5 @@ export interface IMyGameStatus {
   rightWordId: string | null;
   wrongWordId: string | null;
   continue: boolean;
+  sound: boolean;
 }

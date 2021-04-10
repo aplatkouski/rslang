@@ -8,6 +8,7 @@ import winGameSound from 'assets/sounds/win.mp3';
 import { getWords } from 'features/words/wordsSlice';
 import { useAppSelector } from 'common/hooks';
 import FullScreenButton from 'app/FullScreenButton/FullScreenButton';
+import SoundButton from 'app/SoundButton/SoundButton';
 import { shuffle } from './shuffleAlgorithm';
 import {
   GAME_WORDS_NUMBER,
@@ -54,6 +55,8 @@ export default function MyGame(): JSX.Element {
     wrongWordId: null,
     // true - необходимо продолжить игру (устанавливается в true после того как пользователь даст ответ)
     continue: false,
+    // true - звук включен, false - выключен
+    sound: true,
   });
 
   // Звуки победы и поражения
@@ -363,14 +366,16 @@ export default function MyGame(): JSX.Element {
     });
 
     if (myGameStatus.guessWord.id !== answerWordId) {
-      playLoseGameSound();
+      if (myGameStatus.sound) {
+        playLoseGameSound();
+      }
       setMyGameStatus((status) => {
         return {
           ...status,
           wrongWordId: answerWordId,
         };
       });
-    } else {
+    } else if (myGameStatus.sound) {
       playWinGameSound();
     }
 
@@ -392,8 +397,6 @@ export default function MyGame(): JSX.Element {
       }
       if (['1', '2', '3'].includes(event.key)) {
         handleUserAnswer(myGameStatus.gameWords[Number(event.key) - 1].id);
-      } else if (event.key === 'b') {
-        handleGoBack();
       }
     };
     window.addEventListener('keydown', handleKeyPress);
@@ -404,9 +407,22 @@ export default function MyGame(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myGameStatus.gameWords, myGameStatus.guessWord, userCanGiveAnswer]);
 
+  /**
+   * Включение / выключение звука в игре
+   */
+  const toggleSound = () => {
+    setMyGameStatus((status) => {
+      return {
+        ...status,
+        sound: !status.sound,
+      };
+    });
+  };
+
   return (
     <div className="game-field">
       <FullScreenButton />
+      <SoundButton handleClick={toggleSound} sound={myGameStatus.sound} />
       <StartNewGameDlg
         gameBtns={GAME_BUTTONS}
         gameHeader={GAME_TITLE}
