@@ -99,3 +99,10 @@ export const requestStatus = {
   pending: 'pending' as const,
   rejected: 'rejected' as const,
 };
+
+export const requestMethods = {
+  GET: 'GET' as const,
+  POST: 'POST' as const,
+  PUT: 'PUT' as const,
+  DELETE: 'DELETE' as const,
+};
