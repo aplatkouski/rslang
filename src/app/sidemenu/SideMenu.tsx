@@ -7,7 +7,15 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { EventNote, Games, LocalLibrary, People } from '@material-ui/icons';
+import {
+  DeleteSweep,
+  Error,
+  EventNote,
+  Games,
+  LocalLibrary,
+  MenuBook,
+  People,
+} from '@material-ui/icons';
 import clsx from 'clsx';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
@@ -41,19 +49,19 @@ const upperMenu = [
     key: 3,
     title: 'Удалённые',
     url: '/textbook/dictionary/deleted/0/0',
-    icon: <Games />,
+    icon: <DeleteSweep />,
   },
   {
     key: 4,
     title: 'Трудные',
     url: '/textbook/dictionary/difficult/0/0',
-    icon: <Games />,
+    icon: <Error />,
   },
   {
     key: 5,
     title: 'Изучаемые',
     url: '/textbook/dictionary/studied/0/0',
-    icon: <Games />,
+    icon: <MenuBook />,
   },
   { key: 6, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];

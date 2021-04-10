@@ -33,6 +33,7 @@ import isAllRequiredFieldEmpty from './utils/is-all-required-field-empty';
 
 interface Props extends WithStyles<typeof styles> {
   word: IWord;
+  // eslint-disable-next-line react/require-default-props
   userWord?: IUserWord;
 }
 
