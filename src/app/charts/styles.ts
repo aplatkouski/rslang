@@ -5,8 +5,10 @@ const styles = (theme: Theme) =>
     chart: {
       minWidth: theme.spacing(62.5),
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignContent: 'center',
+      margin: theme.spacing(3),
     },
   });
 
