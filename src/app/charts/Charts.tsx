@@ -5,7 +5,6 @@ import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { useAppSelector } from '../../common/hooks';
 import { getCurrUser } from '../../features/user/userSlice';
 import { selectWordCountByDate } from '../../features/word-statistics/wordStatisticsSlice';
-import { aggregated } from './response';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
@@ -34,13 +33,13 @@ const Charts = ({ classes }: Props): JSX.Element => {
   };
   const wordsPerDayArray = parseToValidData(stats);
   console.log(wordsPerDayArray);
-  const aggregateTotalStatistics = (array: any) => {
+  const aggregateTotalStatistics = (array: Array<ChartData>) => {
     const reversedArray = array.reverse();
-    const result: any = [];
-    reversedArray.forEach((item: any, idx: number, arr: any) => {
+    const result: Array<ChartData> = [];
+    reversedArray.forEach((item: ChartData, idx: number, arr: Array<ChartData>) => {
       const totalWords = arr
         .slice(idx)
-        .reduce((acc: number, cur: any) => acc + cur.words, 0);
+        .reduce((acc: number, cur: ChartData) => acc + cur.words, 0);
       result.push({
         studiedAt: item.studiedAt,
         words: totalWords,
@@ -48,7 +47,7 @@ const Charts = ({ classes }: Props): JSX.Element => {
     });
     return result.reverse();
   };
-  const totalWordsArray = aggregateTotalStatistics(aggregated);
+  const totalWordsArray = aggregateTotalStatistics(wordsPerDayArray);
   if (!user.userId) {
     return (
       <Typography variant="subtitle1">Авторизуйтесь, чтобы получать данные</Typography>
@@ -56,11 +55,11 @@ const Charts = ({ classes }: Props): JSX.Element => {
   }
   return (
     <div>
-      {wordsPerDayArray ? (
+      {wordsPerDayArray.length ? (
         <>
           <div className={classes.chart}>
             <LineChart
-              data={aggregated.reverse()}
+              data={wordsPerDayArray.reverse()}
               height={400}
               margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
               width={400}
@@ -88,7 +87,7 @@ const Charts = ({ classes }: Props): JSX.Element => {
           </div>
         </>
       ) : (
-        <Typography variant="h5">Пока нет данных</Typography>
+        <Typography variant="h5">Данных пока нет</Typography>
       )}
     </div>
   );
