@@ -137,10 +137,10 @@ export const selectUserWordsByPage = createSelector(
   ],
   (userWords, page) => userWords.filter((word) => word.page === page)
 );
-export const selectDifficultUserWordsCountByDate = createSelector(
+export const selectStudiedUserWordsCountByDate = createSelector(
   [selectAllUserWords],
   (userWords) => {
-    const difficult = userWords.filter((userWord) => userWord.isDifficult);
+    const difficult = userWords.filter((userWord) => userWord.isStudied);
     const totals = {} as { [key: string]: Set<string> };
     difficult.forEach((word: any) => {
       if (!totals[word.addedAt]) {
