@@ -19,8 +19,15 @@ const styles = (theme: Theme) =>
       paddingLeft: '10px',
     },
     button: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
       margin: theme.spacing(1.25),
       backgroundColor: '#5A38FD',
+      [theme.breakpoints.down('sm')]: {
+        minWidth: theme.spacing(4),
+        width: theme.spacing(5),
+      },
     },
   });
 
