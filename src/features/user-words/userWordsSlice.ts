@@ -137,7 +137,7 @@ export const selectUserWordsByPage = createSelector(
   ],
   (userWords, page) => userWords.filter((word) => word.page === page)
 );
-export const selectDifficultUserWords = createSelector(
+export const selectDifficultUserWordsCountByDate = createSelector(
   [selectAllUserWords],
   (userWords) => {
     const difficult = userWords.filter((userWord) => userWord.isDifficult);
