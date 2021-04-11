@@ -3,7 +3,10 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDifficultUserWordsByChunk } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectDifficultWordsByChunk } from './wordsSlice';
+import {
+  selectDifficultWordsByChunk,
+  selectDifficultWordsPagesCount,
+} from './wordsSlice';
 
 interface SelectProps {
   group: number;
@@ -26,9 +29,12 @@ const DifficultWordsSection = (): JSX.Element => {
     selectDifficultUserWordsByChunk(state, selectProps)
   );
 
+  const pageCount = useAppSelector(selectDifficultWordsPagesCount);
+
   return (
     <WordGridList
       baseUrl="textbook/dictionary/difficult"
+      pageCount={pageCount}
       userWords={userWords}
       words={difficultWords}
     />

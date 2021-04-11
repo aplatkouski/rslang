@@ -3,7 +3,7 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDeletedUserWordsByChunk } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectDeletedWordsByChunk } from './wordsSlice';
+import { selectDeletedWordsByChunk, selectDeletedWordsPagesCount } from './wordsSlice';
 
 interface SelectProps {
   group: number;
@@ -26,9 +26,12 @@ const DeletedWordsSection = (): JSX.Element => {
     selectDeletedUserWordsByChunk(state, selectProps)
   );
 
+  const pageCount = useAppSelector(selectDeletedWordsPagesCount);
+
   return (
     <WordGridList
       baseUrl="textbook/dictionary/deleted"
+      pageCount={pageCount}
       userWords={userWords}
       words={deletedWords}
     />
