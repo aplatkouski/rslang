@@ -7,25 +7,30 @@ interface AudioReturn {
   stop: () => void;
 }
 
-export const useSingleAudio = (src: string): AudioReturn => {
+export const useSingleAudio = (src: string | undefined): AudioReturn => {
   const audioElRef = useRef<HTMLAudioElement>(new Audio());
   const [isAudioPlay, setIsAudioPlay] = useState<boolean>(false);
 
   const audio = audioElRef.current;
 
   useEffect(() => {
-    audio.src = `${api}/${src}`;
+    if (src) {
+      audio.src = `${api}/${src}`;
+    }
   }, [audio, src]);
 
   const stopAudio = useCallback((): void => {
     audio.pause();
+    audio.currentTime = 0;
     setIsAudioPlay(false);
   }, [audio]);
 
   const startAudio = useCallback((): void => {
-    audio.play();
-    setIsAudioPlay(true);
-  }, [audio]);
+    if (src) {
+      audio.play();
+      setIsAudioPlay(true);
+    }
+  }, [audio, src]);
 
   useEffect(() => {
     audio.addEventListener('ended', stopAudio);
