@@ -2,6 +2,7 @@ import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectUserWordsByPage } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { PAGES_PER_SECTOR } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectActiveWordsByPage } from './wordsSlice';
 
@@ -18,7 +19,14 @@ const TextBook = (): JSX.Element => {
   );
   const userWords = useAppSelector((state) => selectUserWordsByPage(state, selectProps));
 
-  return <WordGridList baseUrl="textbook" userWords={userWords} words={activeWords} />;
+  return (
+    <WordGridList
+      baseUrl="textbook"
+      pageCount={PAGES_PER_SECTOR}
+      userWords={userWords}
+      words={activeWords}
+    />
+  );
 };
 
 export default TextBook;

@@ -3,7 +3,7 @@ import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectStudiedUserWordsByPage } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import { selectStudiedWordsByPage } from './wordsSlice';
+import { selectStudiedWordsByPage, selectStudiedWordsPagesCount } from './wordsSlice';
 
 interface SelectProps {
   group: number;
@@ -29,9 +29,12 @@ const StudiedWordsSection = (): JSX.Element => {
     })
   );
 
+  const pageCount = useAppSelector(selectStudiedWordsPagesCount);
+
   return (
     <WordGridList
       baseUrl="textbook/dictionary/studied"
+      pageCount={pageCount}
       userWords={userWords}
       words={studiedWords}
     />

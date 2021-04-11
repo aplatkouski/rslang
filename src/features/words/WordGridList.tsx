@@ -19,6 +19,7 @@ import { selectWordsRequestStatus } from './wordsSlice';
 
 interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
+  pageCount: number;
   words: Array<IWord>;
   userWords: Array<IUserWord>;
 }
@@ -27,7 +28,13 @@ interface Chunks {
   [chunk: string]: Array<IWord>;
 }
 
-const WordGridList = ({ baseUrl, classes, userWords, words }: Props): JSX.Element => {
+const WordGridList = ({
+  baseUrl,
+  classes,
+  pageCount,
+  userWords,
+  words,
+}: Props): JSX.Element => {
   const history = useHistory();
   const request = useAppSelector(selectWordsRequestStatus);
 
@@ -55,7 +62,7 @@ const WordGridList = ({ baseUrl, classes, userWords, words }: Props): JSX.Elemen
   return (
     <Container ref={containerRef} className={classes.root} maxWidth="lg">
       <CustomizedSnackbars request={request} />
-      <Paginator baseUrl={baseUrl} count={30} group={+group} page={+page} />
+      <Paginator baseUrl={baseUrl} count={pageCount} group={+group} page={+page} />
       <div className={classes.settings}>
         <Settings />
       </div>
