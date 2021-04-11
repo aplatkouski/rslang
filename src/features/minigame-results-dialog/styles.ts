@@ -32,6 +32,17 @@ const miniGameResultDialog = (theme: Theme) =>
     buttonsGroup: {
       justifyContent: 'center',
     },
+    radioGroup: {
+      textAlign: 'center',
+    },
+    circularProgressbarContainer: {
+      textAlign: 'center',
+      paddingBottom: theme.spacing(3),
+    },
+    circularProgressbar: {
+      width: theme.spacing(20),
+      height: theme.spacing(20),
+    },
   });
 
 export default miniGameResultDialog;
