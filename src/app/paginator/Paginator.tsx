@@ -9,29 +9,23 @@ interface Props {
   page: number;
 }
 
-const Paginator = ({ baseUrl, count, group, page }: Props): JSX.Element => {
-  return (
-    <Route>
-      {() => {
+const Paginator = ({ baseUrl, count, group, page }: Props): JSX.Element => (
+  <Route>
+    <Pagination
+      count={count}
+      page={page + 1}
+      renderItem={(item) => {
         return (
-          <Pagination
-            count={count}
-            page={page + 1}
-            renderItem={(item) => {
-              return (
-                <PaginationItem
-                  component={NavLink}
-                  to={`/${baseUrl}/${group}/${item.page - 1}/`}
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  {...item}
-                />
-              );
-            }}
+          <PaginationItem
+            component={NavLink}
+            to={`/${baseUrl}/${group}/${item.page - 1}/`}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...item}
           />
         );
       }}
-    </Route>
-  );
-};
+    />
+  </Route>
+);
 
 export default Paginator;
