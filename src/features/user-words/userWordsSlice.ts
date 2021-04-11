@@ -137,7 +137,22 @@ export const selectUserWordsByPage = createSelector(
   ],
   (userWords, page) => userWords.filter((word) => word.page === page)
 );
-
+export const selectDifficultUserWords = createSelector(
+  [selectAllUserWords],
+  (userWords) => {
+    const difficult = userWords.filter((userWord) => userWord.isDifficult);
+    const totals = {} as { [key: string]: Set<string> };
+    difficult.forEach((word: any) => {
+      if (!totals[word.addedAt]) {
+        totals[word.addedAt] = new Set<string>();
+      }
+      totals[word.addedAt].add(word.wordId);
+    });
+    return Object.fromEntries(
+      Object.entries(totals).map(([studiedAt, words]) => [studiedAt, words.size])
+    );
+  }
+);
 export const selectWordsIdsByPage = createSelector(selectUserWordsByPage, (userWords) =>
   userWords.map((userWord) => userWord.wordId)
 );
