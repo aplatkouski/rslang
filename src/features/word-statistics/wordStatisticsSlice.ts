@@ -35,7 +35,8 @@ export const fetchWordStatistics = createAsyncThunk<
       currentUser: getState().user.current,
     }),
   {
-    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
+    condition: (_, { getState }) =>
+      selectWordStatisticRequestStatus(getState()).status !== requestStatus.pending,
   }
 );
 
@@ -107,8 +108,8 @@ const wordStatisticsSlice = createSlice({
         }
       )
       .addCase(fetchWordStatistics.rejected, (state, { meta, error }) => {
-        state.status = meta.requestStatus;
         state.error = error.message;
+        state.status = meta.requestStatus;
       })
       .addCase(saveNewWordStatistic.fulfilled, wordStatisticsAdapter.addOne)
       .addCase(removeWordStatistic.fulfilled, wordStatisticsAdapter.removeOne)
@@ -317,5 +318,10 @@ export const selectCorrectVsWrongGroupByGame = createSelector(
     return totals;
   }
 );
+
+export const selectWordStatisticRequestStatus = (state: RootState) => ({
+  status: state[name].status,
+  error: state[name].error,
+});
 
 export default wordStatisticsSlice.reducer;

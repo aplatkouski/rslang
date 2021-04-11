@@ -34,7 +34,8 @@ export const fetchGameStatistics = createAsyncThunk<
       currentUser: getState().user.current,
     }),
   {
-    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
+    condition: (_, { getState }) =>
+      selectGameStatisticRequestStatus(getState()).status !== requestStatus.pending,
   }
 );
 
@@ -106,8 +107,8 @@ const gameStatisticsSlice = createSlice({
         }
       )
       .addCase(fetchGameStatistics.rejected, (state, { meta, error }) => {
-        state.status = meta.requestStatus;
         state.error = error.message;
+        state.status = meta.requestStatus;
       })
       .addCase(saveNewGameStatistic.fulfilled, gameStatisticsAdapter.addOne)
       .addCase(removeGameStatistic.fulfilled, gameStatisticsAdapter.removeOne)
@@ -134,5 +135,10 @@ export const selectBestSeriesByGame = createSelector(
     return currentGameStatistics.find((s) => s.bestSeries === currentGameBestSeries);
   }
 );
+
+export const selectGameStatisticRequestStatus = (state: RootState) => ({
+  status: state[name].status,
+  error: state[name].error,
+});
 
 export default gameStatisticsSlice.reducer;
