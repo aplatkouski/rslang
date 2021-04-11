@@ -10,6 +10,9 @@ const styles = (theme: Theme) =>
       alignContent: 'center',
       margin: theme.spacing(3),
     },
+    chartTitle: {
+      margin: theme.spacing(2),
+    },
   });
 
 export default styles;

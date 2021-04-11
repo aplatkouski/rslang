@@ -3,7 +3,7 @@ import React from 'react';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAppSelector } from '../../common/hooks';
-import { selectDifficultUserWords } from '../../features/user-words/userWordsSlice';
+import { selectDifficultUserWordsCountByDate } from '../../features/user-words/userWordsSlice';
 import { getCurrUser } from '../../features/user/userSlice';
 import { selectWordCountByDate } from '../../features/word-statistics/wordStatisticsSlice';
 import styles from './styles';
@@ -22,7 +22,7 @@ interface ChartData {
 const Charts = ({ classes }: Props): JSX.Element => {
   const user = useAppSelector(getCurrUser);
   const stats = useAppSelector(selectWordCountByDate);
-  const studied = useAppSelector(selectDifficultUserWords);
+  const studied = useAppSelector(selectDifficultUserWordsCountByDate);
   const parseToValidData = (data: Report) => {
     const result: Array<ChartData> = [];
     Object.entries(data).map(([studiedAt, wordCount]) =>
@@ -77,6 +77,9 @@ const Charts = ({ classes }: Props): JSX.Element => {
       {wordsPerDayArray.length ? (
         <>
           <div className={classes.chart}>
+            <Typography className={classes.chartTitle} variant="subtitle1">
+              Ваш прогресс по дням
+            </Typography>
             <LineChart
               data={wordsPerDayArray.reverse()}
               height={400}
@@ -91,6 +94,9 @@ const Charts = ({ classes }: Props): JSX.Element => {
             </LineChart>
           </div>
           <div className={classes.chart}>
+            <Typography className={classes.chartTitle} variant="subtitle1">
+              Общее количество слов за каждый день
+            </Typography>
             <LineChart
               data={totalWordsArray}
               height={400}
