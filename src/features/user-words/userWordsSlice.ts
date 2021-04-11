@@ -40,7 +40,8 @@ export const fetchUserWords = createAsyncThunk<
       currentUser: getState().user.current,
     }),
   {
-    condition: (_, { getState }) => getState()[name].status === requestStatus.idle,
+    condition: (_, { getState }) =>
+      selectUserWordRequestStatus(getState()).status !== requestStatus.pending,
   }
 );
 
@@ -89,26 +90,20 @@ const userWordsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserWords.pending, (state, { meta }) => {
-        if (state.status === requestStatus.idle) {
-          state.status = meta.requestStatus;
-        }
+        state.status = meta.requestStatus;
       })
       .addCase(fetchUserWords.fulfilled, (state, { meta, payload: userWords }) => {
-        if (state.status === requestStatus.pending) {
-          state.status = meta.requestStatus;
-          userWordsAdapter.setAll(state, userWords);
-        }
+        state.status = meta.requestStatus;
+        userWordsAdapter.setAll(state, userWords);
       })
-      .addCase(fetchUserWords.rejected, (state, { error }) => {
-        if (state.status === requestStatus.pending) {
-          state.status = requestStatus.idle;
-          state.error = error.message;
-        }
+      .addCase(fetchUserWords.rejected, (state, { error, meta }) => {
+        state.error = error.message;
+        state.status = meta.requestStatus;
       })
       .addCase(removeUserWord.fulfilled, userWordsAdapter.removeOne)
-      .addCase(removeUserWord.rejected, (state, { error }) => {
-        state.status = requestStatus.idle;
+      .addCase(removeUserWord.rejected, (state, { error, meta }) => {
         state.error = error.message;
+        state.status = meta.requestStatus;
       })
       .addCase(upsertUserWord.fulfilled, (state, { payload: userWord }) => {
         userWordsAdapter.removeOne(state, userWord.id);
@@ -225,7 +220,7 @@ export const selectDifficultWordIdsByChunk = createSelector(
   (difficultUserWords) => difficultUserWords.map((word) => word.wordId)
 );
 
-export const selectUserWordsRequestStatus = (state: RootState) => ({
+export const selectUserWordRequestStatus = (state: RootState) => ({
   status: state[name].status,
   error: state[name].error,
 });
