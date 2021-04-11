@@ -10,6 +10,7 @@ import WordCard from 'features/word-card/WordCard';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IUserWord, IWord } from 'types';
+import Breadcrumbs from '../../app/breadcrumbs/Breadcrumbs';
 import Paginator from '../../app/paginator/Paginator';
 import CustomizedSnackbars from '../../app/show-status/CustomizedSnackbars';
 import { requestStatus, WORD_CARD_WIDTH } from '../../constants';
@@ -62,10 +63,11 @@ const WordGridList = ({
   return (
     <Container ref={containerRef} className={classes.root} maxWidth="lg">
       <CustomizedSnackbars request={request} />
-      <Paginator baseUrl={baseUrl} count={pageCount} group={+group} page={+page} />
-      <div className={classes.settings}>
+      <Container className={classes.textbookPanel}>
+        <Breadcrumbs />
+        <Paginator baseUrl={baseUrl} count={pageCount} group={+group} page={+page} />
         <Settings />
-      </div>
+      </Container>
       <GridList cellHeight="auto" className={classes.gridList} cols={cols}>
         {Object.keys(Array(cols).fill(null)).map(
           (i) =>
