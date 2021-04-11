@@ -3,6 +3,7 @@ import React from 'react';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAppSelector } from '../../common/hooks';
+import { selectDifficultUserWords } from '../../features/user-words/userWordsSlice';
 import { getCurrUser } from '../../features/user/userSlice';
 import { selectWordCountByDate } from '../../features/word-statistics/wordStatisticsSlice';
 import styles from './styles';
@@ -21,18 +22,36 @@ interface ChartData {
 const Charts = ({ classes }: Props): JSX.Element => {
   const user = useAppSelector(getCurrUser);
   const stats = useAppSelector(selectWordCountByDate);
+  const studied = useAppSelector(selectDifficultUserWords);
   const parseToValidData = (data: Report) => {
     const result: Array<ChartData> = [];
     Object.entries(data).map(([studiedAt, wordCount]) =>
       result.push({
-        studiedAt,
+        studiedAt: studiedAt.substring(0, 10),
         words: wordCount,
       })
     );
-    return result.reverse();
+    return result;
   };
-  const wordsPerDayArray = parseToValidData(stats);
-  console.log(wordsPerDayArray);
+  const aggregateDailyStatistics = () => {
+    const iterable = [...parseToValidData(stats), ...parseToValidData(studied)];
+    const result: Array<ChartData> = [];
+    const uniqueDate = new Set();
+    iterable.forEach((item) => uniqueDate.add(item.studiedAt));
+    uniqueDate.forEach((date) => {
+      const aggregated = iterable
+        .filter((item) => item.studiedAt === date)
+        .reduce((acc, cur) => acc + cur.words, 0);
+      result.push({
+        studiedAt: String(date),
+        words: aggregated,
+      });
+    });
+    return result.sort(
+      (prev, next) => Number(prev.studiedAt.slice(-2)) - Number(next.studiedAt.slice(-2))
+    );
+  };
+  const wordsPerDayArray = aggregateDailyStatistics();
   const aggregateTotalStatistics = (array: Array<ChartData>) => {
     const reversedArray = array.reverse();
     const result: Array<ChartData> = [];
