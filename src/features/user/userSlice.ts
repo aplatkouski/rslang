@@ -12,6 +12,9 @@ import {
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
 } from '../../constants';
+import { fetchGameStatistics } from '../game-statistics/gameStatisticsSlice';
+import { fetchUserWords } from '../user-words/userWordsSlice';
+import { fetchWordStatistics } from '../word-statistics/wordStatisticsSlice';
 
 interface IState extends IStatus {
   current?: IUser;
@@ -83,6 +86,9 @@ export const logInViaLocalStorage = (): AppThunk => async (dispatch) => {
     if (response.status === SERVER_OK_STATUS) {
       dispatch(setUserWithDefPhoto(savedUserData));
       dispatch(getUserPhotoSrc(userId, token));
+      dispatch(fetchUserWords(null));
+      dispatch(fetchWordStatistics(null));
+      dispatch(fetchGameStatistics(null));
     } else {
       dispatch(logOut());
     }
@@ -112,6 +118,9 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
       dispatch(setUserWithDefPhoto(user));
       const { userId, token: userToken } = user;
       dispatch(getUserPhotoSrc(userId, userToken));
+      dispatch(fetchUserWords(null));
+      dispatch(fetchWordStatistics(null));
+      dispatch(fetchGameStatistics(null));
     }
   } catch (e) {
     dispatch(setLogInError(e.message));

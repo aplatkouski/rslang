@@ -17,7 +17,9 @@ import { fetchWords } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
+import { fetchGameStatistics } from './features/game-statistics/gameStatisticsSlice';
 import { fetchUserWords } from './features/user-words/userWordsSlice';
+import { fetchWordStatistics } from './features/word-statistics/wordStatisticsSlice';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -28,6 +30,8 @@ const App = (): JSX.Element => {
     dispatch(fetchGames(null));
     dispatch(fetchWords(null));
     dispatch(fetchUserWords(null));
+    dispatch(fetchWordStatistics(null));
+    dispatch(fetchGameStatistics(null));
   }, [dispatch]);
 
   return (
