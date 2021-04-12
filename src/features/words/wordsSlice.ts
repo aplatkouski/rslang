@@ -6,13 +6,15 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import {
+  selectDeletedWordIds,
   selectDeletedWordIdsByChunk,
   selectDeletedWordIdsByGroup,
   selectDifficultWordIdsByChunk,
   selectStudiedWordIdsByPage,
 } from 'features/user-words/userWordsSlice';
 import { IStatus, IWord } from 'types';
-import { api, requestStatus } from '../../constants';
+import { api, PAGES_PER_GROUP, requestStatus } from '../../constants';
+import shuffle from './utils/shuffle';
 
 export const name = 'wordsAP' as const;
 
@@ -119,6 +121,46 @@ export const selectDifficultWordsByChunk = createSelector(
 export const selectStudiedWordsByPage = createSelector(
   [selectActiveWordsByPage, selectStudiedWordIdsByPage],
   (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
+);
+
+export const selectAllActiveWords = createSelector(
+  [selectAllWords, selectDeletedWordIds],
+  (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
+);
+
+export const selectActiveWordsForGame = createSelector(
+  [
+    selectAllActiveWords,
+    (_: RootState, { group }: SelectorProps<'group'>) => group,
+    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
+    (
+      _: RootState,
+      { count = 10 }: SelectorProps<'group' | 'page'> & { count?: number }
+    ) => count,
+  ],
+  (activeWords, group, page, count) => {
+    const wordsForGame = [];
+    const filter = (word: IWord) => word.group === group && word.page === page;
+    while (activeWords.length && count > wordsForGame.length && group >= 0 && page >= 0) {
+      wordsForGame.push(...activeWords.filter(filter));
+      page -= 1;
+      if (page < 0) {
+        group -= 1;
+        page = PAGES_PER_GROUP - 1;
+      }
+    }
+    return wordsForGame.slice(0, count);
+  }
+);
+
+export const selectWrongTranslations = createSelector(
+  [
+    selectAllWords,
+    (_: RootState, { wordId }: SelectorProps<'wordId'>) => wordId,
+    (_: RootState, { count }: { count: number }) => count,
+  ],
+  (words, wordId, count) =>
+    shuffle<IWord>(words.filter((word) => word.id !== wordId)).slice(0, count)
 );
 
 export const selectWordsRequestStatus = (state: RootState) => ({

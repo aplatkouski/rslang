@@ -4,23 +4,24 @@ import Navbar from 'app/navbar/Navbar';
 import StatisticPage from 'app/statistic-page/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch } from 'common/hooks';
+import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlice';
 import games from 'features/games';
-import AudioCallGame from 'features/games/audio-call-game/AudioCallGame';
+import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
 import SectorsPage from 'features/sectors-page/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
+import { fetchUserWords } from 'features/user-words/userWordsSlice';
 import { logInViaLocalStorage } from 'features/user/userSlice';
-import TextBook from 'features/words';
-import DeletedWordsSection from 'features/words/DeletedWordsSection';
-import DifficultWordsSection from 'features/words/DifficultWordsSection';
-import StudiedWordsSection from 'features/words/StudiedWordsSection';
+import { fetchWordStatistics } from 'features/word-statistics/wordStatisticsSlice';
+import TextBook, {
+  DeletedWordsSection,
+  DifficultWordsSection,
+  StudiedWordsSection,
+} from 'features/words';
 import { fetchWords } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { ROUTES } from './constants';
-import { fetchGameStatistics } from './features/game-statistics/gameStatisticsSlice';
-import { fetchUserWords } from './features/user-words/userWordsSlice';
-import { fetchWordStatistics } from './features/word-statistics/wordStatisticsSlice';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -54,7 +55,7 @@ const App = (): JSX.Element => {
           exact
           path="/textbook/dictionary/difficult/:group/:page"
         />
-        <Route component={AudioCallGame} exact path="/games/audio-call" />
+        <Route component={Game} exact path="/games/audio-call" />
         <Route
           component={DeletedWordsSection}
           exact
