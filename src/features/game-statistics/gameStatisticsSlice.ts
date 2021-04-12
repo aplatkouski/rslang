@@ -136,6 +136,20 @@ export const selectBestSeriesByGame = createSelector(
   }
 );
 
+export const selectBestSeriesAverageByGame = createSelector(
+  [selectAllGameStatistics, (_: RootState, gameId: string) => gameId],
+  (gameStatistics, gameId) => {
+    const currentGameStatistics = gameStatistics.filter((s) => s.gameId === gameId);
+    if (!currentGameStatistics.length) {
+      return undefined;
+    }
+    return Math.round(
+      currentGameStatistics.reduce((sum, { bestSeries }) => sum + bestSeries, 0) /
+        currentGameStatistics.length
+    );
+  }
+);
+
 export const selectGameStatisticRequestStatus = (state: RootState) => ({
   status: state[name].status,
   error: state[name].error,

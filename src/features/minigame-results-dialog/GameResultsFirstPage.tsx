@@ -1,18 +1,17 @@
 import React from 'react';
+import { selectCurrentGameStatistic } from 'features/games/gamesSlice';
 import CorrectAnswersPercentage from './correct-answers-percentage/CorrectAnswersPercentage';
 import GamePoints from './game-points/GamePoints';
-// import { useAppSelector } from '../../common/hooks';
-import { gameResults } from './mocha-data';
+import { useAppSelector } from '../../common/hooks';
 
 const GameResultsFirstPage: React.FC = () => {
-  // const results = useAppSelector((state) => state.gameStatistics.current);
-  const { current } = gameResults;
+  const statistic = useAppSelector(selectCurrentGameStatistic);
 
-  if (!current) {
+  if (!statistic) {
     return null;
   }
 
-  const { wordStatistics, gameStatistic } = current;
+  const { wordStatistics, gameStatistic } = statistic;
 
   return (
     <>
