@@ -1,5 +1,4 @@
-import { red } from '@material-ui/core/colors';
-import { createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, fade, Theme } from '@material-ui/core/styles';
 import { WORD_CARD_MARGIN, WORD_CARD_WIDTH } from '../../constants';
 
 // "margin: -4px" in GridList component
@@ -32,9 +31,6 @@ const gameCardStyles = (theme: Theme) =>
         marginBottom: theme.spacing(0),
       },
     },
-    avatar: {
-      backgroundColor: red[theme.palette.type === 'light' ? 200 : 700],
-    },
     actionIcon: {
       height: theme.spacing(5),
       width: theme.spacing(5),
@@ -56,6 +52,20 @@ const gameCardStyles = (theme: Theme) =>
       animationDuration: '1500ms',
       animationTimingFunction: 'ease-in-out',
       animationIterationCount: 'infinite',
+    },
+    important: {
+      color: fade(theme.palette.secondary.dark, 0.54),
+      marginLeft: theme.spacing(-5),
+    },
+    avatar: {
+      position: 'relative',
+      left: theme.spacing(-1.5),
+      top: theme.spacing(-3.5),
+      borderRadius: '50%',
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+      backgroundColor: fade(theme.palette.secondary.light, 0.15),
+      color: fade(theme.palette.secondary.dark, 0.54),
     },
   });
 

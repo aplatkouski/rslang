@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Card,
   CardActions,
   CardContent,
@@ -10,12 +9,14 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import BookIcon from '@material-ui/icons/Book';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
-import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
-import StopIcon from '@material-ui/icons/Stop';
+import {
+  Book as BookIcon,
+  Delete as DeleteIcon,
+  PlayArrow as PlayArrowIcon,
+  PriorityHigh as PriorityHighIcon,
+  RestoreFromTrash as RestoreFromTrashIcon,
+  Stop as StopIcon,
+} from '@material-ui/icons';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector, useAudio } from 'common/hooks';
@@ -143,24 +144,34 @@ const WordCard = ({ classes, word, userWord }: Props) => {
     <Card className={classes.root}>
       <CardHeader
         action={getActionIcon()}
-        avatar={
-          <Avatar aria-label="priority" className={classes.avatar}>
-            <PriorityHighIcon />
-          </Avatar>
-        }
+        avatar={isDifficult && <PriorityHighIcon />}
         classes={{
           action: classes.action,
-          title: blinkIfPlaying('audio'),
+          avatar: classes.avatar,
         }}
-        subheader={isShowTranslations && word.wordTranslate}
+        disableTypography
+        subheader={
+          <Typography
+            align="center"
+            className={clsx(isDifficult && classes.important)}
+            variant="body1"
+          >
+            {isShowTranslations && word.wordTranslate}
+          </Typography>
+        }
         title={
-          <>
+          <Typography
+            align="center"
+            className={clsx(blinkIfPlaying('audio'), isDifficult && classes.important)}
+            component="h4"
+            variant="h6"
+          >
             <b>{word.word}</b>
             {` ${word.transcription}`}
-          </>
+          </Typography>
         }
       />
-      <LearningProgress value={88} />
+      <LearningProgress wordId={word.id} />
       <CardMedia
         className={classes.media}
         image={`${api}/${word.image}`}
