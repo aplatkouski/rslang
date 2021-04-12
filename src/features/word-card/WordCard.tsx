@@ -188,30 +188,33 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       </CardContent>
       {isShowButtons && (
         <CardActions disableSpacing>
-          <ToggleButtonGroup
-            aria-label="set word type"
-            onChange={handleSetType}
-            value={types}
-          >
-            <ToggleButton
-              aria-label="add word to training list"
-              onClick={handleToggleStudied}
-              selected={isStudied}
-              value="isStudied"
+          {!isDeleted && (
+            <ToggleButtonGroup
+              aria-label="set word type"
+              onChange={handleSetType}
+              value={types}
             >
-              <BookIcon />
-            </ToggleButton>
-            <ToggleButton
-              aria-label="mark word as difficult"
-              onClick={handleToggleDifficult}
-              selected={isDifficult}
-              value="isDifficult"
-            >
-              <PriorityHighIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton
+                aria-label="toggle word as learning"
+                onClick={handleToggleStudied}
+                selected={isStudied}
+                value="isStudied"
+              >
+                <BookIcon />
+              </ToggleButton>
+
+              <ToggleButton
+                aria-label="toggle word as difficult"
+                onClick={handleToggleDifficult}
+                selected={isDifficult}
+                value="isDifficult"
+              >
+                <PriorityHighIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
+          )}
           <IconButton
-            aria-label="mark word as deleted"
+            aria-label="toggle word as deleted"
             className={classes.expand}
             onClick={handleToggleDelete}
           >
