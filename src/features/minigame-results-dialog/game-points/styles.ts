@@ -5,6 +5,9 @@ const gamePointsStyles = (theme: Theme) =>
     root: {
       paddingBottom: theme.spacing(4),
     },
+    title: {
+      textAlign: 'center',
+    },
     result: {
       fontWeight: theme.typography.fontWeightBold,
     },

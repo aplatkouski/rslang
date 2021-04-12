@@ -1,9 +1,9 @@
 import { List, ListItem, Typography, WithStyles, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
+import { selectCurrentGameStatistic } from 'features/games/gamesSlice';
 import WordRecord from './word-record/WordRecord';
-// import { useAppSelector } from '../../common/hooks';
-import { gameResults } from './mocha-data';
+import { useAppSelector } from '../../common/hooks';
 import styles from './styles';
 
 type Title = 'Верно: ' | 'Неверно: ' | 'С ошибками: ';
@@ -14,14 +14,13 @@ const titles: Array<Title> = ['Верно: ', 'Неверно: ', 'С ошибк
 interface Props extends WithStyles<typeof styles> {}
 
 const GameResultsSecondPage: React.FC<Props> = ({ classes }) => {
-  // const results = useAppSelector((state) => state.gameStatistics.current);
-  const { current } = gameResults;
+  const statistic = useAppSelector(selectCurrentGameStatistic);
 
-  if (!current) {
+  if (!statistic) {
     return null;
   }
 
-  const { wordStatistics } = current;
+  const { wordStatistics } = statistic;
 
   const corrects = wordStatistics
     .filter(

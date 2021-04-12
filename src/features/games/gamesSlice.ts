@@ -78,4 +78,6 @@ export const {
   selectById: selectGamesById,
 } = gameStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
+export const selectCurrentGameStatistic = (state: RootState) => state[name].current;
+
 export default gamesSlice.reducer;
