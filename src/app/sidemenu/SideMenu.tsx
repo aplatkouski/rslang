@@ -63,7 +63,13 @@ const upperMenu = [
     url: '/textbook/dictionary/studied/0/0',
     icon: <MenuBook />,
   },
-  { key: 6, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
+  {
+    key: 6,
+    title: 'Игра АудиоВызов',
+    url: '/games/audio-call',
+    icon: <MenuBook />,
+  },
+  { key: 7, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];
 
 const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];
