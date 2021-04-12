@@ -1,62 +1,21 @@
-import {
-  Box,
-  Divider,
-  Typography,
-  Theme,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import { red, green } from '@material-ui/core/colors';
 import React from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import CorrectAnswersPercentage from './correct-answers-percentage/CorrectAnswersPercentage';
+import GamePoints from './game-points/GamePoints';
 import { GameResult } from './types';
-import 'react-circular-progressbar/dist/styles.css';
-import styles from './styles';
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   results: GameResult;
-  theme: Theme;
 }
 
-const GameResultsFirstPage = ({ classes, theme, results }: Props): JSX.Element => {
-  const { points, bestSeries } = results;
-
-  const corrects: number = results.words.reduce((sum, { isCorrect }) => {
-    return isCorrect ? sum + 1 : sum;
-  }, 0);
-
-  const percentage = Math.round((corrects / results.words.length) * 100);
+const GameResultsFirstPage = ({ results }: Props): JSX.Element => {
+  const { words, ...data } = results;
 
   return (
     <>
-      <Box className={classes.circularProgressbarContainer}>
-        <Typography className={classes.title} gutterBottom>
-          Процент правильно указанных слов:
-        </Typography>
-        <CircularProgressbar
-          background
-          backgroundPadding={theme.spacing(0.5)}
-          className={classes.circularProgressbar}
-          styles={buildStyles({
-            backgroundColor: theme.palette.grey[200],
-            textColor: theme.palette.primary.main,
-            textSize: theme.spacing(3),
-            pathColor: green[theme.palette.type === 'light' ? 200 : 700],
-            trailColor: red[theme.palette.type === 'light' ? 200 : 700],
-          })}
-          text={`${percentage}%`}
-          value={percentage}
-        />
-      </Box>
-
-      <Divider className={classes.divider} />
-
-      <Typography>{`Вы набрали очков за игру - ${points}`}</Typography>
-      <Typography>{`Ваш средний результат за игру - ${points}`}</Typography>
-      <Typography>{`Ваш рекорд за игру - ${points}`}</Typography>
-      <Typography>{`Лушчая серия за игру - ${bestSeries}`}</Typography>
+      <CorrectAnswersPercentage words={words} />
+      <GamePoints data={data} />
     </>
   );
 };
 
-export default withStyles(styles, { withTheme: true })(GameResultsFirstPage);
+export default GameResultsFirstPage;

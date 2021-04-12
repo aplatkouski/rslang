@@ -89,10 +89,9 @@ const MiniGameResults = ({ classes, results }: Props): JSX.Element => {
     [selectedValue]
   );
 
-  const gameID: string = '606744ee4c1b2097c2d7491f';
-  const pagesData: Array<IPageData> = useMemo(() => gamesResults[gameID], [
+  const pagesData: Array<IPageData> = useMemo(() => gamesResults[results.gameId], [
     gamesResults,
-    gameID,
+    results.gameId,
   ]);
 
   return (

@@ -1,10 +1,10 @@
 export interface IWordResult {
-  wordID: string;
+  wordId: string;
   isCorrect: boolean;
 }
 export interface GameResult {
-  gameID: string;
-  points: number;
-  bestSeries: number;
+  gameId: string;
+  points: number | undefined;
+  bestSeries: number | undefined;
   words: Array<IWordResult>;
 }

@@ -21,12 +21,12 @@ interface Props extends WithStyles<typeof styles> {
 
 const GameResultsSecondPage = ({ classes, results }: Props): JSX.Element => {
   const corrects = useMemo(
-    () => results.words.filter(({ isCorrect }) => isCorrect).map(({ wordID }) => wordID),
+    () => results.words.filter(({ isCorrect }) => isCorrect).map(({ wordId }) => wordId),
     [results.words]
   );
 
   const errors = useMemo(
-    () => results.words.filter(({ isCorrect }) => !isCorrect).map(({ wordID }) => wordID),
+    () => results.words.filter(({ isCorrect }) => !isCorrect).map(({ wordId }) => wordId),
     [results.words]
   );
 

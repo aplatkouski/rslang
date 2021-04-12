@@ -20,28 +20,28 @@ const DIALOG_TITLE_TEXT: string = 'Результат игры';
 
 // данные уточнить ---------------------------------------
 const results: GameResult = {
-  gameID: '606744ee4c1b2097c2d7491f',
-  points: 60,
-  bestSeries: 320,
+  gameId: '606744ee4c1b2097c2d7491f',
+  points: 100,
+  bestSeries: 540,
   words: [
     {
-      wordID: '5e9f5ee35eb9e72bc21afa40',
+      wordId: '5e9f5ee35eb9e72bc21afa40',
       isCorrect: false,
     },
     {
-      wordID: '5e9f5ee35eb9e72bc21afa04',
+      wordId: '5e9f5ee35eb9e72bc21afa04',
       isCorrect: true,
     },
     {
-      wordID: '5e9f5ee35eb9e72bc21afbf8',
+      wordId: '5e9f5ee35eb9e72bc21afbf8',
       isCorrect: false,
     },
     {
-      wordID: '5e9f5ee35eb9e72bc21af887',
+      wordId: '5e9f5ee35eb9e72bc21af887',
       isCorrect: true,
     },
     {
-      wordID: '5e9f5ee35eb9e72bc21afaf4',
+      wordId: '5e9f5ee35eb9e72bc21afaf4',
       isCorrect: true,
     },
   ],
