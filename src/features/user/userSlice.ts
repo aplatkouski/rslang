@@ -129,9 +129,12 @@ export const logIn = (logInData: IUserLogInData): AppThunk => async (dispatch) =
 };
 
 export const logOut = (): AppThunk => async (dispatch) => {
-  const noUserData: IState = {
-    status: requestStatus.idle,
-    defaultPhoto: userAltImg,
+  const noUserData: IUser = {
+    name: '',
+    photoSrc: undefined,
+    refreshToken: '',
+    token: '',
+    userId: '',
   };
 
   const lsItem: string | null = localStorage.getItem(LOCALSTORAGE_KEY);
