@@ -13,7 +13,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 import { initialStats, STATISTIC_KEY } from '../../constants';
 import * as t from '../../types';
-import Charts from '../charts/Charts';
+import ChartStatistics from '../chartStatistics/ChartStatistics';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
@@ -73,7 +73,7 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
         </Table>
       </TableContainer>
       <Typography variant="h3">Долгосрочная статистика</Typography>
-      <Charts />
+      <ChartStatistics />
     </div>
   );
 };

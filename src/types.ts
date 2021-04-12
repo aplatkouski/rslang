@@ -166,3 +166,7 @@ export interface IRouterPath {
   group: string;
   page: string;
 }
+export interface IChartData {
+  studiedAt: string;
+  words: number;
+}
