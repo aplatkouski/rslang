@@ -5,7 +5,6 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-import { selectAllGames } from 'features/games/gamesSlice';
 import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
 import { IWordStatistic } from 'types';
@@ -127,18 +126,18 @@ interface ReportWordCountByGames {
 }
 
 /**
- * Note: use `selectAllGames` to count words only for games that are exists now
  *
  * TODO: add selectAllStudiedWords from `userWordsSlice`
  */
 export const selectWordCountByGames = createSelector(
-  [selectAllWordStatistics, selectAllGames],
-  (wordStatistics, games): ReportWordCountByGames => {
-    const totals = Object.fromEntries(games.map((game) => [game.id, new Set<string>()]));
+  [selectAllWordStatistics],
+  (wordStatistics): ReportWordCountByGames => {
+    const totals = {} as { [key: string]: Set<string> };
     wordStatistics.forEach((statistic) => {
-      if (totals[statistic.gameId]) {
-        totals[statistic.gameId].add(statistic.wordId);
+      if (!totals[statistic.gameId]) {
+        totals[statistic.gameId] = new Set();
       }
+      totals[statistic.gameId].add(statistic.wordId);
     });
     return Object.fromEntries(
       Object.entries(totals).map(([gameId, words]) => [gameId, words.size])
