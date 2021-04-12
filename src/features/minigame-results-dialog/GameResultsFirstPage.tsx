@@ -1,19 +1,23 @@
 import React from 'react';
 import CorrectAnswersPercentage from './correct-answers-percentage/CorrectAnswersPercentage';
 import GamePoints from './game-points/GamePoints';
-import { GameResult } from './types';
+// import { useAppSelector } from '../../common/hooks';
+import { gameResults } from './mocha-data';
 
-interface Props {
-  results: GameResult;
-}
+const GameResultsFirstPage: React.FC = () => {
+  // const results = useAppSelector((state) => state.gameStatistics.current);
+  const { current } = gameResults;
 
-const GameResultsFirstPage = ({ results }: Props): JSX.Element => {
-  const { words, ...data } = results;
+  if (!current) {
+    return null;
+  }
+
+  const { wordStatistics, gameStatistic } = current;
 
   return (
     <>
-      <CorrectAnswersPercentage words={words} />
-      <GamePoints data={data} />
+      <CorrectAnswersPercentage data={wordStatistics} />
+      <GamePoints data={gameStatistic} />
     </>
   );
 };
