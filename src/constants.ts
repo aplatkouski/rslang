@@ -108,3 +108,8 @@ export const requestMethods = {
   PUT: 'PUT' as const,
   DELETE: 'DELETE' as const,
 };
+
+export const CHART = {
+  DAILY_TITLE: 'Статистика изученных слов за каждый день',
+  TOTAL_TITLE: 'Статистика общего числа изученных слов за каждый день',
+};

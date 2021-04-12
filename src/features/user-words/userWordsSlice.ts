@@ -5,9 +5,21 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
+<<<<<<< HEAD
 import { fetchUserData } from 'features/user/utils';
 import { IStatus, IUserWord } from 'types';
 import { requestMethods, requestStatus, WORDS_PER_PAGE } from '../../constants';
+=======
+import {
+  IChartData,
+  ICreateThunkArguments,
+  ICredentials,
+  IRemoveThunkArguments,
+  IStatus,
+  IUserWord,
+} from 'types';
+import { api, PAGES_PER_GROUP, requestStatus, WORDS_PER_PAGE } from '../../constants';
+>>>>>>> 228353b (feat: add ChartStatisitic)
 
 export const name = 'userWords' as const;
 
@@ -140,19 +152,43 @@ export const selectUserWordsByPage = createSelector(
 export const selectStudiedUserWordsCountByDate = createSelector(
   [selectAllUserWords],
   (userWords) => {
-    const difficult = userWords.filter((userWord) => userWord.isStudied);
+    const studied = userWords.filter((userWord) => userWord.isStudied);
     const totals = {} as { [key: string]: Set<string> };
-    difficult.forEach((word: any) => {
+    const result: Array<IChartData> = [];
+    studied.forEach((word: any) => {
       if (!totals[word.addedAt]) {
         totals[word.addedAt] = new Set<string>();
       }
       totals[word.addedAt].add(word.wordId);
     });
-    return Object.fromEntries(
-      Object.entries(totals).map(([studiedAt, words]) => [studiedAt, words.size])
+    Object.entries(totals).map(([studiedAt, words]) =>
+      result.push({
+        studiedAt: studiedAt.substring(0, 10),
+        words: words.size,
+      })
     );
+    return result;
   }
 );
+
+export const selectStudiedWordsTotalCountByDate = createSelector(
+  [selectStudiedUserWordsCountByDate],
+  (studiedWords) => {
+    const reversedArray = [...studiedWords].reverse();
+    const result: Array<IChartData> = [];
+    reversedArray.forEach((item: IChartData, idx: number, arr: Array<IChartData>) => {
+      const totalWords = arr
+        .slice(idx)
+        .reduce((acc: number, cur: IChartData) => acc + cur.words, 0);
+      result.push({
+        studiedAt: item.studiedAt,
+        words: totalWords,
+      });
+    });
+    return result.reverse();
+  }
+);
+
 export const selectWordsIdsByPage = createSelector(selectUserWordsByPage, (userWords) =>
   userWords.map((userWord) => userWord.wordId)
 );
