@@ -2,23 +2,27 @@ import { Box, Typography, Theme, WithStyles, withStyles } from '@material-ui/cor
 import { red, green } from '@material-ui/core/colors';
 import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { IWordResult } from '../types';
+import { IWordStatistic } from '../../../types';
 import 'react-circular-progressbar/dist/styles.css';
 import styles from './styles';
 
 const TITLE_TEXT: string = 'Процент правильно указанных слов:';
 
 interface Props extends WithStyles<typeof styles> {
-  words: Array<IWordResult>;
+  data: Array<IWordStatistic>;
   theme: Theme;
 }
 
-const CorrectAnswersPercentage = ({ classes, theme, words }: Props): JSX.Element => {
-  const corrects: number = words.reduce((sum, { isCorrect }) => {
-    return isCorrect ? sum + 1 : sum;
+const CorrectAnswersPercentage = ({ classes, theme, data }: Props): JSX.Element => {
+  const corrects: number = data.reduce((sum, { correctAnswerTotal }) => {
+    return sum + correctAnswerTotal;
   }, 0);
 
-  const percentage = Math.round((corrects / words.length) * 100);
+  const total: number = data.reduce((sum, { correctAnswerTotal, wrongAnswerTotal }) => {
+    return sum + correctAnswerTotal + wrongAnswerTotal;
+  }, 0);
+
+  const percentage = Math.round((corrects / total) * 100);
 
   return (
     <Box className={classes.root}>

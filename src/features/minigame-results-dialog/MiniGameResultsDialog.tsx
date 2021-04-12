@@ -11,45 +11,13 @@ import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import MiniGameResults from './MiniGameResults';
-import { GameResult } from './types';
 import styles from './styles';
 
 const BUTTON_REPEAT_TEXT: string = 'повторить';
 const BUTTON_EXIT_TEXT: string = 'закончить';
 const DIALOG_TITLE_TEXT: string = 'Результат игры';
 
-// данные уточнить ---------------------------------------
-const results: GameResult = {
-  gameId: '606744ee4c1b2097c2d7491f',
-  points: 100,
-  bestSeries: 540,
-  words: [
-    {
-      wordId: '5e9f5ee35eb9e72bc21afa40',
-      isCorrect: false,
-    },
-    {
-      wordId: '5e9f5ee35eb9e72bc21afa04',
-      isCorrect: true,
-    },
-    {
-      wordId: '5e9f5ee35eb9e72bc21afbf8',
-      isCorrect: false,
-    },
-    {
-      wordId: '5e9f5ee35eb9e72bc21af887',
-      isCorrect: true,
-    },
-    {
-      wordId: '5e9f5ee35eb9e72bc21afaf4',
-      isCorrect: true,
-    },
-  ],
-};
-// данные уточнить ---------------------------------------
-
 interface Props extends WithStyles<typeof styles> {
-  // results: GameResult;
   onRepeat: () => void;
 }
 
@@ -85,7 +53,7 @@ const MiniGameResultsDialog = ({ classes, onRepeat }: Props): JSX.Element => {
     >
       <DialogTitle>{DIALOG_TITLE_TEXT}</DialogTitle>
       <Divider className={classes.divider} />
-      <MiniGameResults results={results} />
+      <MiniGameResults />
       <Divider className={classes.divider} />
 
       <DialogActions className={classes.buttonsGroup}>

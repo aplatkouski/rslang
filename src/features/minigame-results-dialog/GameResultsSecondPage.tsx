@@ -1,46 +1,69 @@
-import {
-  Divider,
-  List,
-  ListItem,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { List, ListItem, Typography, WithStyles, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React from 'react';
 import WordRecord from './word-record/WordRecord';
-import { GameResult } from './types';
+// import { useAppSelector } from '../../common/hooks';
+import { gameResults } from './mocha-data';
 import styles from './styles';
 
-const CORRECT_TEXT: string = 'Верно';
-const ERROR_TEXT: string = 'Неверно';
+type Title = 'Верно: ' | 'Неверно: ' | 'С ошибками: ';
+type Answer = 'correct' | 'error' | 'mistake';
+const answers: Array<Answer> = ['correct', 'error', 'mistake'];
+const titles: Array<Title> = ['Верно: ', 'Неверно: ', 'С ошибками: '];
 
-interface Props extends WithStyles<typeof styles> {
-  results: GameResult;
-}
+interface Props extends WithStyles<typeof styles> {}
 
-const GameResultsSecondPage = ({ classes, results }: Props): JSX.Element => {
-  const corrects = useMemo(
-    () => results.words.filter(({ isCorrect }) => isCorrect).map(({ wordId }) => wordId),
-    [results.words]
-  );
+const GameResultsSecondPage: React.FC<Props> = ({ classes }) => {
+  // const results = useAppSelector((state) => state.gameStatistics.current);
+  const { current } = gameResults;
 
-  const errors = useMemo(
-    () => results.words.filter(({ isCorrect }) => !isCorrect).map(({ wordId }) => wordId),
-    [results.words]
-  );
+  if (!current) {
+    return null;
+  }
 
-  const getList = (items: Array<string>, isCorrects: boolean = true): JSX.Element => (
+  const { wordStatistics } = current;
+
+  const corrects = wordStatistics
+    .filter(
+      ({ correctAnswerTotal, wrongAnswerTotal }) =>
+        !wrongAnswerTotal && correctAnswerTotal
+    )
+    .map(({ wordId }) => wordId);
+
+  const errors = wordStatistics
+    .filter(
+      ({ correctAnswerTotal, wrongAnswerTotal }) =>
+        !correctAnswerTotal && wrongAnswerTotal
+    )
+    .map(({ wordId }) => wordId);
+
+  const mistakes = wordStatistics
+    .filter(
+      ({ correctAnswerTotal, wrongAnswerTotal }) => correctAnswerTotal && wrongAnswerTotal
+    )
+    .map(({ wordId }) => wordId);
+
+  const mapAnswerToProps = {
+    [answers[0]]: { style: classes.correct, text: titles[0] },
+    [answers[1]]: { style: classes.error, text: titles[1] },
+    [answers[2]]: { style: classes.mistake, text: titles[2] },
+  };
+
+  const getStyle = (answer: Answer): string => {
+    return mapAnswerToProps[answer].style;
+  };
+
+  const getTitle = (answer: Answer): string => {
+    return mapAnswerToProps[answer].text;
+  };
+
+  const getList = (items: Array<string>, answer: Answer): JSX.Element => (
     <>
-      <Typography className={classes.title}>
-        {isCorrects ? CORRECT_TEXT : ERROR_TEXT}&nbsp;
-        <span
-          className={clsx(classes.answer, isCorrects ? classes.correct : classes.error)}
-        >
-          {items.length}
-        </span>
+      <Typography className={clsx(classes.title, getStyle(answer))}>
+        {getTitle(answer)}
+        {items.length}
       </Typography>
-      <List>
+      <List className={classes.list}>
         {items.map((item) => (
           <ListItem key={item} className={classes.listItem}>
             <WordRecord id={item} />
@@ -52,9 +75,9 @@ const GameResultsSecondPage = ({ classes, results }: Props): JSX.Element => {
 
   return (
     <>
-      {corrects.length && getList(corrects)}
-      {corrects.length && errors.length && <Divider className={classes.divider} />}
-      {errors.length && getList(errors, false)}
+      {corrects.length ? getList(corrects, answers[0]) : null}
+      {errors.length ? getList(errors, answers[1]) : null}
+      {mistakes.length ? getList(mistakes, answers[2]) : null}
     </>
   );
 };
