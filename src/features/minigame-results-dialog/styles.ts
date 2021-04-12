@@ -1,7 +1,7 @@
 import { red, green } from '@material-ui/core/colors';
 import { createStyles, Theme } from '@material-ui/core/styles';
 
-const miniGameResultDialog = (theme: Theme) =>
+const miniGameResultDialogStyles = (theme: Theme) =>
   createStyles({
     root: {},
     content: {
@@ -35,14 +35,6 @@ const miniGameResultDialog = (theme: Theme) =>
     radioGroup: {
       textAlign: 'center',
     },
-    circularProgressbarContainer: {
-      textAlign: 'center',
-      paddingBottom: theme.spacing(3),
-    },
-    circularProgressbar: {
-      width: theme.spacing(20),
-      height: theme.spacing(20),
-    },
   });
 
-export default miniGameResultDialog;
+export default miniGameResultDialogStyles;
