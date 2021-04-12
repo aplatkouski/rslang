@@ -5,6 +5,7 @@ import StatisticPage from 'app/statistic-page/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch } from 'common/hooks';
 import games from 'features/games';
+import AudioCallGame from 'features/games/audio-call-game/AudioCallGame';
 import { fetchGames } from 'features/games/gamesSlice';
 import SectorsPage from 'features/sectors-page/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
@@ -53,6 +54,7 @@ const App = (): JSX.Element => {
           exact
           path="/textbook/dictionary/difficult/:group/:page"
         />
+        <Route component={AudioCallGame} exact path="/games/audio-call" />
         <Route
           component={DeletedWordsSection}
           exact
