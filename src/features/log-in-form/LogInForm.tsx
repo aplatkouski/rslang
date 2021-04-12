@@ -118,14 +118,14 @@ const LogInForm = ({
           <DialogActions className={classes.dlgActions}>
             <Button
               color="primary"
-              disabled={logInStatus === requestStatus.fulfilled}
+              disabled={logInStatus === requestStatus.pending}
               onClick={handleClose}
             >
               Отмена
             </Button>
             <Button
               color="primary"
-              disabled={!(logInStatus === requestStatus.idle)}
+              disabled={logInStatus === requestStatus.pending}
               onClick={handleLogInUser}
               type="submit"
               variant="outlined"
@@ -134,7 +134,7 @@ const LogInForm = ({
             </Button>
             <Button
               color="primary"
-              disabled={!(logInStatus === requestStatus.idle)}
+              disabled={logInStatus === requestStatus.pending}
               onClick={handleRegister}
             >
               Зарегистрироваться
