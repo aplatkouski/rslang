@@ -7,17 +7,12 @@ import {
 import type { AppDispatch, RootState } from 'app/store';
 import { fetchUserData } from 'features/user/utils';
 import { IStatus, IUserWord } from 'types';
-import {
-  PAGES_PER_GROUP,
-  requestMethods,
-  requestStatus,
-  WORDS_PER_PAGE,
-} from '../../constants';
+import { requestMethods, requestStatus, WORDS_PER_PAGE } from '../../constants';
 
 export const name = 'userWords' as const;
 
 const userWordsAdapter = createEntityAdapter<IUserWord>({
-  sortComparer: (a, b) => (a.group - b.group) * PAGES_PER_GROUP + (a.page - b.page),
+  sortComparer: (a, b) => a.wordId.localeCompare(b.wordId),
 });
 
 const initialState: IStatus = {
