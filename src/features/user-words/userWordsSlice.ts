@@ -143,11 +143,11 @@ export const selectStudiedUserWordsCountByDate = createSelector(
     const studied = userWords.filter((userWord) => userWord.isStudied);
     const totals = {} as { [key: string]: Set<string> };
     const result: Array<IChartData> = [];
-    studied.forEach((word: any) => {
-      if (!totals[word.addedAt]) {
-        totals[word.addedAt] = new Set<string>();
+    studied.forEach((word) => {
+      if (!totals[String(word.addedAt)]) {
+        totals[String(word.addedAt)] = new Set<string>();
       }
-      totals[word.addedAt].add(word.wordId);
+      totals[String(word.addedAt)].add(word.wordId);
     });
     Object.entries(totals).map(([studiedAt, words]) =>
       result.push({
