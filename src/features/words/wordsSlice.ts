@@ -157,7 +157,7 @@ export const selectWrongTranslations = createSelector(
   [
     selectAllWords,
     (_: RootState, { wordId }: SelectorProps<'wordId'>) => wordId,
-    (_: RootState, { count }: { count: number }) => count,
+    (_: RootState, { count = 4 }: { count?: number }) => count,
   ],
   (words, wordId, count) =>
     shuffle<IWord>(words.filter((word) => word.id !== wordId)).slice(0, count)

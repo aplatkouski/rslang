@@ -27,6 +27,7 @@ const gameStatisticsAdapter = createEntityAdapter<IGame>({
 interface State extends IStatus {
   current?: {
     currentWord?: IWord;
+    choice?: IWord;
     data?: unknown;
     gameStatistic: Omit<IGameStatistic, 'id'>;
     wordStatistics: Array<Omit<IWordStatistic, 'id'>>;
@@ -141,6 +142,18 @@ export const upsertWordStatistics = createAsyncThunk<
   }
 );
 
+export const upsertAllStatistic = createAsyncThunk<
+  void,
+  unknown,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>(`${name}/upsertAllStatistic`, async (_, { dispatch }) => {
+  await dispatch(upsertGameStatistic(null));
+  await dispatch(upsertWordStatistics(null));
+});
+
 const gamesSlice = createSlice({
   name,
   initialState: gameStatisticsAdapter.getInitialState(initialState),
@@ -165,6 +178,13 @@ const gamesSlice = createSlice({
     pickWord(state) {
       if (state.current) {
         state.current.currentWord = state.current.words.pop();
+        state.current.choice = undefined;
+        state.current.gameStatistic.bestSeries = 0;
+      }
+    },
+    choose(state, { payload: choice }: PayloadAction<IWord>) {
+      if (state.current) {
+        state.current.choice = choice;
       }
     },
     response(
@@ -199,8 +219,15 @@ const gamesSlice = createSlice({
               studiedAt,
             });
           }
+
+          if (correctAnswerTotal > 0 && wrongAnswerTotal === 0) {
+            state.current.gameStatistic.bestSeries += correctAnswerTotal;
+          } else {
+            state.current.gameStatistic.bestSeries = 0;
+          }
         }
         state.current.currentWord = state.current.words.pop();
+        state.current.choice = undefined;
       }
     },
   },
@@ -226,7 +253,7 @@ const gamesSlice = createSlice({
   },
 });
 
-export const { startNewGame, pickWord, response } = gamesSlice.actions;
+export const { choose, pickWord, response, startNewGame } = gamesSlice.actions;
 
 export const {
   selectAll: selectAllGames,
@@ -242,5 +269,7 @@ export const selectCurrentWord = (state: RootState) => {
   }
   return null;
 };
+
+export const selectChoice = (state: RootState) => state[name].current?.choice;
 
 export default gamesSlice.reducer;
