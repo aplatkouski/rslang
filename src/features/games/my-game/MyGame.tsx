@@ -21,6 +21,7 @@ import {
 } from './constants';
 import * as t from '../../../types';
 import * as gt from './types';
+// import { selectCurrentWord } from '../gamesSlice';
 
 import './MyGame.scss';
 
