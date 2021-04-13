@@ -5,21 +5,9 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-<<<<<<< HEAD
 import { fetchUserData } from 'features/user/utils';
-import { IStatus, IUserWord } from 'types';
+import { IChartData, IStatus, IUserWord } from 'types';
 import { requestMethods, requestStatus, WORDS_PER_PAGE } from '../../constants';
-=======
-import {
-  IChartData,
-  ICreateThunkArguments,
-  ICredentials,
-  IRemoveThunkArguments,
-  IStatus,
-  IUserWord,
-} from 'types';
-import { api, PAGES_PER_GROUP, requestStatus, WORDS_PER_PAGE } from '../../constants';
->>>>>>> 228353b (feat: add ChartStatisitic)
 
 export const name = 'userWords' as const;
 
@@ -174,18 +162,18 @@ export const selectStudiedUserWordsCountByDate = createSelector(
 export const selectStudiedWordsTotalCountByDate = createSelector(
   [selectStudiedUserWordsCountByDate],
   (studiedWords) => {
-    const reversedArray = [...studiedWords].reverse();
     const result: Array<IChartData> = [];
-    reversedArray.forEach((item: IChartData, idx: number, arr: Array<IChartData>) => {
-      const totalWords = arr
-        .slice(idx)
-        .reduce((acc: number, cur: IChartData) => acc + cur.words, 0);
+    studiedWords.forEach((item, idx) => {
+      if (idx === 0) {
+        result.push(item);
+        return;
+      }
       result.push({
         studiedAt: item.studiedAt,
-        words: totalWords,
+        words: item.words + result[idx - 1].words,
       });
     });
-    return result.reverse();
+    return result;
   }
 );
 
