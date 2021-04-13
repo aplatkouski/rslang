@@ -70,6 +70,7 @@
     "react-scripts": "^4.0.3",
     "recharts": "^2.0.9",
     "typescript": "~3.8.2",
+    "use-sound": "^2.0.1",
     "uuid": "^8.3.2"
   },
   "scripts": {
