@@ -23,12 +23,6 @@ const Game = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!currentWord && !words.length) {
-      dispatch(upsertAllStatistic(null));
-    }
-  }, [currentWord, dispatch, words.length]);
-
-  useEffect(() => {
     dispatch(
       startNewGame({
         date: new Date().toISOString().substring(0, 10),
@@ -54,7 +48,7 @@ const Game = (): JSX.Element => {
       }
 
       if (game.name.localeCompare('Своя игра') === 0) {
-        return <MyGame word={currentWord} />;
+        return <MyGame words={words} />;
       }
     }
     return <>FINAL WINDOW</>;
