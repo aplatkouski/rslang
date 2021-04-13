@@ -114,9 +114,6 @@ const WordCard = ({ classes, word, userWord }: Props) => {
 
   const handleStopAudio = useCallback(() => stop(), [stop]);
 
-  const blinkIfPlaying = (audio: string) =>
-    currentAudio === audio ? classes.blinker : undefined;
-
   const getActionIcon = () => {
     if (currentAudio) {
       return (
@@ -162,7 +159,10 @@ const WordCard = ({ classes, word, userWord }: Props) => {
         title={
           <Typography
             align="center"
-            className={clsx(blinkIfPlaying('audio'), isDifficult && classes.important)}
+            className={clsx(
+              currentAudio === 'audio' && classes.blinker,
+              isDifficult && classes.important
+            )}
             component="h4"
             variant="h6"
           >
@@ -179,7 +179,10 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       />
       <CardContent>
         <Typography
-          className={clsx(blinkIfPlaying('audioMeaning'), classes.paragraph)}
+          className={clsx(
+            currentAudio === 'audioMeaning' && classes.blinker,
+            classes.paragraph
+          )}
           paragraph
         >
           <TransformText text={word.textMeaning} />
@@ -221,7 +224,10 @@ const WordCard = ({ classes, word, userWord }: Props) => {
       )}
       <CardContent>
         <Typography
-          className={clsx(blinkIfPlaying('audioExample'), classes.paragraph)}
+          className={clsx(
+            currentAudio === 'audioExample' && classes.blinker,
+            classes.paragraph
+          )}
           color="textSecondary"
           component="p"
           paragraph
