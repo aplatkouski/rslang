@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Paginator = ({ baseUrl, count, group, page }: Props): JSX.Element => {
-  const disabledPages = [2, 5];
+  const disabledPages: Array<number> = [];
   return (
     <Pagination
       count={count}
