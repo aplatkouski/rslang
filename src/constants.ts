@@ -50,6 +50,12 @@ export const ROUTES = {
   sections: '/textbook/:sector/:page',
   team: '/about-team',
   statistic: '/statistic',
+  mini_games: '/mini_games',
+  savanna: '/mini_games/savanna',
+  audio_call: '/mini_games/audio_call',
+  sprint: '/mini_games/sprint',
+  custom_game: '/mini_games/custom_game',
+  statistics: '/statistics',
 };
 
 export const STATISTIC_KEY = 'stats';
