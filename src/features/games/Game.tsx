@@ -1,14 +1,21 @@
 import { useAppDispatch, useAppSelector } from 'common/hooks';
+import AudioCallGame from 'features/audio-call-game/AudioCallGame';
 import { selectActiveWordsForGame } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
-import AudioCallGame from './audio-call-game/AudioCallGame';
-import { startNewGame } from './gamesSlice';
+import { selectCurrentWord, startNewGame, upsertAllStatistic } from './gamesSlice';
 
 const Game = (): JSX.Element => {
   const words = useAppSelector((state) =>
     selectActiveWordsForGame(state, { group: 1, page: 1 })
   );
+  const currentWord = useAppSelector(selectCurrentWord);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!currentWord && !words.length) {
+      dispatch(upsertAllStatistic(null));
+    }
+  }, [currentWord, dispatch, words.length]);
 
   useEffect(() => {
     dispatch(
@@ -20,7 +27,8 @@ const Game = (): JSX.Element => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-  return <AudioCallGame />;
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return currentWord ? <AudioCallGame word={currentWord} /> : <>{/* FINAL WINDOW */}</>;
 };
 
 export default Game;
