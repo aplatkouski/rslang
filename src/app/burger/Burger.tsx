@@ -48,7 +48,7 @@ const Burger = ({ classes }: Props): JSX.Element => {
         open={Boolean(anchorEl)}
       >
         {burgerItems.map(({ route, title }) => (
-          <MenuItem onClick={handleClose}>
+          <MenuItem key={title} onClick={handleClose}>
             <NavLink to={route}>{title}</NavLink>
           </MenuItem>
         ))}
