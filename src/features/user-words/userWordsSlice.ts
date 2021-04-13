@@ -155,7 +155,7 @@ export const selectStudiedUserWordsCountByDate = createSelector(
         words: words.size,
       })
     );
-    return result;
+    return result.sort((a, b) => a.studiedAt.localeCompare(b.studiedAt));
   }
 );
 
