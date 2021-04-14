@@ -48,7 +48,7 @@ const Game = (): JSX.Element => {
       }
 
       if (game.name.localeCompare('Своя игра') === 0) {
-        return <MyGame words={words} />;
+        return <MyGame word={currentWord} />;
       }
     }
     return <>FINAL WINDOW</>;
