@@ -8,7 +8,7 @@ import type { AppDispatch, RootState } from 'app/store';
 import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
 import { IGameStatistic } from 'types';
-import { requestMethods, requestStatus } from '../../constants';
+import { requestMethods, requestStatus, GAME_ID } from '../../constants';
 
 export const name = 'gameStatistics' as const;
 
@@ -147,6 +147,28 @@ export const selectBestSeriesAverageByGame = createSelector(
       currentGameStatistics.reduce((sum, { bestSeries }) => sum + bestSeries, 0) /
         currentGameStatistics.length
     );
+  }
+);
+
+export const selectBestSeriesByGames = createSelector(
+  [selectAllGameStatistics],
+  (gameStatistics) => {
+    const result = {};
+    GAME_ID.forEach((id) => {
+      const currentGameStatistics = gameStatistics.filter((s) => s.gameId === id);
+      if (!currentGameStatistics.length) {
+        return undefined;
+      }
+      const currentGameBestSeries = Math.max(
+        ...currentGameStatistics.map((s) => s.bestSeries)
+      );
+      // @ts-ignore
+      result[id] = currentGameStatistics.find(
+        (s) => s.bestSeries === currentGameBestSeries
+      ).bestSeries;
+      return result;
+    });
+    return result;
   }
 );
 

@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { useAppSelector } from '../../common/hooks';
+import { selectBestSeriesByGames } from '../../features/game-statistics/gameStatisticsSlice';
 
 import {
   selectWordStatisticsByGame,
@@ -25,6 +26,8 @@ type Props = WithStyles<typeof styles>;
 const StatisticPage = ({ classes }: Props): JSX.Element => {
   const gameStatistics = useAppSelector(selectWordStatisticsByGame);
   const totalStatistics = useAppSelector(selectWordTotalStatistics);
+  const bestSeries = useAppSelector(selectBestSeriesByGames);
+  console.log(bestSeries);
   return (
     <div className={classes.container}>
       <Typography className={classes.title} variant="h3">

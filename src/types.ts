@@ -174,5 +174,6 @@ export interface IChartData {
 export interface IStatisticsData {
   totalStudied: number;
   correctAnswersPercentage: number;
+  gameID?: string;
   name?: string;
 }

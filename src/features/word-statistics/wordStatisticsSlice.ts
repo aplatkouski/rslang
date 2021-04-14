@@ -203,6 +203,7 @@ export const selectWordStatisticsByGame = createSelector(
       result.push({
         // @ts-ignore
         name: GAMES_BY_ID[game.id],
+        gameID: game.id,
         totalStudied: wordsPerGame.length,
         correctAnswersPercentage: Math.floor(
           correctAnswerTotal / (wrongAnswerTotal + correctAnswerTotal)

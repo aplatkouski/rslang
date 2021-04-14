@@ -74,6 +74,13 @@ export const GAMES_BY_ID = {
   '606745084c1b2097c2d74922': 'Своя игра',
 };
 
+export const GAME_ID = [
+  '606744ff4c1b2097c2d74921',
+  '606744ee4c1b2097c2d7491f',
+  '606744f84c1b2097c2d74920',
+  '606745084c1b2097c2d74922',
+];
+
 export const GAME_PART_URL_PATH = 'game';
 
 export const requestStatus = {
