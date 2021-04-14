@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { selectActiveWordsForGame } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { selectCurrentWord, startNewGame, upsertAllStatistic } from './gamesSlice';
-// import AudioCallGame from './audio-call-game/AudioCallGame';
 import MyGame from '../my-game/MyGame';
 
 const Game = (): JSX.Element => {
@@ -30,8 +29,8 @@ const Game = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  // return currentWord ? <AudioCallGame word={currentWord} /> : <>{/* FINAL WINDOW */}</>;
-  return currentWord ? <MyGame words={words} /> : <div>FINAL WINDOW</div>;
+  // return currentWord ? <AudioCallGame word={currentWord} /> : <div>FINAL WINDOW</div>;
+  return currentWord ? <MyGame word={currentWord} /> : <div>FINAL WINDOW</div>;
 };
 
 export default Game;
