@@ -1,5 +1,3 @@
-export const MIN_GAME_WORDS_NUMBER = 6;
-
 export const GAME_TITLE = 'СВОЯ ИГРА';
 
 export const GAME_RULES =
