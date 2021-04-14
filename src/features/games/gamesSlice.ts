@@ -86,7 +86,8 @@ export const upsertGameStatistic = createAsyncThunk<
     const gameStatistics = selectAllGameStatistics(state);
     const existingStat = gameStatistics.find(
       (stat) =>
-        stat.gameId === currentStat.gameId && stat.date.localeCompare(currentStat.date)
+        stat.gameId === currentStat.gameId &&
+        stat.date.localeCompare(currentStat.date) === 0
     );
     // ??
     if (existingStat && existingStat.bestSeries < currentStat.bestSeries) {
@@ -121,7 +122,7 @@ export const upsertWordStatistics = createAsyncThunk<
       const existingStat = wordStatistics.find(
         (stat) =>
           stat.gameId === currentStat.gameId &&
-          stat.studiedAt.localeCompare(currentStat.studiedAt) &&
+          stat.studiedAt.localeCompare(currentStat.studiedAt) === 0 &&
           stat.wordId === currentStat.wordId
       );
       if (existingStat) {

@@ -165,6 +165,7 @@ export interface IWordStatistic {
 export interface IRouterPath {
   group: string;
   page: string;
+  gameId: string;
 }
 export interface IChartData {
   studiedAt: string;

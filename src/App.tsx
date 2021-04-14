@@ -55,8 +55,7 @@ const App = (): JSX.Element => {
           exact
           path="/textbook/dictionary/difficult/:group/:page"
         />
-        {/* <Route component={Game} exact path="/games/audio-call" /> */}
-        <Route component={Game} exact path="/games/my-game" />
+        <Route component={Game} exact path="/games/:gameId" />
         <Route
           component={DeletedWordsSection}
           exact

@@ -40,7 +40,7 @@ export const useImg = (gameImg?: string): string => {
 
 export const useDate = (): string => {
   const date = useRef<string>(new Date().toISOString().substring(0, 10));
-  if (new Date().toISOString().substring(0, 10).localeCompare(date.current)) {
+  if (new Date().toISOString().substring(0, 10).localeCompare(date.current) === 0) {
     date.current = new Date().toISOString().substring(0, 10);
   }
   return date.current;
