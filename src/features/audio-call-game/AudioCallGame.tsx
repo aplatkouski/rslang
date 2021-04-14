@@ -58,7 +58,7 @@ const AudioCallGame = ({ classes, word }: Props): JSX.Element => {
       <Grid item>
         <Volume />
       </Grid>
-      <Grid container item>
+      <Grid item>
         <TranslateChips correctWord={word} wrongWords={wrongTranslations} />
       </Grid>
       <Grid item>

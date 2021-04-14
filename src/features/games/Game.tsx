@@ -6,6 +6,8 @@ import React, { useEffect } from 'react';
 import {
   selectCurrentWord,
   selectGamesById,
+  selectGameWords,
+  selectIsCurrentGame,
   startNewGame,
   upsertAllStatistic,
 } from './gamesSlice';
@@ -13,9 +15,11 @@ import {
 const Game = (): JSX.Element => {
   const { gameId } = useAppParams();
   const game = useAppSelector((state) => selectGamesById(state, gameId));
+  const isCurrentGame = useAppSelector(selectIsCurrentGame);
   const words = useAppSelector((state) =>
     selectActiveWordsForGame(state, { group: 1, page: 1 })
   );
+  const gameWords = useAppSelector(selectGameWords);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -32,21 +36,24 @@ const Game = (): JSX.Element => {
   const currentWord = useAppSelector(selectCurrentWord);
 
   useEffect(() => {
-    if (!currentWord && !words.length) {
+    if (isCurrentGame && !currentWord && !gameWords.length) {
       dispatch(upsertAllStatistic(null));
     }
-  }, [currentWord, dispatch, words.length]);
+  }, [isCurrentGame, currentWord, dispatch, gameWords.length]);
 
-  if (game && currentWord) {
-    if (game.name.localeCompare('Аудиовызов') === 0) {
-      return <AudioCallGame word={currentWord} />;
-    }
+  if (isCurrentGame) {
+    if (game && currentWord) {
+      if (game.name.localeCompare('Аудиовызов') === 0) {
+        return <AudioCallGame word={currentWord} />;
+      }
 
-    if (game.name.localeCompare('Своя игра') === 0) {
-      return <MyGame words={words} />;
+      if (game.name.localeCompare('Своя игра') === 0) {
+        return <MyGame words={words} />;
+      }
     }
+    return <>FINAL WINDOW</>;
   }
-  return <>FINAL WINDOW</>;
+  return <span>You are not running the current game!</span>;
 };
 
 export default Game;
