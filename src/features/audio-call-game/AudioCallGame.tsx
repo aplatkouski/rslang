@@ -1,11 +1,16 @@
 import { Button, Grid, WithStyles, withStyles } from '@material-ui/core';
 import { ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
+import {
+  choose,
+  pickWord,
+  processResponse,
+  selectChoice,
+} from 'features/games/gamesSlice';
 import { selectWrongTranslations } from 'features/words/wordsSlice';
 import React, { useCallback, useState } from 'react';
 import Hotkeys from 'react-hot-keys';
 import { IWord } from 'types';
-import { choose, pickWord, response, selectChoice } from '../games/gamesSlice';
 import styles from './styles';
 import TranslateChips from './translate-chip/TranslateChips';
 import Volume from './volume/Volume';
@@ -28,7 +33,7 @@ const AudioCallGame = ({ classes, word }: Props): JSX.Element => {
         dispatch(pickWord());
       } else {
         dispatch(
-          response({
+          processResponse({
             correctAnswerTotal: selectedWord === word ? 1 : 0,
             wrongAnswerTotal: selectedWord !== word ? 1 : 0,
             studiedAt: new Date().toISOString().substring(0, 10),
