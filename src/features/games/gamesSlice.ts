@@ -315,7 +315,6 @@ export const selectCurrentWord = (state: RootState) => {
 
 export const selectChoice = (state: RootState) => state[name].current?.choice;
 
-<<<<<<< HEAD
 export const selectGameWords = (state: RootState) => {
   const currentGame = state[name].current;
   if (currentGame) {
@@ -325,6 +324,4 @@ export const selectGameWords = (state: RootState) => {
 };
 export const selectIsCurrentGame = (state: RootState) => Boolean(state[name].current);
 
-=======
->>>>>>> 02e62d7 (feat: add basic functionality to audio-call game)
 export default gamesSlice.reducer;
