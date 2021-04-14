@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Grid } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import useSound from 'use-sound';
 import loseGameSound from 'assets/sounds/lose.mp3';
 import winGameSound from 'assets/sounds/win.mp3';
-import { selectAllWords } from 'features/words/wordsSlice';
-import { useAppSelector } from 'common/hooks';
-import FullScreenButton from '../full-screen-button/FullScreenButton';
-import SoundButton from '../sound-button/SoundButton';
-import StartNewGameDlg from '../start-new-game-dlg/StartNewGameDlg';
+import FullScreenButton from 'app/full-screen-button/FullScreenButton';
+import SoundButton from 'app/sound-button/SoundButton';
+import StartNewGameDlg from 'app/start-new-game-dlg/StartNewGameDlg';
 import { shuffle } from './shuffleAlgorithm';
 import {
   GAME_WORDS_NUMBER,
@@ -19,15 +16,16 @@ import {
   LOCALSTORAGE_KEY,
   MIN_GAME_WORDS_NUMBER,
 } from './constants';
-import * as t from '../../../types';
+import * as t from '../../types';
 import * as gt from './types';
-// import { selectCurrentWord } from '../gamesSlice';
 
 import './MyGame.scss';
 
-export default function MyGame(): JSX.Element {
-  const words = useAppSelector(selectAllWords);
+interface Props {
+  words: t.WordsList;
+}
 
+export default function MyGame({ words }: Props): JSX.Element {
   const [myGameStatus, setMyGameStatus] = useState<gt.IMyGameStatus>({
     // Слова, которые должны участвовать в играх
     words: words && words.length ? words : [],
@@ -63,9 +61,6 @@ export default function MyGame(): JSX.Element {
   // Звуки победы и поражения
   const [playWinGameSound] = useSound(winGameSound);
   const [playLoseGameSound] = useSound(loseGameSound);
-
-  // ???
-  const history = useHistory();
 
   // Хук для определения факта первого рендера
   const useFirstRender = () => {
@@ -265,15 +260,6 @@ export default function MyGame(): JSX.Element {
   };
 
   /**
-   * Возвращаемся на предыдущую страницу
-   */
-  const handleGoBack = () => {
-    if (history.length > 1) {
-      history.goBack();
-    }
-  };
-
-  /**
    * Начинает игру
    */
   const handleStartGame = () => {
@@ -429,7 +415,6 @@ export default function MyGame(): JSX.Element {
         gameHeader={GAME_TITLE}
         gameRules={GAME_RULES}
         isOpen={myGameStatus.openStartGameModal}
-        onGoBack={handleGoBack}
         onStartGame={handleStartGame}
       />
       {myGameStatus.newGame &&
@@ -479,17 +464,9 @@ export default function MyGame(): JSX.Element {
             ))}
           </Grid>
         )}
-      {!myGameStatus.openStartGameModal && !myGameStatus.newGame && (
-        <div>
-          {JSON.stringify(myGameStatus.gameResults)}
-          <button onClick={handleStartGame} type="button">
-            Играть еще
-          </button>
-          <button onClick={handleGoBack} type="button">
-            Вернуться к учебнику
-          </button>
-        </div>
-      )}
+      {!myGameStatus.openStartGameModal &&
+        !myGameStatus.newGame &&
+        !myGameStatus.enoughWords && <div>Недостаточно слов для игры</div>}
     </div>
   );
 }
