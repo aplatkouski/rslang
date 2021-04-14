@@ -1,15 +1,15 @@
-import { Box, Typography, Theme, WithStyles, withStyles } from '@material-ui/core';
-import { red, green } from '@material-ui/core/colors';
+import { Box, Theme, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { green, red } from '@material-ui/core/colors';
 import React from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { IWordStatistic } from '../../../types';
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { IWordStatistic } from '../../../types';
 import styles from './styles';
 
 const TITLE_TEXT: string = 'Процент правильно указанных слов:';
 
 interface Props extends WithStyles<typeof styles> {
-  data: Array<IWordStatistic>;
+  data: Array<Omit<IWordStatistic, 'id'>>;
   theme: Theme;
 }
 

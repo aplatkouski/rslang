@@ -1,9 +1,9 @@
 import { Box, Typography, WithStyles, withStyles } from '@material-ui/core';
-import React from 'react';
 import {
-  selectBestSeriesByGame,
   selectBestSeriesAverageByGame,
+  selectBestSeriesByGame,
 } from 'features/game-statistics/gameStatisticsSlice';
+import React from 'react';
 import { useAppSelector } from '../../../common/hooks';
 import { IGameStatistic } from '../../../types';
 import styles from './styles';
@@ -14,7 +14,7 @@ const AVERAGE_PER_GAME_TEXT: string = '- в среднем, за игру - ';
 const RECORD_PER_GAME_TEXT: string = '- ваш рекорд - ';
 
 interface Props extends WithStyles<typeof styles> {
-  data: IGameStatistic;
+  data: Omit<IGameStatistic, 'id'>;
 }
 
 const GamePoints: React.FC<Props> = ({ classes, data }) => {

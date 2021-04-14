@@ -1,8 +1,8 @@
-import React from 'react';
+import { useAppSelector } from 'common/hooks';
 import { selectCurrentGameStatistic } from 'features/games/gamesSlice';
+import React from 'react';
 import CorrectAnswersPercentage from './correct-answers-percentage/CorrectAnswersPercentage';
 import GamePoints from './game-points/GamePoints';
-import { useAppSelector } from '../../common/hooks';
 
 const GameResultsFirstPage: React.FC = () => {
   const statistic = useAppSelector(selectCurrentGameStatistic);
