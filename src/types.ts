@@ -139,18 +139,6 @@ export interface ICredentials {
   userToken: string;
 }
 
-export interface ICreateThunkArguments<T> extends ICredentials {
-  obj: Omit<T, 'id'>;
-}
-
-export interface IRemoveThunkArguments extends ICredentials {
-  id: string;
-}
-
-export interface IUpdateThunkArguments<T> extends ICredentials {
-  obj: T;
-}
-
 export interface IWordStatistic {
   id: string;
   wordId: string;
@@ -167,6 +155,7 @@ export interface IRouterPath {
   page: string;
   gameId: string;
 }
+
 export interface IChartData {
   studiedAt: string;
   words: number;
