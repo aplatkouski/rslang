@@ -10,8 +10,10 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { useAppSelector } from '../../common/hooks';
 
 import { initialStats, STATISTIC_KEY } from '../../constants';
+import { selectWordStatisticsByGame } from '../../features/word-statistics/wordStatisticsSlice';
 import * as t from '../../types';
 import ChartStatistics from '../chartStatistics/ChartStatistics';
 import styles from './styles';
@@ -19,6 +21,7 @@ import styles from './styles';
 type Props = WithStyles<typeof styles>;
 
 const StatisticPage = ({ classes }: Props): JSX.Element => {
+  console.log(useAppSelector(selectWordStatisticsByGame));
   const data = localStorage.getItem(STATISTIC_KEY);
   const stats: Array<t.MiniGameStats> = data ? JSON.parse(data) : initialStats;
   const totalStats = {

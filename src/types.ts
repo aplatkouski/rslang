@@ -170,3 +170,7 @@ export interface IChartData {
   studiedAt: string;
   words: number;
 }
+
+export interface IStatisticsData {
+  [key: string]: number | string;
+}

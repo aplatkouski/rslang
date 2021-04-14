@@ -191,6 +191,29 @@ const correctVsWrongAnswersCombiner = (
   return total;
 };
 
+export const selectWordStatisticsByGame = createSelector(
+  [selectAllWordStatistics, selectAllGames],
+  (wordStatistics, games): Array<t.IStatisticsData> => {
+    const result: Array<t.IStatisticsData> = [];
+    games.forEach((game) => {
+      const wordsPerGame = wordStatistics.filter((word) => word.gameId === game.id);
+      const { wrongAnswerTotal, correctAnswerTotal } = correctVsWrongAnswersCombiner(
+        wordsPerGame
+      );
+      result.push({
+        gameId: game.id,
+        totalStudied: wordsPerGame.length,
+        wrongAnswerTotal,
+        correctAnswerTotal,
+        correctAnswersPercentage: Math.floor(
+          correctAnswerTotal / (wrongAnswerTotal + correctAnswerTotal)
+        ),
+      });
+    });
+    return result;
+  }
+);
+
 const selectWordStatisticsByWordId = createSelector(
   [
     selectAllWordStatistics,
