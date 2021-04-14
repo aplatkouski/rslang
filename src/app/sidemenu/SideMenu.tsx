@@ -69,7 +69,13 @@ const upperMenu = [
     url: '/games/audio-call',
     icon: <MenuBook />,
   },
-  { key: 7, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
+  {
+    key: 7,
+    title: 'Игра СвояИгра',
+    url: '/games/my-game',
+    icon: <MenuBook />,
+  },
+  { key: 8, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];
 
 const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];

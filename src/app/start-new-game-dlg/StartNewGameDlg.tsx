@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import 'styles/animate.min.css';
 
@@ -16,7 +17,6 @@ interface Props {
   gameBtns: string;
   isOpen: boolean;
   onStartGame: () => void;
-  onGoBack: () => void;
 }
 
 const StartNewGameDlg = ({
@@ -25,8 +25,15 @@ const StartNewGameDlg = ({
   gameBtns,
   isOpen,
   onStartGame: handleStartGame,
-  onGoBack: handleGoBack,
 }: Props): JSX.Element => {
+  const history = useHistory();
+
+  const handleGoBack = () => {
+    if (history.length) {
+      history.goBack();
+    }
+  };
+
   return (
     <Dialog
       aria-labelledby="form-dialog-title"
