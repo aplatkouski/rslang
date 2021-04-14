@@ -13,6 +13,9 @@ const styles = (theme: Theme) =>
     chartTitle: {
       margin: theme.spacing(2),
     },
+    chartSubtitle: {
+      margin: theme.spacing(1),
+    },
   });
 
 export default styles;

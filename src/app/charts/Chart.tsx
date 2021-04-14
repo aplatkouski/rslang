@@ -35,7 +35,9 @@ const Chart = ({ classes, data, title }: ChartProps): JSX.Element => {
           </LineChart>
         </div>
       ) : (
-        <Typography variant="h5">Данных пока нет</Typography>
+        <Typography className={classes.chartSubtitle} variant="h5">
+          Данных пока нет
+        </Typography>
       )}
     </div>
   );

@@ -27,7 +27,9 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
   const totalStatistics = useAppSelector(selectWordTotalStatistics);
   return (
     <div className={classes.container}>
-      <Typography variant="h3">Статистика за сегодня</Typography>
+      <Typography className={classes.title} variant="h3">
+        Статистика за сегодня
+      </Typography>
       <TableContainer component={Paper}>
         <Table aria-label="customized table" className={classes.table} size="small">
           <TableHead>
@@ -66,7 +68,9 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography variant="h3">Долгосрочная статистика</Typography>
+      <Typography className={classes.title} variant="h3">
+        Долгосрочная статистика
+      </Typography>
       <ChartStatistics />
     </div>
   );
