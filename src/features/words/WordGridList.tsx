@@ -5,13 +5,13 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
+import CustomizedSnackbars from 'app/show-status/CustomizedSnackbars';
+import TextBookPanel from 'app/text-book-panel/TextBookPanel';
 import { useAppSelector, useCols } from 'common/hooks';
 import WordCard from 'features/word-card/WordCard';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IUserWord, IWord } from 'types';
-import CustomizedSnackbars from 'app/show-status/CustomizedSnackbars';
-import TextBookPanel from 'app/text-book-panel/TextBookPanel';
+import { IWord } from 'types';
 import { requestStatus, WORD_CARD_WIDTH } from '../../constants';
 import styles from './styles';
 import { selectWordsRequestStatus } from './wordsSlice';
@@ -20,7 +20,9 @@ interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
   words: Array<IWord>;
-  userWords: Array<IUserWord>;
+  countDeletedWordByPages?: {
+    [page: string]: number;
+  };
 }
 
 interface Chunks {
@@ -31,8 +33,8 @@ const WordGridList = ({
   baseUrl,
   classes,
   pageCount,
-  userWords,
   words,
+  countDeletedWordByPages,
 }: Props): JSX.Element => {
   const history = useHistory();
   const request = useAppSelector(selectWordsRequestStatus);
@@ -59,19 +61,19 @@ const WordGridList = ({
 
   return (
     <Container ref={containerRef} className={classes.root} maxWidth="lg">
+      <TextBookPanel
+        baseUrl={baseUrl}
+        countDeletedWordByPages={countDeletedWordByPages}
+        pageCount={pageCount}
+      />
       <CustomizedSnackbars request={request} />
-      <TextBookPanel baseUrl={baseUrl} pageCount={pageCount} />
       <GridList cellHeight="auto" className={classes.gridList} cols={cols}>
         {Object.keys(Array(cols).fill(null)).map(
           (i) =>
             chunks[i] && (
               <GridListTile key={i} classes={{ tile: classes.tile }}>
                 {chunks[i].map((word) => (
-                  <WordCard
-                    key={word.id}
-                    userWord={userWords.find((userWord) => userWord.wordId === word.id)}
-                    word={word}
-                  />
+                  <WordCard key={word.id} word={word} />
                 ))}
               </GridListTile>
             )

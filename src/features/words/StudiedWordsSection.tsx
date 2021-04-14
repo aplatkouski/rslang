@@ -1,9 +1,10 @@
 import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
-import { selectStudiedUserWordsByPage } from 'features/user-words/userWordsSlice';
+import { selectNotStudiedWordCountByGroupAndPages } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { PAGES_PER_SECTOR } from '../../constants';
 import WordGridList from './WordGridList';
-import { selectStudiedWordsByPage, selectStudiedWordsPagesCount } from './wordsSlice';
+import { selectStudiedWordsByPage } from './wordsSlice';
 
 interface SelectProps {
   group: number;
@@ -22,20 +23,15 @@ const StudiedWordsSection = (): JSX.Element => {
     selectStudiedWordsByPage(state, selectProps)
   );
 
-  const userWords = useAppSelector((state) =>
-    selectStudiedUserWordsByPage(state, {
-      group: extractRouterParam(group, 0),
-      page: extractRouterParam(page, 0),
-    })
+  const deletedWordCountByPages = useAppSelector((state) =>
+    selectNotStudiedWordCountByGroupAndPages(state, selectProps)
   );
-
-  const pageCount = useAppSelector(selectStudiedWordsPagesCount);
 
   return (
     <WordGridList
       baseUrl="textbook/dictionary/studied"
-      pageCount={pageCount}
-      userWords={userWords}
+      countDeletedWordByPages={deletedWordCountByPages}
+      pageCount={PAGES_PER_SECTOR}
       words={studiedWords}
     />
   );

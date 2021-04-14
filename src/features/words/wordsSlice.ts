@@ -13,7 +13,7 @@ import {
   selectStudiedWordIdsByPage,
 } from 'features/user-words/userWordsSlice';
 import { IStatus, IWord } from 'types';
-import { api, requestStatus, PAGES_PER_GROUP, WORDS_PER_PAGE } from '../../constants';
+import { api, PAGES_PER_GROUP, requestStatus } from '../../constants';
 import shuffle from './utils/shuffle';
 
 export const name = 'wordsAP' as const;
@@ -167,26 +167,5 @@ export const selectWordsRequestStatus = (state: RootState) => ({
   status: state[name].status,
   error: state[name].error,
 });
-
-export const selectAllUserWords = (state: RootState) =>
-  Object.values(state.userWords.entities);
-
-export const selectDeletedWordsPagesCount = createSelector(
-  [selectAllUserWords],
-  (allUserWords) =>
-    Math.ceil(allUserWords.filter((word) => word?.isDeleted).length / WORDS_PER_PAGE)
-);
-
-export const selectDifficultWordsPagesCount = createSelector(
-  [selectAllUserWords],
-  (allUserWords) =>
-    Math.ceil(allUserWords.filter((word) => word?.isDifficult).length / WORDS_PER_PAGE)
-);
-
-export const selectStudiedWordsPagesCount = createSelector(
-  [selectAllUserWords],
-  (allUserWords) =>
-    Math.ceil(allUserWords.filter((word) => word?.isStudied).length / WORDS_PER_PAGE)
-);
 
 export default wordsSlice.reducer;

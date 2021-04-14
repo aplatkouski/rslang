@@ -21,9 +21,13 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector, useAudio } from 'common/hooks';
 import { selectSettings } from 'features/settings/settingsSlice';
-import { removeUserWord, upsertUserWord } from 'features/user-words/userWordsSlice';
+import {
+  removeUserWord,
+  selectUserWordByWordId,
+  upsertUserWord,
+} from 'features/user-words/userWordsSlice';
 import React, { memo, useCallback } from 'react';
-import { IUserWord, IWord } from 'types';
+import { IWord } from 'types';
 import { api } from '../../constants';
 import LearningProgress from './learning-progress/LearningProgress';
 import styles from './styles';
@@ -33,14 +37,15 @@ import isAllRequiredFieldEmpty from './utils/is-all-required-field-empty';
 
 interface Props extends WithStyles<typeof styles> {
   word: IWord;
-  // eslint-disable-next-line react/require-default-props
-  userWord?: IUserWord;
 }
 
-const WordCard = ({ classes, word, userWord }: Props) => {
+const WordCard = ({ classes, word }: Props) => {
   const [types, setTypes] = React.useState(() => ['bold', 'italic']);
   const { currentAudio, start, stop } = useAudio(word);
   const { isShowTranslations, isShowButtons } = useAppSelector(selectSettings);
+  const userWord = useAppSelector((state) =>
+    selectUserWordByWordId(state, { wordId: word.id })
+  );
 
   const dispatch = useAppDispatch();
 

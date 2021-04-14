@@ -1,19 +1,19 @@
 import { Container } from '@material-ui/core';
 import {
-  red,
-  purple,
-  indigo,
   blue,
   cyan,
-  teal,
   green,
+  indigo,
   lime,
   orange,
+  purple,
+  red,
+  teal,
 } from '@material-ui/core/colors';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
+import { useAppParams } from 'common/hooks';
+import Settings from 'features/settings/Settings';
 import React from 'react';
-import { useAppParams } from '../../common/hooks';
-import Settings from '../../features/settings/Settings';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import Burger from '../burger/Burger';
 import Paginator from '../paginator/Paginator';
@@ -22,11 +22,19 @@ import styles from './styles';
 interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
+  countDeletedWordByPages?: {
+    [pag: string]: number;
+  };
 }
 
 const colors = [red, purple, indigo, blue, cyan, teal, green, lime, orange];
 
-const TextBookPanel = ({ classes, baseUrl, pageCount }: Props): JSX.Element => {
+const TextBookPanel = ({
+  classes,
+  baseUrl,
+  pageCount,
+  countDeletedWordByPages,
+}: Props): JSX.Element => {
   const { group, page } = useAppParams();
 
   const color = {
@@ -37,7 +45,13 @@ const TextBookPanel = ({ classes, baseUrl, pageCount }: Props): JSX.Element => {
     <Container className={classes.textbookPanel} style={color}>
       <Burger />
       <Breadcrumbs />
-      <Paginator baseUrl={baseUrl} count={pageCount} group={+group} page={+page} />
+      <Paginator
+        baseUrl={baseUrl}
+        count={pageCount}
+        countDeletedWordByPages={countDeletedWordByPages}
+        group={+group}
+        page={+page}
+      />
       <Settings />
     </Container>
   );

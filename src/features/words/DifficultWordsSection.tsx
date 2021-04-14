@@ -1,12 +1,9 @@
 import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
-import { selectDifficultUserWordsByChunk } from 'features/user-words/userWordsSlice';
+import { selectDifficultWordPageCountByGroup } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import WordGridList from './WordGridList';
-import {
-  selectDifficultWordsByChunk,
-  selectDifficultWordsPagesCount,
-} from './wordsSlice';
+import { selectDifficultWordsByChunk } from './wordsSlice';
 
 interface SelectProps {
   group: number;
@@ -25,17 +22,14 @@ const DifficultWordsSection = (): JSX.Element => {
     selectDifficultWordsByChunk(state, selectProps)
   );
 
-  const userWords = useAppSelector((state) =>
-    selectDifficultUserWordsByChunk(state, selectProps)
+  const pageCount = useAppSelector((state) =>
+    selectDifficultWordPageCountByGroup(state, selectProps)
   );
-
-  const pageCount = useAppSelector(selectDifficultWordsPagesCount);
 
   return (
     <WordGridList
       baseUrl="textbook/dictionary/difficult"
       pageCount={pageCount}
-      userWords={userWords}
       words={difficultWords}
     />
   );

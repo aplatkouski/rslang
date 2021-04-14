@@ -1,48 +1,48 @@
-import React from 'react';
 import { Pagination, PaginationItem } from '@material-ui/lab';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { PAGES_PER_SECTOR } from '../../constants';
+import { WORDS_PER_PAGE } from '../../constants';
 
 interface Props {
   baseUrl: string;
   count: number;
   group: number;
   page: number;
+  countDeletedWordByPages?: {
+    [page: string]: number;
+  };
 }
 
-const Paginator = ({ baseUrl, count, group, page }: Props): JSX.Element => {
-  const disabledPages: Array<number> = [];
-  return (
-    <Pagination
-      count={count}
-      page={page + 1}
-      renderItem={({ disabled, ...item }) => {
-        const isDisabled =
-          (item.type === 'page' && disabledPages.includes(item.page)) ||
-          (item.type === 'previous' && item.page === 0) ||
-          (item.type === 'next' && item.page - 1 === PAGES_PER_SECTOR);
+const Paginator = ({
+  baseUrl,
+  count,
+  group,
+  page,
+  countDeletedWordByPages,
+}: Props): JSX.Element => {
+  const pages =
+    countDeletedWordByPages || Object.fromEntries(Object.entries(Array(29).fill(0)));
+  // @ts-ignore
+  const renderItem = ({ disabled, ...item }) => {
+    const isDisabled =
+      // не учтено, что все страницы перед текущей могут быть недоступны
+      (item.type === 'page' && pages[item.page - 1] === WORDS_PER_PAGE) ||
+      (item.type === 'previous' && item.page === 0) ||
+      // не учтено, что все страницы после текущей могут быть недоступны
+      (item.type === 'next' && item.page - 1 === count);
 
-        const link =
-          // eslint-disable-next-line no-nested-ternary
-          item.type === 'previous' && disabledPages.includes(item.page)
-            ? `/${baseUrl}/${group}/${item.page - 2}/`
-            : item.type === 'next' && disabledPages.includes(item.page)
-            ? `/${baseUrl}/${group}/${item.page}/`
-            : `/${baseUrl}/${group}/${item.page - 1}/`;
-
-        return (
-          <PaginationItem
-            component={NavLink}
-            disabled={isDisabled}
-            selected={item.selected}
-            to={link}
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...item}
-          />
-        );
-      }}
-    />
-  );
+    return (
+      <PaginationItem
+        component={NavLink}
+        disabled={isDisabled}
+        selected={item.selected}
+        to={`/${baseUrl}/${group}/${item.page - 1}/`}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...item}
+      />
+    );
+  };
+  return <Pagination count={count} page={page + 1} renderItem={renderItem} />;
 };
 
 export default Paginator;

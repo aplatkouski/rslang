@@ -7,7 +7,12 @@ import {
 import type { AppDispatch, RootState } from 'app/store';
 import { fetchUserData } from 'features/user/utils';
 import { IChartData, IStatus, IUserWord } from 'types';
-import { requestMethods, requestStatus, WORDS_PER_PAGE } from '../../constants';
+import {
+  PAGES_PER_GROUP,
+  requestMethods,
+  requestStatus,
+  WORDS_PER_PAGE,
+} from '../../constants';
 
 export const name = 'userWords' as const;
 
@@ -235,6 +240,39 @@ export const selectDeletedUserWordsByChunk = createSelector(
     userWords.slice(chunk * WORDS_PER_PAGE, (chunk + 1) * WORDS_PER_PAGE)
 );
 
+export const selectDeletedWordPageCountByGroup = createSelector(
+  selectDeletedUserWordsByGroup,
+  (userWords) => Math.ceil(userWords.length / WORDS_PER_PAGE)
+);
+
+export const selectDeletedWordCountByGroupAndPages = createSelector(
+  selectDeletedUserWordsByGroup,
+  (userWords) => {
+    const deletedWordsByGroupAndPages = Object.fromEntries(
+      Object.entries(Array(PAGES_PER_GROUP).fill(0))
+    );
+
+    userWords.forEach((userWord) => {
+      deletedWordsByGroupAndPages[userWord.page] += 1;
+    });
+    return deletedWordsByGroupAndPages;
+  }
+);
+
+export const selectNotStudiedWordCountByGroupAndPages = createSelector(
+  [selectStudiedUserWordsByGroup],
+  (studiedWords) => {
+    const deletedWordsByGroupAndPages = Object.fromEntries(
+      Object.entries(Array(PAGES_PER_GROUP).fill(WORDS_PER_PAGE))
+    );
+
+    studiedWords.forEach((userWord) => {
+      deletedWordsByGroupAndPages[userWord.page] -= 1;
+    });
+    return deletedWordsByGroupAndPages;
+  }
+);
+
 export const selectDifficultUserWordsByChunk = createSelector(
   [
     selectDifficultUserWordsByGroup,
@@ -242,6 +280,11 @@ export const selectDifficultUserWordsByChunk = createSelector(
   ],
   (userWords, chunk) =>
     userWords.slice(chunk * WORDS_PER_PAGE, (chunk + 1) * WORDS_PER_PAGE)
+);
+
+export const selectDifficultWordPageCountByGroup = createSelector(
+  selectDifficultUserWordsByGroup,
+  (userWords) => Math.ceil(userWords.length / WORDS_PER_PAGE)
 );
 
 export const selectDeletedWordIdsByChunk = createSelector(
