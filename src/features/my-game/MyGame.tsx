@@ -178,7 +178,7 @@ export default function MyGame({ word }: Props): JSX.Element {
       };
     });
 
-    // ... Сохранение результатов игры
+    // Сохранение результатов игры происходит автоматически
   };
 
   /**
@@ -205,9 +205,6 @@ export default function MyGame({ word }: Props): JSX.Element {
             studiedAt: new Date().toISOString().substring(0, 10),
           })
         );
-
-        // Устанавливаем ответ пользователя
-        // dispatch(choose(myGameStatus.userAnswer));
       }
 
       if (myGameStatus.round === GAME_ROUNDS) {
