@@ -17,7 +17,7 @@ import {
 } from './constants';
 import * as t from '../../types';
 import * as gt from './types';
-import { /* choose, */ response } from '../games/gamesSlice';
+import { response } from '../games/gamesSlice';
 
 import './MyGame.scss';
 
@@ -44,6 +44,8 @@ export default function MyGame({ word }: Props): JSX.Element {
     newGame: false,
     // номер текущего раунда в рамках текущей игры
     round: 0,
+    // это необходимо для первого слова в игре, чтобы оно не повторялось во втором раунде
+    waitingForNextRound: false,
     // английское слово (из guessWord), в котором "спрятана" одна буква
     hiddenWord: null,
     // "спрятанная" буква
@@ -81,11 +83,12 @@ export default function MyGame({ word }: Props): JSX.Element {
     return { hiddenLetter, wordWithHiddenLetter };
   };
 
-  /**
-   * Начинает очередной раунд игры
-   * (слово, которое предстоит угадать, определяется автоматически)
-   */
-  const nextRound = () => {
+  useEffect(() => {
+    continueRound();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [word]);
+
+  const continueRound = () => {
     // "Прячем" в текущем слове букву
     const { hiddenLetter, wordWithHiddenLetter } = hideLetter();
 
@@ -107,8 +110,27 @@ export default function MyGame({ word }: Props): JSX.Element {
         showHiddenLetter: false,
         userAnswer: null,
         continue: false,
+        waitingForNextRound: false,
       };
     });
+  };
+
+  /**
+   * Начинает очередной раунд игры
+   * (слово, которое предстоит угадать, определяется автоматически)
+   */
+  const nextRound = () => {
+    // В самом начале игры есть проблема: первое слово без этого кода повторяется во втором раунде
+    if (myGameStatus.currWord && myGameStatus.currWord.id === word.id) {
+      setMyGameStatus((status) => {
+        return {
+          ...status,
+          waitingForNextRound: true,
+        };
+      });
+    } else {
+      continueRound();
+    }
   };
 
   /**
@@ -155,7 +177,6 @@ export default function MyGame({ word }: Props): JSX.Element {
         continue: false,
       };
     });
-    // setFirstGameAfterLoad((status) => !status);
 
     // ... Сохранение результатов игры
   };
@@ -174,15 +195,13 @@ export default function MyGame({ word }: Props): JSX.Element {
   const goToNextRoundOrGame = () => {
     setTimeout(() => {
       if (myGameStatus.userAnswer && myGameStatus.currWord) {
-        console.log('word', myGameStatus.currWord);
         // Устанавливаем результат угадывания текущего слова
         dispatch(
           response({
             correctAnswerTotal:
               myGameStatus.currWord.id === myGameStatus.userAnswer.id ? 1 : 0,
-            wrongAnswerTotal: !(myGameStatus.currWord.id === myGameStatus.userAnswer.id)
-              ? 1
-              : 0,
+            wrongAnswerTotal:
+              myGameStatus.currWord.id !== myGameStatus.userAnswer.id ? 1 : 0,
             studiedAt: new Date().toISOString().substring(0, 10),
           })
         );
@@ -205,7 +224,6 @@ export default function MyGame({ word }: Props): JSX.Element {
   useEffect(() => {
     if (myGameStatus.continue) {
       goToNextRoundOrGame();
-      console.log(myGameStatus.currWord);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myGameStatus.continue]);
@@ -228,7 +246,7 @@ export default function MyGame({ word }: Props): JSX.Element {
         showHiddenLetter: true,
       };
     });
-    console.log(myGameStatus.currWord, answerWord);
+
     if (myGameStatus.currWord.id !== answerWord.id) {
       if (myGameStatus.sound) {
         playLoseGameSound();
@@ -298,7 +316,9 @@ export default function MyGame({ word }: Props): JSX.Element {
               <p className="game-title">{GAME_TITLE}</p>
             </Grid>
             <Grid item xs={12}>
-              <p className="game-round">{`Раунд ${myGameStatus.round} из ${GAME_ROUNDS}`}</p>
+              <p className="game-round">{`Раунд ${
+                myGameStatus.round + 1
+              } из ${GAME_ROUNDS}`}</p>
             </Grid>
             <Grid item xs={12}>
               <div className="centered-content-block">
@@ -321,7 +341,6 @@ export default function MyGame({ word }: Props): JSX.Element {
                     ${
                       myGameStatus.currWord &&
                       myGameStatus.userAnswer &&
-                      myGameStatus.userAnswer.id === gameWord.id &&
                       gameWord.id === myGameStatus.currWord.id
                         ? 'right-answer'
                         : ''

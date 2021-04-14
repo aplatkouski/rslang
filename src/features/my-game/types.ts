@@ -14,6 +14,7 @@ export interface IMyGameStatus {
   enoughWords: boolean;
   newGame: boolean;
   round: number;
+  waitingForNextRound: boolean;
   hiddenWord: string | null;
   hiddenLetter: string | null;
   showHiddenLetter: boolean;
