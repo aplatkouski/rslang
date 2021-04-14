@@ -89,9 +89,11 @@ export const upsertGameStatistic = createAsyncThunk<
         stat.gameId === currentStat.gameId &&
         stat.date.localeCompare(currentStat.date) === 0
     );
-    // ??
-    if (existingStat && existingStat.bestSeries < currentStat.bestSeries) {
-      dispatch(updateGameStatistic({ ...existingStat, ...currentStat }));
+
+    if (existingStat) {
+      if (existingStat.bestSeries < currentStat.bestSeries) {
+        dispatch(updateGameStatistic({ ...existingStat, ...currentStat }));
+      }
     } else {
       dispatch(saveNewGameStatistic(currentStat));
     }
@@ -312,5 +314,14 @@ export const selectCurrentWord = (state: RootState) => {
 };
 
 export const selectChoice = (state: RootState) => state[name].current?.choice;
+
+export const selectGameWords = (state: RootState) => {
+  const currentGame = state[name].current;
+  if (currentGame) {
+    return currentGame.words;
+  }
+  return [] as Array<IWord>;
+};
+export const selectIsCurrentGame = (state: RootState) => Boolean(state[name].current);
 
 export default gamesSlice.reducer;
