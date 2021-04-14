@@ -5,18 +5,23 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
-import { IGame, IGameStatistic, IStatus, IWord, IWordStatistic } from 'types';
-import { api, requestStatus } from '../../constants';
 import {
   saveNewGameStatistic,
   selectAllGameStatistics,
   updateGameStatistic,
-} from '../game-statistics/gameStatisticsSlice';
+} from 'features/game-statistics/gameStatisticsSlice';
+import {
+  selectUserWordByWordId,
+  upsertUserWord,
+} from 'features/user-words/userWordsSlice';
+import extractUserWord from 'features/word-card/utils/extract-user-word';
 import {
   saveNewWordStatistic,
   selectAllWordStatistics,
   updateWordStatistic,
-} from '../word-statistics/wordStatisticsSlice';
+} from 'features/word-statistics/wordStatisticsSlice';
+import { IGame, IGameStatistic, IStatus, IWord, IWordStatistic } from 'types';
+import { api, requestStatus } from '../../constants';
 
 const name = 'games' as const;
 
@@ -154,6 +159,44 @@ export const upsertAllStatistic = createAsyncThunk<
   await dispatch(upsertWordStatistics(null));
 });
 
+interface ResponseData {
+  correctAnswerTotal: number;
+  wrongAnswerTotal: number;
+  studiedAt: string;
+}
+
+export const processResponse = createAsyncThunk<
+  void,
+  ResponseData,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>(`${name}/processResponse`, async (responseData, { dispatch, getState }) => {
+  const rootState = getState();
+  const currentGame = rootState[name].current;
+  if (currentGame && currentGame.currentWord) {
+    const { currentWord } = currentGame;
+    const userWord = selectUserWordByWordId(getState(), { wordId: currentWord.id });
+
+    const isDeleted = userWord && userWord.isDeleted;
+
+    // if it wasn't marked as studied, do so;
+    // if word was deleted, skip it
+    if (!userWord || (userWord && !isDeleted && !userWord.isStudied)) {
+      await dispatch(
+        upsertUserWord({
+          ...extractUserWord(currentWord, userWord),
+          addedAt: new Date().toISOString().substring(0, 10),
+          isStudied: true,
+        })
+      );
+    }
+
+    await dispatch(response({ ...responseData, isDeleted }));
+  }
+});
+
 const gamesSlice = createSlice({
   name,
   initialState: gameStatisticsAdapter.getInitialState(initialState),
@@ -190,16 +233,13 @@ const gamesSlice = createSlice({
     response(
       state,
       {
-        payload: { correctAnswerTotal, wrongAnswerTotal, studiedAt },
-      }: PayloadAction<{
-        correctAnswerTotal: number;
-        wrongAnswerTotal: number;
-        studiedAt: string;
-      }>
+        payload: { correctAnswerTotal, isDeleted, studiedAt, wrongAnswerTotal },
+      }: PayloadAction<ResponseData & { isDeleted?: boolean }>
     ) {
       if (state.current) {
         const { currentWord, wordStatistics } = state.current;
-        if (currentWord) {
+        // skip deleted word
+        if (currentWord && !isDeleted) {
           const statistic = wordStatistics.find(
             (wordStatistic) => wordStatistic.wordId === currentWord.id
           );

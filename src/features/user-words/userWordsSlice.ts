@@ -120,9 +120,9 @@ type SelectorWithChunkProps<T extends string> = Required<
   Pick<SelectWordsProps, T> & { chunk: number }
 >;
 
-export const selectUserWordsByWordId = createSelector(
+export const selectUserWordByWordId = createSelector(
   [selectAllUserWords, (_: RootState, { wordId }: SelectorProps<'wordId'>) => wordId],
-  (userWords, wordId) => userWords.filter((word) => word.wordId === wordId)
+  (userWords, wordId) => userWords.find((word) => word.wordId === wordId)
 );
 
 const selectUserWordsByGroup = createSelector(
