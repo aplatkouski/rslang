@@ -16,11 +16,12 @@ import {
   MenuBook,
   People,
 } from '@material-ui/icons';
-import clsx from 'clsx';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAppSelector } from '../../common/hooks';
 
 import { ROUTES } from '../../constants';
+import { selectAllGames } from '../../features/games/gamesSlice';
 
 export type SideMenuProps = {
   open: boolean;
@@ -43,80 +44,37 @@ const useStyles = makeStyles({
 });
 
 const upperMenu = [
-  { key: 1, title: 'Учебник', url: '/textbook', icon: <LocalLibrary /> },
-  { key: 2, title: 'Мини-игры', url: '', icon: <Games /> },
+  { title: 'Учебник', url: '/textbook', icon: <LocalLibrary /> },
+  { title: 'Мини-игры', url: '', icon: <Games /> },
   {
-    key: 3,
     title: 'Удалённые',
     url: '/textbook/dictionary/deleted/0/0',
     icon: <DeleteSweep />,
   },
   {
-    key: 4,
     title: 'Трудные',
     url: '/textbook/dictionary/difficult/0/0',
     icon: <Error />,
   },
   {
-    key: 5,
     title: 'Изучаемые',
     url: '/textbook/dictionary/studied/0/0',
     icon: <MenuBook />,
   },
-  {
-    key: 6,
-    title: 'Игра АудиоВызов',
-    url: '/games/audio-call',
-    icon: <MenuBook />,
-  },
-  {
-    key: 7,
-    title: 'Игра СвояИгра',
-    url: '/games/my-game',
-    icon: <MenuBook />,
-  },
-  { key: 8, title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
+  { title: 'Статистика', url: ROUTES.statistic, icon: <EventNote /> },
 ];
 
-const lowerMenu = [{ key: 1, title: 'О команде', url: '/about-team', icon: <People /> }];
+const lowerMenu = [{ title: 'О команде', url: '/about-team', icon: <People /> }];
 
 const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => {
   const classes = useStyles();
+  const games = useAppSelector(selectAllGames);
 
-  const list = () => (
-    <div
-      className={clsx(classes.list)}
-      onClick={handleCloseSideMenu}
-      onKeyDown={handleCloseSideMenu}
-      role="presentation"
-    >
-      <List>
-        {upperMenu.map((menuObj) => (
-          <ListItem key={menuObj.key} button>
-            <NavLink to={menuObj.url}>
-              <ListItemIcon>{menuObj.icon}</ListItemIcon>
-            </NavLink>
-            <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
-              <ListItemText className={classes.menuTitle} primary={menuObj.title} />
-            </NavLink>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {lowerMenu.map((menuObj) => (
-          <ListItem key={menuObj.key} button>
-            <NavLink to={menuObj.url}>
-              <ListItemIcon>{menuObj.icon}</ListItemIcon>
-            </NavLink>
-            <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
-              <ListItemText className={classes.menuTitle} primary={menuObj.title} />
-            </NavLink>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+  const gameMenu = games.map((game) => ({
+    title: game.name,
+    url: `/games/${game.id}`,
+    icon: <MenuBook />,
+  }));
 
   return (
     <Drawer
@@ -125,7 +83,38 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
       onClose={handleCloseSideMenu}
       open={open}
     >
-      {list()}
+      <div
+        className={classes.list}
+        onClick={handleCloseSideMenu}
+        onKeyDown={handleCloseSideMenu}
+        role="presentation"
+      >
+        <List>
+          {[...upperMenu, ...gameMenu].map((menuObj) => (
+            <ListItem key={menuObj.title} button>
+              <NavLink to={menuObj.url}>
+                <ListItemIcon>{menuObj.icon}</ListItemIcon>
+              </NavLink>
+              <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
+                <ListItemText className={classes.menuTitle} primary={menuObj.title} />
+              </NavLink>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {lowerMenu.map((menuObj) => (
+            <ListItem key={menuObj.title} button>
+              <NavLink to={menuObj.url}>
+                <ListItemIcon>{menuObj.icon}</ListItemIcon>
+              </NavLink>
+              <NavLink style={{ textDecoration: 'none' }} to={menuObj.url}>
+                <ListItemText className={classes.menuTitle} primary={menuObj.title} />
+              </NavLink>
+            </ListItem>
+          ))}
+        </List>
+      </div>
     </Drawer>
   );
 };

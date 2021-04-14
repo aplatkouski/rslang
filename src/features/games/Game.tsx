@@ -1,17 +1,35 @@
-import { useAppDispatch, useAppSelector } from 'common/hooks';
-// import AudioCallGame from 'features/audio-call-game/AudioCallGame';
+import { useAppDispatch, useAppParams, useAppSelector } from 'common/hooks';
+import AudioCallGame from 'features/audio-call-game/AudioCallGame';
+import MyGame from 'features/my-game/MyGame';
 import { selectActiveWordsForGame } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
-import { selectCurrentWord, startNewGame, upsertAllStatistic } from './gamesSlice';
-// import AudioCallGame from './audio-call-game/AudioCallGame';
-import MyGame from '../my-game/MyGame';
+import {
+  selectCurrentWord,
+  selectGamesById,
+  startNewGame,
+  upsertAllStatistic,
+} from './gamesSlice';
 
 const Game = (): JSX.Element => {
+  const { gameId } = useAppParams();
+  const game = useAppSelector((state) => selectGamesById(state, gameId));
   const words = useAppSelector((state) =>
     selectActiveWordsForGame(state, { group: 1, page: 1 })
   );
-  const currentWord = useAppSelector(selectCurrentWord);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      startNewGame({
+        date: new Date().toISOString().substring(0, 10),
+        gameId,
+        words,
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  const currentWord = useAppSelector(selectCurrentWord);
 
   useEffect(() => {
     if (!currentWord && !words.length) {
@@ -19,19 +37,16 @@ const Game = (): JSX.Element => {
     }
   }, [currentWord, dispatch, words.length]);
 
-  useEffect(() => {
-    dispatch(
-      startNewGame({
-        date: new Date().toISOString().substring(0, 10),
-        gameId: '606744ee4c1b2097c2d7491f',
-        words,
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  // return currentWord ? <AudioCallGame word={currentWord} /> : <>{/* FINAL WINDOW */}</>;
-  return currentWord ? <MyGame words={words} /> : <div>FINAL WINDOW</div>;
+  if (game && currentWord) {
+    if (game.name.localeCompare('Аудиовызов') === 0) {
+      return <AudioCallGame word={currentWord} />;
+    }
+
+    if (game.name.localeCompare('Своя игра') === 0) {
+      return <MyGame words={words} />;
+    }
+  }
+  return <>FINAL WINDOW</>;
 };
 
 export default Game;
