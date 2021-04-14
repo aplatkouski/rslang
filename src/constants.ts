@@ -67,31 +67,12 @@ export const GAMES = {
   ownGame: 'Своя игра',
 };
 
-const defaultStats = {
-  words: 0,
-  answers: 0,
-  correctAnswers: 0,
-  series: 0,
+export const GAMES_BY_ID = {
+  '606744ff4c1b2097c2d74921': 'Спринт',
+  '606744ee4c1b2097c2d7491f': 'Аудиовызов',
+  '606744f84c1b2097c2d74920': 'Саванна',
+  '606745084c1b2097c2d74922': 'Своя игра',
 };
-
-export const initialStats = [
-  {
-    ...defaultStats,
-    name: GAMES.sprint,
-  },
-  {
-    ...defaultStats,
-    name: GAMES.audioCall,
-  },
-  {
-    ...defaultStats,
-    name: GAMES.savanna,
-  },
-  {
-    ...defaultStats,
-    name: GAMES.ownGame,
-  },
-];
 
 export const GAME_PART_URL_PATH = 'game';
 

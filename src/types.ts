@@ -172,5 +172,7 @@ export interface IChartData {
 }
 
 export interface IStatisticsData {
-  [key: string]: number | string;
+  totalStudied: number;
+  correctAnswersPercentage: number;
+  name?: string;
 }

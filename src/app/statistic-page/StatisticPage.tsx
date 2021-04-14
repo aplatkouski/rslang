@@ -12,8 +12,10 @@ import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { useAppSelector } from '../../common/hooks';
 
-import { initialStats, STATISTIC_KEY } from '../../constants';
-import { selectWordStatisticsByGame } from '../../features/word-statistics/wordStatisticsSlice';
+import {
+  selectWordStatisticsByGame,
+  selectWordTotalStatistics,
+} from '../../features/word-statistics/wordStatisticsSlice';
 import * as t from '../../types';
 import ChartStatistics from '../chartStatistics/ChartStatistics';
 import styles from './styles';
@@ -21,16 +23,8 @@ import styles from './styles';
 type Props = WithStyles<typeof styles>;
 
 const StatisticPage = ({ classes }: Props): JSX.Element => {
-  console.log(useAppSelector(selectWordStatisticsByGame));
-  const data = localStorage.getItem(STATISTIC_KEY);
-  const stats: Array<t.MiniGameStats> = data ? JSON.parse(data) : initialStats;
-  const totalStats = {
-    name: 'Всего',
-    words: 0,
-    answers: 0,
-    correctAnswers: 0,
-    series: '-',
-  };
+  const gameStatistics = useAppSelector(selectWordStatisticsByGame);
+  const totalStatistics = useAppSelector(selectWordTotalStatistics);
   return (
     <div className={classes.container}>
       <Typography variant="h3">Статистика за сегодня</Typography>
@@ -45,32 +39,29 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {stats.map((stat: t.MiniGameStats) => {
-              totalStats.words += stat.words;
-              totalStats.correctAnswers += stat.correctAnswers;
-              totalStats.answers += stat.answers;
+            {gameStatistics.map((stat: t.IStatisticsData) => {
               return (
                 <TableRow key={stat.name}>
                   <TableCell component="th" scope="row">
                     {stat.name}
                   </TableCell>
-                  <TableCell align="center">{stat.words}</TableCell>
-                  <TableCell align="center">{`${Math.floor(
-                    Math.floor((stat.correctAnswers / stat.answers) * 100) || 0
-                  )}%`}</TableCell>
-                  <TableCell align="center">{stat.series}</TableCell>
+                  <TableCell align="center">{stat.totalStudied}</TableCell>
+                  <TableCell align="center">{`${
+                    stat.correctAnswersPercentage || 0
+                  }%`}</TableCell>
+                  <TableCell align="center">{0}</TableCell>
                 </TableRow>
               );
             })}
             <TableRow key="Всего">
               <TableCell component="th" scope="row">
-                {totalStats.name}
+                Всего
               </TableCell>
-              <TableCell align="center">{totalStats.words}</TableCell>
-              <TableCell align="center">{`${Math.floor(
-                Math.floor((totalStats.correctAnswers / totalStats.answers) * 100) || 0
-              )}%`}</TableCell>
-              <TableCell align="center">{totalStats.series}</TableCell>
+              <TableCell align="center">{totalStatistics.totalStudied}</TableCell>
+              <TableCell align="center">{`${
+                totalStatistics.correctAnswersPercentage || 0
+              }%`}</TableCell>
+              <TableCell align="center">-</TableCell>
             </TableRow>
           </TableBody>
         </Table>

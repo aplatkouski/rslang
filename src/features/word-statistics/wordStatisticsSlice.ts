@@ -9,7 +9,7 @@ import { selectAllGames } from 'features/games/gamesSlice';
 import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
 import { IWordStatistic } from 'types';
-import { requestMethods, requestStatus } from '../../constants';
+import { requestMethods, requestStatus, GAMES_BY_ID } from '../../constants';
 
 export const name = 'wordStatistics' as const;
 
@@ -201,14 +201,31 @@ export const selectWordStatisticsByGame = createSelector(
         wordsPerGame
       );
       result.push({
-        gameId: game.id,
+        // @ts-ignore
+        name: GAMES_BY_ID[game.id],
         totalStudied: wordsPerGame.length,
-        wrongAnswerTotal,
-        correctAnswerTotal,
         correctAnswersPercentage: Math.floor(
           correctAnswerTotal / (wrongAnswerTotal + correctAnswerTotal)
         ),
       });
+    });
+    return result;
+  }
+);
+
+export const selectWordTotalStatistics = createSelector(
+  [selectWordStatisticsByGame],
+  (statistics): t.IStatisticsData => {
+    const result: t.IStatisticsData = {
+      totalStudied: 0,
+      correctAnswersPercentage: 0,
+    };
+    statistics.forEach((gameStatistics) => {
+      const { totalStudied, correctAnswersPercentage } = gameStatistics;
+      result.totalStudied = totalStudied;
+      result.correctAnswersPercentage += Number.isNaN(correctAnswersPercentage)
+        ? correctAnswersPercentage
+        : 0;
     });
     return result;
   }
