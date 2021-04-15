@@ -10,7 +10,6 @@ interface Props extends WithStyles<typeof styles> {}
 
 const burgerItems = [
   { route: ROUTES.savanna, title: GAMES.savanna },
-  { route: ROUTES.sprint, title: GAMES.sprint },
   { route: ROUTES.audio_call, title: GAMES.audioCall },
   { route: ROUTES.custom_game, title: GAMES.ownGame },
   { route: ROUTES.statistics, title: 'Статистика' },

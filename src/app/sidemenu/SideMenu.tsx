@@ -45,7 +45,6 @@ const useStyles = makeStyles({
 
 const upperMenu = [
   { title: 'Учебник', url: '/textbook', icon: <LocalLibrary /> },
-  { title: 'Мини-игры', url: '', icon: <Games /> },
   {
     title: 'Удалённые',
     url: '/textbook/dictionary/deleted/0/0',
@@ -70,11 +69,13 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
   const classes = useStyles();
   const games = useAppSelector(selectAllGames);
 
-  const gameMenu = games.map((game) => ({
-    title: game.name,
-    url: `/games/${game.id}`,
-    icon: <MenuBook />,
-  }));
+  const gameMenu = games
+    .filter((game) => game.name !== 'Саванна')
+    .map((game) => ({
+      title: game.name,
+      url: `/games/${game.id}`,
+      icon: <Games />,
+    }));
 
   return (
     <Drawer

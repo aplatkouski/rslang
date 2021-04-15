@@ -9,6 +9,7 @@ const styles = (theme: Theme) =>
       justifyContent: 'space-around',
       backgroundColor: theme.palette.background.paper,
       padding: theme.spacing(0),
+      height: '100%',
     },
     gridList: {
       backgroundColor: theme.palette.background.paper,

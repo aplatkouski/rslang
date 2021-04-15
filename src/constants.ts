@@ -54,7 +54,6 @@ export const ROUTES = {
   mini_games: '/mini_games',
   savanna: '/mini_games/savanna',
   audio_call: '/mini_games/audio_call',
-  sprint: '/mini_games/sprint',
   custom_game: '/mini_games/custom_game',
   statistics: '/statistics',
 };
@@ -62,7 +61,6 @@ export const ROUTES = {
 export const STATISTIC_KEY = 'stats';
 
 export const GAMES = {
-  sprint: 'Спринт',
   audioCall: 'Аудиовызов',
   savanna: 'Саванна',
   ownGame: 'Своя игра',
@@ -76,10 +74,6 @@ const defaultStats = {
 };
 
 export const initialStats = [
-  {
-    ...defaultStats,
-    name: GAMES.sprint,
-  },
   {
     ...defaultStats,
     name: GAMES.audioCall,
