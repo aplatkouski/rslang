@@ -1,4 +1,4 @@
-import { Avatar, Box, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { Avatar, Backdrop, Typography, WithStyles, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect } from 'react';
 import { useTimer } from './useTimer';
@@ -19,11 +19,11 @@ const Timer: React.FC<Props> = ({ classes, timer, onEnd }) => {
   }, [tick, onEnd]);
 
   return (
-    <Box className={classes.root}>
-      <Avatar className={clsx(classes.large, classes.pink, tick && classes.blinker)}>
+    <Backdrop className={classes.root} open>
+      <Avatar className={clsx(classes.avatar, tick && classes.blinker)}>
         <Typography className={classes.timer}>{tick}</Typography>
       </Avatar>
-    </Box>
+    </Backdrop>
   );
 };
 
