@@ -70,7 +70,7 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
   const games = useAppSelector(selectAllGames);
 
   const gameMenu = games
-    .filter((game) => game.name !== 'Саванна')
+    .filter((game) => game.name !== 'Спринт')
     .map((game) => ({
       title: game.name,
       url: `/games/${game.id}`,
