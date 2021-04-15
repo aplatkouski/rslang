@@ -8,7 +8,7 @@ type Props = WithStyles<typeof styles>;
 
 const CircularIndeterminate = ({ classes }: Props): JSX.Element => (
   <Backdrop className={classes.root} open>
-    <CircularProgress color="secondary" />
+    <CircularProgress className={classes.progress} color="secondary" />
   </Backdrop>
 );
 

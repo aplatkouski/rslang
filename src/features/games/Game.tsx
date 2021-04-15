@@ -11,6 +11,7 @@ import {
   selectGamesById,
   selectGameWords,
   selectIsCurrentGame,
+  selectIsEndGame,
   startNewGame,
   finishGames,
   upsertAllStatistic,
@@ -20,6 +21,7 @@ const Game = (): JSX.Element => {
   const { gameId } = useAppParams();
   const game = useAppSelector((state) => selectGamesById(state, gameId));
   const isCurrentGame = useAppSelector(selectIsCurrentGame);
+  const isEndGame = useAppSelector(selectIsEndGame);
   const words = useAppSelector((state) =>
     selectActiveWordsForGame(state, { group: 1, page: 1 })
   );
@@ -27,7 +29,6 @@ const Game = (): JSX.Element => {
   const currentWord = useAppSelector(selectCurrentWord);
   const dispatch = useAppDispatch();
 
-  const [isEndGame, setIsEndGame] = useState<boolean>(false);
   const [isStatReady, setIsStatReady] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,7 +52,6 @@ const Game = (): JSX.Element => {
 
   const handleRepeatGame = () => {
     setIsStatReady(false);
-    setIsEndGame(false);
     dispatch(
       startNewGame({
         date: new Date().toISOString().substring(0, 10),
@@ -63,12 +63,7 @@ const Game = (): JSX.Element => {
 
   const handleEndGames = () => {
     setIsStatReady(false);
-    setIsEndGame(false);
     dispatch(finishGames());
-  };
-
-  const handleEndGame = () => {
-    setIsEndGame(true);
   };
 
   if (isStatReady) {
@@ -86,7 +81,7 @@ const Game = (): JSX.Element => {
       }
 
       if (game.name.localeCompare('Саванна') === 0) {
-        return <SavannahGame onEndGame={handleEndGame} />;
+        return <SavannahGame />;
       }
     }
   }

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import {
   selectCurrentWord,
   selectAttempts,
+  selectIsEndGame,
   setAttempts,
 } from 'features/games/gamesSlice';
 import SavannahGameRound from './savannah-game-round/SavannahGameRound';
@@ -13,33 +14,21 @@ import Timer from './timer/Timer';
 import styles from './styles';
 
 const TIMER: number = 5;
-const AFTER_FINISH_TIMER: number = 2000;
 
-interface Props extends WithStyles<typeof styles> {
-  onEndGame: () => void;
-}
+interface Props extends WithStyles<typeof styles> {}
 
-const SavannahGame: React.FC<Props> = ({ classes, onEndGame }) => {
+const SavannahGame: React.FC<Props> = ({ classes }) => {
   const dispatch = useAppDispatch();
 
   const word = useAppSelector(selectCurrentWord);
   const attempts = useAppSelector(selectAttempts);
+  const isEndGame = useAppSelector(selectIsEndGame);
 
   const [isTimer, setIsTimer] = useState<boolean>(true);
 
   useEffect(() => {
     dispatch(setAttempts(5));
   }, [dispatch]);
-
-  useEffect(() => {
-    let timerId: number | null;
-    if (attempts === 0) {
-      timerId = window.setTimeout(() => {
-        onEndGame();
-      }, AFTER_FINISH_TIMER);
-    }
-    return () => (timerId ? clearTimeout(timerId) : undefined);
-  }, [attempts, onEndGame]);
 
   const handleEndTimer = () => {
     setIsTimer(false);
@@ -62,7 +51,7 @@ const SavannahGame: React.FC<Props> = ({ classes, onEndGame }) => {
         readOnly
         value={attempts}
       />
-      {word ? <SavannahGameRound word={word} /> : null}
+      {word && !isEndGame ? <SavannahGameRound word={word} /> : null}
     </Container>
   );
 };
