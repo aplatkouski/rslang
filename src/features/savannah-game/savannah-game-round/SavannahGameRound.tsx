@@ -15,7 +15,12 @@ import loseGameSound from 'assets/sounds/lose.mp3';
 import winGameSound from 'assets/sounds/win.mp3';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import shuffle from 'features/words/utils/shuffle';
-import { response, setAttempts } from 'features/games/gamesSlice';
+import {
+  response,
+  setAttempts,
+  setEndGame,
+  selectAttempts,
+} from 'features/games/gamesSlice';
 import { selectWrongTranslations } from 'features/words/wordsSlice';
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { IWord } from '../../../types';
@@ -32,6 +37,7 @@ interface Props extends WithStyles<typeof styles> {
 const SavannahGameRound: React.FC<Props> = ({ classes, word }) => {
   const dispatch = useAppDispatch();
 
+  const attempts = useAppSelector(selectAttempts);
   const wrongWords = useAppSelector((s) =>
     selectWrongTranslations(s, { wordId: word.id, count: WRONG_WORDS_COUNT })
   );
@@ -58,8 +64,6 @@ const SavannahGameRound: React.FC<Props> = ({ classes, word }) => {
   );
 
   useEffect(() => {
-    let timerId: number | null;
-
     const setEndRound = () => {
       dispatch(
         response({
@@ -70,9 +74,9 @@ const SavannahGameRound: React.FC<Props> = ({ classes, word }) => {
       );
     };
 
+    let timerId: number | null;
     if (!isAnswer) {
       timerId = window.setTimeout(() => {
-        setEndRound();
         checkAnswer(answerId, word.id);
         setAnswerId(null);
         setIsAnswer(true);
@@ -82,11 +86,13 @@ const SavannahGameRound: React.FC<Props> = ({ classes, word }) => {
         setEndRound();
         setAnswerId(null);
         setIsAnswer(false);
+        if (attempts === 0) {
+          dispatch(setEndGame());
+        }
       }, AFTER_ANSWER_TIMER);
     }
-
     return () => (timerId ? clearTimeout(timerId) : undefined);
-  }, [isAnswer, dispatch, checkAnswer, answerId, word.id]);
+  }, [isAnswer, dispatch, checkAnswer, answerId, word.id, attempts]);
 
   const getColor = useCallback(
     (id: string) => {

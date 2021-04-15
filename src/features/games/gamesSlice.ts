@@ -34,6 +34,7 @@ interface State extends IStatus {
     currentWord?: IWord;
     choice?: IWord;
     attempts?: number;
+    isEndGame?: boolean;
     data?: unknown;
     gameStatistic: Omit<IGameStatistic, 'id'>;
     wordStatistics: Array<Omit<IWordStatistic, 'id'>>;
@@ -217,6 +218,7 @@ const gamesSlice = createSlice({
           date,
           gameId,
         },
+        isEndGame: false,
         currentWord: words[0], // pick first word
         words: words.slice(1),
         wordStatistics: [] as Array<IWordStatistic>,
@@ -237,6 +239,11 @@ const gamesSlice = createSlice({
     choose(state, { payload: choice }: PayloadAction<IWord>) {
       if (state.current) {
         state.current.choice = choice;
+      }
+    },
+    setEndGame(state) {
+      if (state.current) {
+        state.current.isEndGame = true;
       }
     },
     setAttempts(state, { payload: attempts }: PayloadAction<number>) {
@@ -315,6 +322,7 @@ export const {
   response,
   startNewGame,
   finishGames,
+  setEndGame,
   setAttempts,
 } = gamesSlice.actions;
 
@@ -334,8 +342,9 @@ export const selectCurrentWord = (state: RootState) => {
 };
 
 export const selectChoice = (state: RootState) => state[name].current?.choice;
-
 export const selectAttempts = (state: RootState) => state[name].current?.attempts;
+export const selectIsEndGame = (state: RootState) => state[name].current?.isEndGame;
+export const selectIsCurrentGame = (state: RootState) => Boolean(state[name].current);
 
 export const selectGameWords = (state: RootState) => {
   const currentGame = state[name].current;
@@ -344,6 +353,5 @@ export const selectGameWords = (state: RootState) => {
   }
   return [] as Array<IWord>;
 };
-export const selectIsCurrentGame = (state: RootState) => Boolean(state[name].current);
 
 export default gamesSlice.reducer;
