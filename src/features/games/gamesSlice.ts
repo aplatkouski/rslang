@@ -354,4 +354,18 @@ export const selectGameWords = (state: RootState) => {
   return [] as Array<IWord>;
 };
 
+export const selectGameRounds = (state: RootState) => {
+  const currentGame = state[name].current;
+  if (currentGame) {
+    return {
+      total: currentGame.words.length + currentGame.wordStatistics.length + 1,
+      current: currentGame.wordStatistics.length + 1,
+    };
+  }
+  return {
+    total: 10,
+    current: 0,
+  };
+};
+
 export default gamesSlice.reducer;
