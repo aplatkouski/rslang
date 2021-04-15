@@ -39,7 +39,7 @@ const TextBookPanel = ({
   const { group, page } = useAppParams();
 
   const color = {
-    'background-color': colors[+group][50],
+    backgroundColor: colors[+group][50],
   } as React.CSSProperties;
 
   return (
