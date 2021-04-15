@@ -2,29 +2,26 @@ import { createStyles, fade, Theme } from '@material-ui/core/styles';
 
 const timerStyles = (theme: Theme) => {
   const blurRadius = theme.spacing(4);
-  const color = fade(theme.palette.secondary.light, 0.8);
+  const color = fade(theme.palette.primary.light, 0.8);
   return createStyles({
     root: {
-      borderRadius: '50%',
-      backgroundColor: 'white',
+      zIndex: theme.zIndex.drawer + 1,
     },
-    large: {
+    avatar: {
       width: theme.spacing(14),
       height: theme.spacing(14),
-    },
-    pink: {
-      color: fade(theme.palette.secondary.dark, 0.2),
-      backgroundColor: fade(theme.palette.secondary.dark, 0.3),
+      borderRadius: '50%',
+      color: theme.palette.primary.dark,
     },
     '@keyframes opacityBlinker': {
       '0%': {
-        opacity: '0.2',
+        opacity: '0.1',
       },
       '50%': {
         opacity: '1',
       },
       '100%': {
-        opacity: '0.2',
+        opacity: '0.1',
       },
     },
     timer: {

@@ -13,6 +13,7 @@ import Timer from './timer/Timer';
 import styles from './styles';
 
 const TIMER: number = 5;
+const AFTER_FINISH_TIMER: number = 2000;
 
 interface Props extends WithStyles<typeof styles> {
   onEndGame: () => void;
@@ -30,9 +31,15 @@ const SavannahGame: React.FC<Props> = ({ classes, onEndGame }) => {
     dispatch(setAttempts(5));
   }, [dispatch]);
 
-  if (!word || attempts === 0) {
-    onEndGame();
-  }
+  useEffect(() => {
+    let timerId: number | null;
+    if (attempts === 0) {
+      timerId = window.setTimeout(() => {
+        onEndGame();
+      }, AFTER_FINISH_TIMER);
+    }
+    return () => (timerId ? clearTimeout(timerId) : undefined);
+  }, [attempts, onEndGame]);
 
   const handleEndTimer = () => {
     setIsTimer(false);
@@ -46,18 +53,18 @@ const SavannahGame: React.FC<Props> = ({ classes, onEndGame }) => {
     );
   }
 
-  return word ? (
+  return (
     <Container className={classes.root}>
       <Rating
         className={classes.rating}
         icon={<FavoriteIcon fontSize="inherit" />}
         name="attempts"
         readOnly
-        value={attempts || 0}
+        value={attempts}
       />
-      <SavannahGameRound word={word} />
+      {word ? <SavannahGameRound word={word} /> : null}
     </Container>
-  ) : null;
+  );
 };
 
 export default withStyles(styles, { withTheme: true })(SavannahGame);
