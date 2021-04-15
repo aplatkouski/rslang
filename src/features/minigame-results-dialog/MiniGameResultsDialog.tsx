@@ -19,9 +19,10 @@ const DIALOG_TITLE_TEXT: string = 'Результат игры';
 
 interface Props extends WithStyles<typeof styles> {
   onRepeat: () => void;
+  onEnd: () => void;
 }
 
-const MiniGameResultsDialog = ({ classes, onRepeat }: Props): JSX.Element => {
+const MiniGameResultsDialog = ({ classes, onRepeat, onEnd }: Props): JSX.Element => {
   const history = useHistory();
 
   const [open, setOpen] = useState<boolean>(true);
@@ -32,13 +33,14 @@ const MiniGameResultsDialog = ({ classes, onRepeat }: Props): JSX.Element => {
   }, [onRepeat]);
 
   const handleEndGame = useCallback(() => {
+    onEnd();
     setOpen(false);
     if (window.history.length > 1) {
       history.goBack();
     } else {
       history.push(ROUTES.main);
     }
-  }, [history]);
+  }, [history, onEnd]);
 
   return (
     <Dialog
