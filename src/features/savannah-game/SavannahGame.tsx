@@ -44,7 +44,7 @@ const SavannahGame: React.FC<Props> = ({ classes }) => {
     );
   }
 
-  return (
+  return word && !isEndGame ? (
     <Container className={classes.root}>
       <Box className={classes.rating}>
         <Rating
@@ -55,9 +55,9 @@ const SavannahGame: React.FC<Props> = ({ classes }) => {
         />
         <Rating max={total} name="rounds" readOnly value={current} />
       </Box>
-      {word && !isEndGame ? <SavannahGameRound word={word} /> : null}
+      <SavannahGameRound word={word} />
     </Container>
-  );
+  ) : null;
 };
 
 export default withStyles(styles, { withTheme: true })(SavannahGame);
