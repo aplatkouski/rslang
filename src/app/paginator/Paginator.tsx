@@ -8,6 +8,7 @@ interface Props {
   count: number;
   group: number;
   page: number;
+  // eslint-disable-next-line react/require-default-props
   countDeletedWordByPages?: {
     [page: string]: number;
   };

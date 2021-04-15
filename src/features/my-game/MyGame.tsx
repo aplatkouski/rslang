@@ -308,7 +308,13 @@ export default function MyGame({ word }: Props): JSX.Element {
         myGameStatus.hiddenWord &&
         myGameStatus.gameWords &&
         myGameStatus.gameWords.length && (
-          <Grid container spacing={4} style={{ width: '100%', margin: 0 }}>
+          <Grid
+            alignItems="center"
+            container
+            justify="center"
+            spacing={3}
+            style={{ width: '100%', margin: 0 }}
+          >
             <Grid item xs={12}>
               <p className="game-title">{GAME_TITLE}</p>
             </Grid>

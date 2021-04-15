@@ -4,6 +4,10 @@ import { createStyles, fade, Theme } from '@material-ui/core/styles';
 const gameCardStyles = (theme: Theme) => {
   const defaultColor = pink[theme.palette.type === 'light' ? 200 : 700];
   return createStyles({
+    gameField: {
+      position: 'relative',
+      height: '100%',
+    },
     root: {
       width: '100%',
       height: '100%',

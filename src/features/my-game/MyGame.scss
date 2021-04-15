@@ -1,7 +1,8 @@
 @import "../../styles/shadowedBlock";
 
 .game-field {
-  flex: 1 0 auto;
+  position: relative;
+  height: 100%;
   padding: 10px;
   background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }

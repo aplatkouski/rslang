@@ -20,6 +20,7 @@ interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
   words: Array<IWord>;
+  // eslint-disable-next-line react/require-default-props
   countDeletedWordByPages?: {
     [page: string]: number;
   };

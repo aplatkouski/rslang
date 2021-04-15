@@ -22,6 +22,7 @@ import styles from './styles';
 interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
+  // eslint-disable-next-line react/require-default-props
   countDeletedWordByPages?: {
     [pag: string]: number;
   };

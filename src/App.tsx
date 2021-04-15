@@ -21,10 +21,22 @@ import TextBook, {
 import { fetchWords } from 'features/words/wordsSlice';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { ROUTES } from './constants';
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    bodyBlock: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+    },
+  })
+);
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const classes = useStyles();
 
   useEffect(() => {
     dispatch(logInViaLocalStorage());
@@ -38,33 +50,35 @@ const App = (): JSX.Element => {
 
   return (
     <BrowserRouter>
-      <Navbar />
-      <Switch>
-        <Route component={MainPage} exact path="/" />
-        <Route component={SectorsPage} exact path="/textbook" />
-        <Route component={TeamPage} exact path="/about-team" />
-        <Route component={games.GamesPage} exact path="/games" />
-        <Route component={TextBook} exact path="/textbook/:group/:page" />
-        <Route
-          component={StudiedWordsSection}
-          exact
-          path="/textbook/dictionary/studied/:group/:page"
-        />
-        <Route
-          component={DifficultWordsSection}
-          exact
-          path="/textbook/dictionary/difficult/:group/:page"
-        />
-        <Route component={Game} exact path="/games/:gameId" />
-        <Route
-          component={DeletedWordsSection}
-          exact
-          path="/textbook/dictionary/deleted/:group/:page"
-        />
-        <Route component={StatisticPage} exact path={ROUTES.statistic} />
-        <Redirect to="/" />
-      </Switch>
-      <Footer />
+      <div className={classes.bodyBlock}>
+        <Navbar />
+        <Switch>
+          <Route component={MainPage} exact path="/" />
+          <Route component={SectorsPage} exact path="/textbook" />
+          <Route component={TeamPage} exact path="/about-team" />
+          <Route component={games.GamesPage} exact path="/games" />
+          <Route component={TextBook} exact path="/textbook/:group/:page" />
+          <Route
+            component={StudiedWordsSection}
+            exact
+            path="/textbook/dictionary/studied/:group/:page"
+          />
+          <Route
+            component={DifficultWordsSection}
+            exact
+            path="/textbook/dictionary/difficult/:group/:page"
+          />
+          <Route component={Game} exact path="/games/:gameId" />
+          <Route
+            component={DeletedWordsSection}
+            exact
+            path="/textbook/dictionary/deleted/:group/:page"
+          />
+          <Route component={StatisticPage} exact path={ROUTES.statistic} />
+          <Redirect to="/" />
+        </Switch>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 };
