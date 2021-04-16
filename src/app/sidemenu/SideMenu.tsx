@@ -25,7 +25,7 @@ import { selectAllGames } from '../../features/games/gamesSlice';
 
 export type SideMenuProps = {
   open: boolean;
-  handleCloseSideMenu: () => void;
+  onClose: () => void;
 };
 
 const useStyles = makeStyles({
@@ -65,7 +65,7 @@ const upperMenu = [
 
 const lowerMenu = [{ title: 'О команде', url: '/about-team', icon: <People /> }];
 
-const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => {
+const SideMenu = ({ open, onClose: handleClose }: SideMenuProps): JSX.Element => {
   const classes = useStyles();
   const games = useAppSelector(selectAllGames);
 
@@ -81,13 +81,13 @@ const SideMenu = ({ open, handleCloseSideMenu }: SideMenuProps): JSX.Element => 
     <Drawer
       anchor="left"
       classes={{ paper: classes.drawer }}
-      onClose={handleCloseSideMenu}
+      onClose={handleClose}
       open={open}
     >
       <div
         className={classes.list}
-        onClick={handleCloseSideMenu}
-        onKeyDown={handleCloseSideMenu}
+        onClick={handleClose}
+        onKeyDown={handleClose}
         role="presentation"
       >
         <List>

@@ -1,17 +1,26 @@
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
+import RegistrationForm from 'app/registration-form/RegistrationForm';
+import SideMenu from 'app/sidemenu/SideMenu';
 import StatisticPage from 'app/statistic-page/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
-import { useAppDispatch } from 'common/hooks';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlice';
 import games from 'features/games';
 import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
+import LogInForm from 'features/log-in-form/LogInForm';
 import SectorsPage from 'features/sectors-page/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
-import { logInViaLocalStorage } from 'features/user/userSlice';
+import {
+  delLogInErrMessage,
+  getCurrUser,
+  getLoginStatus,
+  logInViaLocalStorage,
+} from 'features/user/userSlice';
 import { fetchWordStatistics } from 'features/word-statistics/wordStatisticsSlice';
 import TextBook, {
   DeletedWordsSection,
@@ -19,10 +28,9 @@ import TextBook, {
   StudiedWordsSection,
 } from 'features/words';
 import { fetchWords } from 'features/words/wordsSlice';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { ROUTES } from './constants';
+import { requestStatus, ROUTES } from './constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,6 +46,13 @@ const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
 
+  const [drawerState, setDrawerState] = useState(false);
+  const [isOpenLogInModal, setIsOpenLogInModal] = useState(false);
+  const [isOpenRegisterModal, setIsOpenRegisterModal] = useState(false);
+
+  const logInStatus = useAppSelector(getLoginStatus);
+  const user = useAppSelector(getCurrUser);
+
   useEffect(() => {
     dispatch(logInViaLocalStorage());
     dispatch(getSettingsFromLocalStorage());
@@ -48,10 +63,56 @@ const App = (): JSX.Element => {
     dispatch(fetchGameStatistics(null));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (user && user.token && isOpenLogInModal) {
+      setIsOpenLogInModal(false);
+      dispatch(delLogInErrMessage());
+    }
+  }, [dispatch, isOpenLogInModal, user]);
+
+  const handleToggleSideMenu = useCallback(() => {
+    setDrawerState((state) => !state);
+  }, []);
+
+  const handleOpenLogInModal = useCallback(() => {
+    setIsOpenLogInModal(true);
+  }, []);
+
+  const handleCloseLogInModal = useCallback(() => {
+    if (logInStatus !== requestStatus.pending) {
+      setIsOpenLogInModal(false);
+      dispatch(delLogInErrMessage());
+    }
+  }, [dispatch, logInStatus]);
+
+  const handleRegister = useCallback(() => {
+    setIsOpenLogInModal(false);
+    dispatch(delLogInErrMessage());
+    setIsOpenRegisterModal(true);
+  }, [dispatch]);
+
+  const handleCloseRegisterModal = useCallback(() => {
+    setIsOpenRegisterModal(false);
+  }, []);
+
   return (
     <BrowserRouter>
       <div className={classes.bodyBlock}>
-        <Navbar />
+        <SideMenu onClose={handleToggleSideMenu} open={drawerState} />
+        <LogInForm
+          isOpen={isOpenLogInModal}
+          onClose={handleCloseLogInModal}
+          onRegister={handleRegister}
+        />
+        <RegistrationForm
+          isOpen={isOpenRegisterModal}
+          onClose={handleCloseRegisterModal}
+        />
+
+        <Navbar
+          onOpenLogInModal={handleOpenLogInModal}
+          onToggleSideMenu={handleToggleSideMenu}
+        />
         <Switch>
           <Route component={MainPage} exact path="/" />
           <Route component={SectorsPage} exact path="/textbook" />
