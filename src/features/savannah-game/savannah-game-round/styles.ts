@@ -1,6 +1,6 @@
 import { createStyles, fade, Theme } from '@material-ui/core/styles';
 
-const gameRoundStyles = (theme: Theme) => {
+const styles = (theme: Theme) => {
   const blurRadius = theme.spacing(2);
   const color = fade(theme.palette.primary.light, 0.5);
   return createStyles({
@@ -56,4 +56,4 @@ const gameRoundStyles = (theme: Theme) => {
   });
 };
 
-export default gameRoundStyles;
+export default styles;
