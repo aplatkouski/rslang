@@ -19,13 +19,11 @@ function generatePages(sectorNum: number): Array<t.Page> {
 
 /* the sectors are numbered from zero */
 const initialState: t.ISectorsInfo = {
-  sectors: SECTOR_COLORS.map((_, index) => {
-    return {
-      key: index,
-      title: `Раздел ${index + 1}`,
-      pages: generatePages(index),
-    };
-  }),
+  sectors: SECTOR_COLORS.map((_, index) => ({
+    key: index,
+    title: `Раздел ${index + 1}`,
+    pages: generatePages(index),
+  })),
 };
 
 export const sectorsSlice = createSlice({
