@@ -5,6 +5,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
+import { selectAllDeletedWordIds } from 'features/user-words/userWordsSlice';
 import { fetchUserData } from 'features/user/utils';
 import * as t from 'types';
 import { IWordStatistic } from 'types';
@@ -118,32 +119,7 @@ const wordStatisticsSlice = createSlice({
 
 export const {
   selectAll: selectAllWordStatistics,
-  selectById: selectWordStatisticById,
 } = wordStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
-
-interface ReportWordCountByGames {
-  [gameId: string]: number;
-}
-
-/**
- *
- * TODO: add selectAllStudiedWords from `userWordsSlice`
- */
-export const selectWordCountByGames = createSelector(
-  [selectAllWordStatistics],
-  (wordStatistics): ReportWordCountByGames => {
-    const totals = {} as { [key: string]: Set<string> };
-    wordStatistics.forEach((statistic) => {
-      if (!totals[statistic.gameId]) {
-        totals[statistic.gameId] = new Set();
-      }
-      totals[statistic.gameId].add(statistic.wordId);
-    });
-    return Object.fromEntries(
-      Object.entries(totals).map(([gameId, words]) => [gameId, words.size])
-    );
-  }
-);
 
 interface ReportWordCountByDate {
   [studiedAt: string]: number;
@@ -322,5 +298,77 @@ export const selectWordStatisticRequestStatus = (state: RootState) => ({
   status: state[name].status,
   error: state[name].error,
 });
+
+export const selectWordStatisticsByDate = createSelector(
+  [
+    selectAllWordStatistics,
+    selectAllDeletedWordIds,
+    (_: RootState, { studiedAt }: SelectorProps<'studiedAt'>) => studiedAt,
+  ],
+  (wordStatistics, deletedWordsIds, studiedAt) => {
+    return wordStatistics.filter(
+      (wordStatistic) =>
+        wordStatistic.studiedAt.localeCompare(studiedAt) === 0 &&
+        !deletedWordsIds.includes(wordStatistic.wordId)
+    );
+  }
+);
+
+export const selectCorrectAnswerPercentByGamesAndDate = createSelector(
+  selectWordStatisticsByDate,
+  (wordStatistics) => {
+    const countAnswersByGames = {} as {
+      [key: string]: { correct: number; total: number };
+    };
+
+    wordStatistics.forEach(({ gameId, correctAnswerTotal, wrongAnswerTotal }) => {
+      if (!countAnswersByGames[gameId]) {
+        countAnswersByGames[gameId] = { correct: 0, total: 0 };
+      }
+      countAnswersByGames[gameId].correct += correctAnswerTotal;
+      countAnswersByGames[gameId].total += correctAnswerTotal + wrongAnswerTotal;
+    });
+    return Object.fromEntries(
+      Object.entries(countAnswersByGames).map(([gameId, countAnswer]) => [
+        gameId,
+        Math.round((countAnswer.correct / countAnswer.total) * 100),
+      ])
+    );
+  }
+);
+
+export const selectCorrectAnswerPercentByDate = createSelector(
+  selectWordStatisticsByDate,
+  (wordStatistics) => {
+    const countAnswers = { correct: 0, total: 0 } as { correct: number; total: number };
+
+    wordStatistics.forEach(({ correctAnswerTotal, wrongAnswerTotal }) => {
+      countAnswers.correct += correctAnswerTotal;
+      countAnswers.total += correctAnswerTotal + wrongAnswerTotal;
+    });
+    return Math.round((countAnswers.correct / countAnswers.total) * 100);
+  }
+);
+
+export const selectStudiedWordsByGamesAndDate = createSelector(
+  selectWordStatisticsByDate,
+  (wordStatistics) => {
+    const totals = {} as { [key: string]: Set<string> };
+    wordStatistics.forEach((statistic) => {
+      if (!totals[statistic.gameId]) {
+        totals[statistic.gameId] = new Set();
+      }
+      totals[statistic.gameId].add(statistic.wordId);
+    });
+    return Object.fromEntries(
+      Object.entries(totals).map(([gameId, words]) => [gameId, words.size])
+    );
+  }
+);
+
+export const selectStudiedWordsByDate = createSelector(
+  selectWordStatisticsByDate,
+  (wordStatistics) => new Set(wordStatistics).size
+);
 
 export default wordStatisticsSlice.reducer;

@@ -80,30 +80,6 @@ export const ROUTES = {
   },
 };
 
-export const STATISTIC_KEY = 'stats';
-
-const defaultStats = {
-  words: 0,
-  answers: 0,
-  correctAnswers: 0,
-  series: 0,
-};
-
-export const initialStats = [
-  {
-    ...defaultStats,
-    name: 'Аудио-колл',
-  },
-  {
-    ...defaultStats,
-    name: 'Саванна',
-  },
-  {
-    ...defaultStats,
-    name: 'Своя игра',
-  },
-];
-
 export const requestStatus = {
   idle: 'idle' as const,
   fulfilled: 'fulfilled' as const,

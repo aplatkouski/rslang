@@ -1,33 +1,74 @@
 import {
-  TableContainer,
+  Paper,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
   Typography,
-  Paper,
 } from '@material-ui/core';
-import React from 'react';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-
-import { initialStats, STATISTIC_KEY } from '../../constants';
-import * as t from '../../types';
-import ChartStatistics from '../chartStatistics/ChartStatistics';
+import ChartStatistics from 'app/chartStatistics/ChartStatistics';
+import { useAppSelector } from 'common/hooks';
+import { selectBestSeriesByDate } from 'features/game-statistics/gameStatisticsSlice';
+import {
+  selectCorrectAnswerPercentByDate,
+  selectCorrectAnswerPercentByGamesAndDate,
+  selectStudiedWordsByDate,
+  selectStudiedWordsByGamesAndDate,
+} from 'features/word-statistics/wordStatisticsSlice';
+import React, { useEffect, useState } from 'react';
+import { selectAllGames } from '../../features/games/gamesSlice';
 import styles from './styles';
+
+interface GameStat {
+  name: string;
+  bestSeries: number;
+  correctAnswerPercent: number;
+  studiedWordCount: number;
+}
 
 type Props = WithStyles<typeof styles>;
 
 const StatisticPage = ({ classes }: Props): JSX.Element => {
-  const data = localStorage.getItem(STATISTIC_KEY);
-  const stats: Array<t.MiniGameStats> = data ? JSON.parse(data) : initialStats;
-  const totalStats = {
-    name: 'Всего',
-    words: 0,
-    answers: 0,
-    correctAnswers: 0,
-    series: '-',
-  };
+  const [date, setDate] = useState(new Date().toISOString().substring(0, 10));
+
+  useEffect(() => {
+    if (date.localeCompare(new Date().toISOString().substring(0, 10)) !== 0) {
+      setDate(new Date().toISOString().substring(0, 10));
+    }
+  }, [date]);
+
+  const games = useAppSelector(selectAllGames);
+
+  const bestSeriesByGames = useAppSelector((state) =>
+    selectBestSeriesByDate(state, { date })
+  );
+
+  const correctAnswerPercentByGames = useAppSelector((state) =>
+    selectCorrectAnswerPercentByGamesAndDate(state, { studiedAt: date })
+  );
+
+  const studiedWordCountByGames = useAppSelector((state) =>
+    selectStudiedWordsByGamesAndDate(state, { studiedAt: date })
+  );
+
+  const gameStats: Array<GameStat> = games.map((game) => ({
+    name: game.name,
+    bestSeries: bestSeriesByGames[game.id] || 0,
+    correctAnswerPercent: correctAnswerPercentByGames[game.id] || 0,
+    studiedWordCount: studiedWordCountByGames[game.id] || 0,
+  }));
+
+  const studiedWordCountTotal = useAppSelector((state) =>
+    selectStudiedWordsByDate(state, { studiedAt: date })
+  );
+
+  const correctAnswerPercentTotal = useAppSelector((state) =>
+    selectCorrectAnswerPercentByDate(state, { studiedAt: date })
+  );
+
   return (
     <div className={classes.container}>
       <Typography variant="h3">Статистика за сегодня</Typography>
@@ -42,32 +83,23 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {stats.map((stat: t.MiniGameStats) => {
-              totalStats.words += stat.words;
-              totalStats.correctAnswers += stat.correctAnswers;
-              totalStats.answers += stat.answers;
-              return (
-                <TableRow key={stat.name}>
-                  <TableCell component="th" scope="row">
-                    {stat.name}
-                  </TableCell>
-                  <TableCell align="center">{stat.words}</TableCell>
-                  <TableCell align="center">{`${Math.floor(
-                    Math.floor((stat.correctAnswers / stat.answers) * 100) || 0
-                  )}%`}</TableCell>
-                  <TableCell align="center">{stat.series}</TableCell>
-                </TableRow>
-              );
-            })}
+            {gameStats.map((gameStat: GameStat) => (
+              <TableRow key={gameStat.name}>
+                <TableCell component="th" scope="row">
+                  {gameStat.name}
+                </TableCell>
+                <TableCell align="center">{gameStat.studiedWordCount}</TableCell>
+                <TableCell align="center">{`${gameStat.correctAnswerPercent}%`}</TableCell>
+                <TableCell align="center">{gameStat.bestSeries}</TableCell>
+              </TableRow>
+            ))}
             <TableRow key="Всего">
               <TableCell component="th" scope="row">
-                {totalStats.name}
+                Всего
               </TableCell>
-              <TableCell align="center">{totalStats.words}</TableCell>
-              <TableCell align="center">{`${Math.floor(
-                Math.floor((totalStats.correctAnswers / totalStats.answers) * 100) || 0
-              )}%`}</TableCell>
-              <TableCell align="center">{totalStats.series}</TableCell>
+              <TableCell align="center">{studiedWordCountTotal}</TableCell>
+              <TableCell align="center">{`${correctAnswerPercentTotal || 0}%`}</TableCell>
+              <TableCell align="center" />
             </TableRow>
           </TableBody>
         </Table>

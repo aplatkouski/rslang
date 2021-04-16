@@ -107,14 +107,6 @@ export interface IUserWord {
   addedAt?: string; // YYYY-MM-DD
 }
 
-export interface MiniGameStats {
-  name: string;
-  words: number;
-  answers: number;
-  correctAnswers: number;
-  series: number | string;
-}
-
 export interface Contributor {
   name: string;
   gitHubLink: string;

@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import {
-  selectDeletedWordIds,
+  selectAllDeletedWordIds,
   selectDeletedWordIdsByChunk,
   selectDeletedWordIdsByGroup,
   selectDifficultWordIdsByChunk,
@@ -124,7 +124,7 @@ export const selectStudiedWordsByPage = createSelector(
 );
 
 export const selectAllActiveWords = createSelector(
-  [selectAllWords, selectDeletedWordIds],
+  [selectAllWords, selectAllDeletedWordIds],
   (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
 );
 

@@ -121,6 +121,12 @@ export const {
   selectById: selectGameStatisticById,
 } = gameStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
+interface SelectWordsProps extends Partial<IGameStatistic> {
+  [key: string]: unknown;
+}
+
+type SelectorProps<T extends string> = Required<Pick<SelectWordsProps, T>>;
+
 export const selectBestSeriesByGame = createSelector(
   [selectAllGameStatistics, (_: RootState, gameId: string) => gameId],
   (gameStatistics, gameId) => {
@@ -134,6 +140,16 @@ export const selectBestSeriesByGame = createSelector(
 
     return currentGameStatistics.find((s) => s.bestSeries === currentGameBestSeries);
   }
+);
+
+export const selectBestSeriesByDate = createSelector(
+  [selectAllGameStatistics, (_: RootState, { date }: SelectorProps<'date'>) => date],
+  (gameStatistics, date) =>
+    Object.fromEntries(
+      gameStatistics
+        .filter((statistic) => statistic.date.localeCompare(date) === 0)
+        .map((statistic) => [statistic.gameId, statistic.bestSeries])
+    )
 );
 
 export const selectBestSeriesAverageByGame = createSelector(
