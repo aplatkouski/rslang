@@ -3,7 +3,7 @@ import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
 import RegistrationForm from 'app/registration-form/RegistrationForm';
-import SideMenu from 'app/sidemenu/SideMenu';
+import SideMenu from 'app/side-menu/SideMenu';
 import StatisticPage from 'app/statistic-page/StatisticPage';
 import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
