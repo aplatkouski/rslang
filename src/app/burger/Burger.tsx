@@ -1,4 +1,4 @@
-import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import { IconButton, Link, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
@@ -43,7 +43,9 @@ const Burger = ({ classes }: Props): JSX.Element => {
       >
         {burgerItems.map(({ route, title }) => (
           <MenuItem key={title} onClick={handleClose}>
-            <NavLink to={route}>{title}</NavLink>
+            <Link component={NavLink} to={route} underline="none">
+              {title}
+            </Link>
           </MenuItem>
         ))}
       </Menu>

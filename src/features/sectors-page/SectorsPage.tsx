@@ -3,6 +3,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Link,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -59,11 +60,11 @@ export default function SectionsPage(): JSX.Element {
                   sector.pages.map((page) => (
                     <div key={page.key} className="page-wrap">
                       {page.show ? (
-                        <NavLink style={{ textDecoration: 'none' }} to={page.url}>
+                        <Link component={NavLink} to={page.url} underline="none">
                           <button className="page-btn" type="button">
                             {page.title}
                           </button>
-                        </NavLink>
+                        </Link>
                       ) : (
                         <button className="page-btn-disabled" type="button">
                           {page.title}

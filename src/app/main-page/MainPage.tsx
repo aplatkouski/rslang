@@ -1,4 +1,4 @@
-import { Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid, Link, Typography } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import promotions from 'assets/data/promotions.json';
 import backgroundImg from 'assets/img/back.png';
@@ -57,7 +57,9 @@ const MainPage = ({ classes }: Props): JSX.Element => {
             <Typography variant="h5">Команда</Typography>
             <Typography variant="subtitle1">
               А узнать, кто трудился над этим приложением вы можете&ensp;
-              <NavLink to={ROUTES.aboutTeam.url}>тут!</NavLink>
+              <Link component={NavLink} to={ROUTES.aboutTeam.url} underline="none">
+                тут!
+              </Link>
             </Typography>
           </div>
         </div>

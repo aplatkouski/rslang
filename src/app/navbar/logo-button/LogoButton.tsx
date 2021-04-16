@@ -1,5 +1,6 @@
 import {
   IconButton,
+  Link,
   Tooltip,
   Typography,
   withStyles,
@@ -8,6 +9,7 @@ import {
 import Logo from 'logo.svg';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { ROUTES } from '../../../constants';
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;
@@ -15,11 +17,11 @@ type Props = WithStyles<typeof styles>;
 const LogoButton = ({ classes }: Props): JSX.Element => (
   <Typography className={classes.title} variant="h6">
     <Tooltip title="На главную">
-      <NavLink to="/">
+      <Link component={NavLink} to={ROUTES.main.url} underline="none">
         <IconButton>
           <img alt="RSLang" className={classes.logo} src={Logo} />
         </IconButton>
-      </NavLink>
+      </Link>
     </Tooltip>
   </Typography>
 );

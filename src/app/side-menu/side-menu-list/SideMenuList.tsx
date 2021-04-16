@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Link, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import React, { memo } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -12,12 +12,12 @@ interface Props extends WithStyles<typeof styles> {
 const SideMenuList = ({ listItems, classes }: Props): JSX.Element => (
   <List>
     {listItems.map((menuItem) => (
-      <NavLink key={menuItem.title} style={{ textDecoration: 'none' }} to={menuItem.url}>
+      <Link key={menuItem.title} component={NavLink} to={menuItem.url} underline="none">
         <ListItem button>
           <ListItemIcon>{menuItem.icon}</ListItemIcon>
           <ListItemText className={classes.menuTitle} primary={menuItem.title} />
         </ListItem>
-      </NavLink>
+      </Link>
     ))}
   </List>
 );
