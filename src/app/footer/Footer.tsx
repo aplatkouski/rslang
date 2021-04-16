@@ -1,13 +1,13 @@
 import { Grid, Link, Typography } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import RsSchoolLogo from 'assets/icons/rsschool-logo.svg';
-import clsx from 'clsx';
-import contributors from 'assets/data/contributors.json';
-import * as React from 'react';
 import ContributorLinks from 'app/footer/contributorLinks/ContributorLinks';
 import SvgImg from 'app/footer/svgImg/SvgImg';
+import contributors from 'assets/data/contributors.json';
+import RsSchoolLogo from 'assets/icons/rsschool-logo.svg';
+import clsx from 'clsx';
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import { GAME_PART_URL_PATH } from '../../constants';
+import { ROUTES } from '../../constants';
 
 import styles from './styles';
 
@@ -29,7 +29,7 @@ const AppIntro = (): JSX.Element => (
 
 const Footer = ({ classes }: Props): JSX.Element => {
   const { pathname } = useLocation();
-  const isGameRoute = pathname.includes(GAME_PART_URL_PATH);
+  const isGameRoute = pathname.includes(ROUTES.games.url);
 
   if (isGameRoute) {
     return <div />;
@@ -38,7 +38,7 @@ const Footer = ({ classes }: Props): JSX.Element => {
   return (
     <footer className={classes.footer}>
       <Grid className={classes.container} container>
-        <Grid className={clsx(classes.item, classes.rsLang)} item md sm={12}>
+        <Grid className={clsx(classes.item, classes.rsLang)} item md sm={12} xs={12}>
           <AppIntro />
         </Grid>
         <Grid container item justify="center" md={9} sm={12}>

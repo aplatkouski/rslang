@@ -1,8 +1,8 @@
 import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
+import { selectDeletedWordCountByGroupAndPages } from 'features/user-words/userWordsSlice';
 import React from 'react';
-import { PAGES_PER_SECTOR } from '../../constants';
-import { selectDeletedWordCountByGroupAndPages } from '../user-words/userWordsSlice';
+import { PAGES_PER_SECTOR, ROUTES } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectActiveWordsByPage } from './wordsSlice';
 
@@ -24,7 +24,7 @@ const TextBook = (): JSX.Element => {
 
   return (
     <WordGridList
-      baseUrl="textbook"
+      baseUrl={ROUTES.textbook.url}
       countDeletedWordByPages={deletedWordCountByPages}
       pageCount={PAGES_PER_SECTOR}
       words={activeWords}

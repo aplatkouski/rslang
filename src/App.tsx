@@ -114,29 +114,33 @@ const App = (): JSX.Element => {
           onToggleSideMenu={handleToggleSideMenu}
         />
         <Switch>
-          <Route component={MainPage} exact path="/" />
-          <Route component={SectorsPage} exact path="/textbook" />
-          <Route component={TeamPage} exact path="/about-team" />
-          <Route component={games.GamesPage} exact path="/games" />
-          <Route component={TextBook} exact path="/textbook/:group/:page" />
+          <Route component={MainPage} exact path={ROUTES.main.url} />
+          <Route component={SectorsPage} exact path={ROUTES.textbook.url} />
+          <Route component={TeamPage} exact path={ROUTES.aboutTeam.url} />
+          <Route component={games.GamesPage} exact path={ROUTES.games.url} />
+          <Route
+            component={TextBook}
+            exact
+            path={`${ROUTES.textbook.url}/:group/:page`}
+          />
           <Route
             component={StudiedWordsSection}
             exact
-            path="/textbook/dictionary/studied/:group/:page"
+            path={`${ROUTES.studied.url}/:group/:page`}
           />
           <Route
             component={DifficultWordsSection}
             exact
-            path="/textbook/dictionary/difficult/:group/:page"
+            path={`${ROUTES.difficult.url}/:group/:page`}
           />
-          <Route component={Game} exact path="/games/:gameId" />
+          <Route component={Game} exact path={`${ROUTES.games.url}/:gameId`} />
           <Route
             component={DeletedWordsSection}
             exact
-            path="/textbook/dictionary/deleted/:group/:page"
+            path={`${ROUTES.deleted.url}/:group/:page`}
           />
-          <Route component={StatisticPage} exact path={ROUTES.statistic} />
-          <Redirect to="/" />
+          <Route component={StatisticPage} exact path={ROUTES.statistics.url} />
+          <Redirect to={ROUTES.main.url} />
         </Switch>
         <Footer />
       </div>

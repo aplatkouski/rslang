@@ -12,7 +12,7 @@ import WordCard from 'features/word-card/WordCard';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IWord } from 'types';
-import { requestStatus, WORD_CARD_WIDTH } from '../../constants';
+import { requestStatus, ROUTES, WORD_CARD_WIDTH } from '../../constants';
 import styles from './styles';
 import { selectWordsRequestStatus } from './wordsSlice';
 
@@ -42,7 +42,7 @@ const WordGridList = ({
 
   useEffect(() => {
     if (request.status === requestStatus.fulfilled && !words.length)
-      history.push('/textbook');
+      history.push(ROUTES.textbook.url);
   }, [words, history, request.status]);
 
   const [chunks, setChunks] = useState<Chunks>({});

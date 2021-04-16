@@ -2,6 +2,7 @@ import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDifficultWordPageCountByGroup } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { ROUTES } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectDifficultWordsByChunk } from './wordsSlice';
 
@@ -28,7 +29,7 @@ const DifficultWordsSection = (): JSX.Element => {
 
   return (
     <WordGridList
-      baseUrl="textbook/dictionary/difficult"
+      baseUrl={ROUTES.difficult.url}
       pageCount={pageCount}
       words={difficultWords}
     />

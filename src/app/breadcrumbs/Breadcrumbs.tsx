@@ -61,7 +61,7 @@ const Breadcrumbs = ({ classes }: Props): JSX.Element => {
       {urls.length === 0 ? (
         <Typography className={classes.lastLink}>{breadcrumbNameMap.main}</Typography>
       ) : (
-        <Link className={classes.link} component={NavLink} to={ROUTES.main}>
+        <Link className={classes.link} component={NavLink} to={ROUTES.main.url}>
           {breadcrumbNameMap.main}
         </Link>
       )}

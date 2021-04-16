@@ -38,7 +38,7 @@ const MiniGameResultsDialog = ({ classes, onRepeat, onEnd }: Props): JSX.Element
     if (window.history.length > 1) {
       history.goBack();
     } else {
-      history.push(ROUTES.main);
+      history.push(ROUTES.main.url);
     }
   }, [history, onEnd]);
 

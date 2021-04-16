@@ -57,7 +57,7 @@ const MainPage = ({ classes }: Props): JSX.Element => {
             <Typography variant="h5">Команда</Typography>
             <Typography variant="subtitle1">
               А узнать, кто трудился над этим приложением вы можете&ensp;
-              <NavLink to={ROUTES.team}>тут!</NavLink>
+              <NavLink to={ROUTES.aboutTeam.url}>тут!</NavLink>
             </Typography>
           </div>
         </div>

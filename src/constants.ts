@@ -46,25 +46,41 @@ export const WORD_OPTIONAL_MODE = {
 
 export const VIDEO_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 export const ROUTES = {
-  main: '/',
-  sector: '/textbook',
-  sections: '/textbook/:sector/:page',
-  team: '/about-team',
-  statistic: '/statistic',
-  mini_games: '/mini_games',
-  savanna: '/mini_games/savanna',
-  audio_call: '/mini_games/audio_call',
-  custom_game: '/mini_games/custom_game',
-  statistics: '/statistics',
+  deleted: {
+    url: '/textbook/dictionary/deleted',
+    title: 'Удаленные слова',
+  },
+  difficult: {
+    url: '/textbook/dictionary/difficult',
+    title: 'Сложные слова',
+  },
+  main: {
+    url: '/',
+    title: 'Главная страница',
+  },
+  games: {
+    url: '/games',
+    title: 'Игры',
+  },
+  textbook: {
+    url: '/textbook',
+    title: 'Учебник',
+  },
+  statistics: {
+    url: '/statistics',
+    title: 'Статистика',
+  },
+  studied: {
+    url: '/textbook/dictionary/studied',
+    title: 'Изучаемые слова',
+  },
+  aboutTeam: {
+    url: '/about-team',
+    title: 'О команде',
+  },
 };
 
 export const STATISTIC_KEY = 'stats';
-
-export const GAMES = {
-  audioCall: 'Аудиовызов',
-  savanna: 'Саванна',
-  ownGame: 'Своя игра',
-};
 
 const defaultStats = {
   words: 0,
@@ -76,19 +92,17 @@ const defaultStats = {
 export const initialStats = [
   {
     ...defaultStats,
-    name: GAMES.audioCall,
+    name: 'Аудио-колл',
   },
   {
     ...defaultStats,
-    name: GAMES.savanna,
+    name: 'Саванна',
   },
   {
     ...defaultStats,
-    name: GAMES.ownGame,
+    name: 'Своя игра',
   },
 ];
-
-export const GAME_PART_URL_PATH = 'game';
 
 export const requestStatus = {
   idle: 'idle' as const,

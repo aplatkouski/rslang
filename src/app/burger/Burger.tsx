@@ -1,19 +1,14 @@
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-import React from 'react';
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { GAMES, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
 import styles from './styles';
 
 interface Props extends WithStyles<typeof styles> {}
 
-const burgerItems = [
-  { route: ROUTES.savanna, title: GAMES.savanna },
-  { route: ROUTES.audio_call, title: GAMES.audioCall },
-  { route: ROUTES.custom_game, title: GAMES.ownGame },
-  { route: ROUTES.statistics, title: 'Статистика' },
-];
+const burgerItems = [{ route: ROUTES.statistics.url, title: ROUTES.statistics.title }];
 
 const Burger = ({ classes }: Props): JSX.Element => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

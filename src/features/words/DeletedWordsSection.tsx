@@ -2,6 +2,7 @@ import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDeletedWordPageCountByGroup } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { ROUTES } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectDeletedWordsByChunk } from './wordsSlice';
 
@@ -28,7 +29,7 @@ const DeletedWordsSection = (): JSX.Element => {
 
   return (
     <WordGridList
-      baseUrl="textbook/dictionary/deleted"
+      baseUrl={ROUTES.deleted.url}
       pageCount={pageCount}
       words={deletedWords}
     />

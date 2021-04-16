@@ -37,7 +37,7 @@ const Paginator = ({
         component={NavLink}
         disabled={isDisabled}
         selected={item.selected}
-        to={`/${baseUrl}/${group}/${item.page - 1}/`}
+        to={`${baseUrl}/${group}/${item.page - 1}/`}
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...item}
       />
