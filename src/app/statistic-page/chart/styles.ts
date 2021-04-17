@@ -3,7 +3,7 @@ import { createStyles, Theme } from '@material-ui/core/styles';
 const styles = (theme: Theme) =>
   createStyles({
     chart: {
-      minWidth: theme.spacing(63),
+      minWidth: theme.spacing(58),
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',

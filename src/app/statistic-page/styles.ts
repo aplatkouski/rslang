@@ -9,7 +9,7 @@ const styles = (theme: Theme) =>
     },
     table: {
       maxWidth: theme.spacing(80),
-      minWidth: theme.spacing(60),
+      minWidth: theme.spacing(58),
       '& tr:last-child': {
         backgroundColor: theme.palette.action.hover,
       },

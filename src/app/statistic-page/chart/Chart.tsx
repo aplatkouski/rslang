@@ -13,30 +13,26 @@ interface ChartProps extends Props {
 }
 
 const Chart = ({ classes, data, title }: ChartProps): JSX.Element => {
-  return (
-    <div>
-      {data.length ? (
-        <div className={classes.chart}>
-          <Typography className={classes.chartTitle} variant="subtitle1">
-            {title}
-          </Typography>
-          <LineChart
-            data={data}
-            height={400}
-            margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-            width={480}
-          >
-            <Tooltip />
-            <CartesianGrid stroke="#f5f5f5" />
-            <Line dataKey="words" stroke="#ff7300" type="monotone" yAxisId={0} />
-            <XAxis dataKey="studiedAt" />
-            <YAxis />
-          </LineChart>
-        </div>
-      ) : (
-        <Typography variant="h5">Данных пока нет</Typography>
-      )}
+  return data.length ? (
+    <div className={classes.chart}>
+      <Typography className={classes.chartTitle} variant="subtitle1">
+        {title}
+      </Typography>
+      <LineChart
+        data={data}
+        height={400}
+        margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
+        width={480}
+      >
+        <Tooltip />
+        <CartesianGrid stroke="#f5f5f5" />
+        <Line dataKey="words" stroke="#ff7300" type="monotone" yAxisId={0} />
+        <XAxis dataKey="studiedAt" />
+        <YAxis />
+      </LineChart>
     </div>
+  ) : (
+    <Typography variant="h5">Данных пока нет</Typography>
   );
 };
 export default withStyles(styles, { withTheme: true })(Chart);
