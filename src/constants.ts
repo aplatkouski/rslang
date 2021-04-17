@@ -3,6 +3,7 @@ export const PAGES_PER_GROUP = 30;
 export const WORDS_PER_PAGE = 20;
 export const WORD_CARD_WIDTH = 320;
 export const WORD_CARD_MARGIN = 16;
+export const GROUP_COUNT = 6;
 
 export const SECTOR_COLORS = [
   '#faedcb',

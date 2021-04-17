@@ -13,7 +13,7 @@ import {
   selectStudiedWordIdsByPage,
 } from 'features/user-words/userWordsSlice';
 import { IStatus, IWord } from 'types';
-import { api, PAGES_PER_GROUP, requestStatus } from '../../constants';
+import { api, GROUP_COUNT, PAGES_PER_GROUP, requestStatus } from '../../constants';
 import shuffle from './utils/shuffle';
 
 export const name = 'wordsAP' as const;
@@ -167,5 +167,31 @@ export const selectWordsRequestStatus = (state: RootState) => ({
   status: state[name].status,
   error: state[name].error,
 });
+
+export const selectActiveWordCountByGroupsAndPages = createSelector(
+  selectAllActiveWords,
+  (activeWords) => {
+    const result = {} as {
+      [groupNum: string]: {
+        [pageNum: string]: number;
+        total: number;
+      };
+    };
+    Object.keys(Array(GROUP_COUNT).fill(null)).forEach((groupIndex) => {
+      result[groupIndex] = {
+        total: 0,
+      };
+      Object.keys(Array(PAGES_PER_GROUP).fill(null)).forEach((pageIndex) => {
+        result[groupIndex][pageIndex] = 0;
+      });
+    });
+
+    activeWords.forEach(({ group, page }) => {
+      result[group][page] += 1;
+      result[group].total += 1;
+    });
+    return result;
+  }
+);
 
 export default wordsSlice.reducer;

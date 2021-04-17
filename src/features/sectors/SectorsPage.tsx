@@ -5,80 +5,81 @@ import {
   Box,
   Link,
   Typography,
+  withStyles,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useAppSelector } from 'common/hooks';
-import { selectSectors } from 'features/sectors/sectorsSlice';
+import { selectActiveWordCountByGroupsAndPages } from 'features/words/wordsSlice';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import 'styles/animate.min.css';
-import * as t from 'types';
-
+import { ROUTES } from '../../constants';
 import './SectorsPage.scss';
+import styles from './styles';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    height: '100%',
-  },
-  sectorTitle: {
-    fontSize: theme.typography.pxToRem(17),
-    fontWeight: theme.typography.fontWeightBold,
-  },
-}));
+interface Props extends WithStyles<typeof styles> {
+  baseUrl?: string;
+}
 
-export default function SectionsPage(): JSX.Element {
-  const classes = useStyles();
-  const sectors: Array<t.Sector> = useAppSelector(selectSectors);
+const SectionsPage = (props: Props): JSX.Element => {
+  const { classes, baseUrl = ROUTES.textbook.url } = props;
+  const activeWordCount = useAppSelector(selectActiveWordCountByGroupsAndPages);
 
   return (
     <div className={classes.root}>
-      {sectors &&
-        sectors.map((sector) => (
-          <Accordion key={sector.key}>
-            <AccordionSummary
-              aria-controls="panel1a-content"
-              expandIcon={<ExpandMoreIcon />}
-              id="panel1a-header"
+      {Object.keys(activeWordCount).map((group) => (
+        <Accordion key={group} disabled={!activeWordCount[group].total}>
+          <AccordionSummary
+            aria-controls="panel1a-content"
+            expandIcon={<ExpandMoreIcon />}
+            id="panel1a-header"
+          >
+            <Typography
+              className={`${classes.sectorTitle} sector-title animate__animated animate__backInRight`}
             >
-              <Typography
-                className={`${classes.sectorTitle} sector-title animate__animated animate__backInRight`}
-              >
-                {sector.title}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Box
-                alignItems="stretch"
-                css={{ maxWidth: '100%' }}
-                display="flex"
-                flexWrap="wrap"
-                justifyContent="space-evenly"
-              >
-                {sector.pages && sector.pages.length ? (
-                  sector.pages.map((page) => (
-                    <div key={page.key} className="page-wrap">
-                      {page.show ? (
-                        <Link component={NavLink} to={page.url} underline="none">
+              {`Раздел ${+group + 1}`}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box
+              alignItems="stretch"
+              css={{ maxWidth: '100%' }}
+              display="flex"
+              flexWrap="wrap"
+              justifyContent="space-evenly"
+            >
+              {activeWordCount[group] ? (
+                Object.keys(activeWordCount[group])
+                  .filter((page) => page !== 'total')
+                  .map((page, pageIndex) => (
+                    <div key={page} className="page-wrap">
+                      {activeWordCount[group][page] ? (
+                        <Link
+                          component={NavLink}
+                          to={`${baseUrl}/${group}/${page}`}
+                          underline="none"
+                        >
                           <button className="page-btn" type="button">
-                            {page.title}
+                            {`Страница ${pageIndex + 1}`}
                           </button>
                         </Link>
                       ) : (
                         <button className="page-btn-disabled" type="button">
-                          {page.title}
+                          {`Страница ${pageIndex + 1}`}
                         </button>
                       )}
                     </div>
                   ))
-                ) : (
-                  <Typography>Данный раздел пуст</Typography>
-                )}
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+              ) : (
+                <Typography>Данный раздел пуст</Typography>
+              )}
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   );
-}
+};
+
+export default withStyles(styles, { withTheme: true })(SectionsPage);

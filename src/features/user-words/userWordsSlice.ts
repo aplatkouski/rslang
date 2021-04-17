@@ -298,8 +298,13 @@ export const selectUserWordRequestStatus = (state: RootState) => ({
   error: state[name].error,
 });
 
-export const selectAllDeletedWordIds = createSelector(selectAllUserWords, (userWords) =>
-  userWords.filter((word) => word.isDeleted).map((word) => word.wordId)
+export const selectAllDeletedUserWords = createSelector(selectAllUserWords, (userWords) =>
+  userWords.filter((word) => word.isDeleted)
+);
+
+export const selectAllDeletedWordIds = createSelector(
+  selectAllDeletedUserWords,
+  (userWords) => userWords.map((userWord) => userWord.wordId)
 );
 
 export const selectAllNotDeletedUserWords = createSelector(

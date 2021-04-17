@@ -3,7 +3,6 @@ import gameStatisticsReducer, {
   name as gameStats,
 } from 'features/game-statistics/gameStatisticsSlice';
 import gamesReducer from 'features/games/gamesSlice';
-import sectorsReducer from 'features/sectors/sectorsSlice';
 import settingsReducer from 'features/settings/settingsSlice';
 import userWordsReducer, { name as userWords } from 'features/user-words/userWordsSlice';
 import userReducer from 'features/user/userSlice';
@@ -16,7 +15,6 @@ export const store = configureStore({
   reducer: {
     [gameStats]: gameStatisticsReducer,
     games: gamesReducer,
-    sectors: sectorsReducer,
     settings: settingsReducer,
     user: userReducer,
     [wordStats]: wordStatisticsReducer,
