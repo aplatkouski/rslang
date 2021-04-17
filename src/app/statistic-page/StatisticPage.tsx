@@ -1,5 +1,5 @@
 import {
-  Paper,
+  Container,
   Table,
   TableBody,
   TableCell,
@@ -70,9 +70,11 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
   );
 
   return (
-    <div className={classes.container}>
-      <Typography variant="h3">Статистика за сегодня</Typography>
-      <TableContainer component={Paper}>
+    <Container className={classes.container} maxWidth="lg">
+      <Typography align="center" className={classes.header} component="h3" variant="h4">
+        Статистика за сегодня
+      </Typography>
+      <TableContainer className={classes.tablecontainer}>
         <Table aria-label="customized table" className={classes.table} size="small">
           <TableHead>
             <TableRow>
@@ -104,9 +106,11 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography variant="h3">Долгосрочная статистика</Typography>
+      <Typography align="center" className={classes.header} component="h3" variant="h4">
+        Долгосрочная статистика
+      </Typography>
       <ChartStatistics />
-    </div>
+    </Container>
   );
 };
 

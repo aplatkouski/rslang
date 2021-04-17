@@ -5,15 +5,21 @@ const styles = (theme: Theme) =>
     container: {
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
       alignItems: 'center',
-      margin: theme.spacing(6),
     },
     table: {
-      minWidth: 500,
+      maxWidth: theme.spacing(80),
+      minWidth: theme.spacing(60),
       '& tr:last-child': {
         backgroundColor: theme.palette.action.hover,
       },
+    },
+    header: {
+      marginTop: theme.spacing(3),
+    },
+    tablecontainer: {
+      margin: theme.spacing(4, 'auto'),
+      width: 'auto',
     },
   });
 
