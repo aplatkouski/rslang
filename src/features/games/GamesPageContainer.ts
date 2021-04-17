@@ -1,5 +1,5 @@
+import { RootState } from 'app/store';
 import { connect } from 'react-redux';
-import { RootState } from '../../app/store';
 import Games from './GamesPage';
 import { selectAllGames } from './gamesSlice';
 

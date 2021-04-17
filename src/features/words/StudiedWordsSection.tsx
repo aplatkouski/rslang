@@ -2,19 +2,15 @@ import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectNotStudiedWordCountByGroupAndPages } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { ISelectProps } from 'types';
 import { PAGES_PER_GROUP, ROUTES } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectStudiedWordsByPage } from './wordsSlice';
 
-interface SelectProps {
-  group: number;
-  page: number;
-}
-
 const StudiedWordsSection = (): JSX.Element => {
   const { group, page } = useAppParams();
 
-  const selectProps: SelectProps = {
+  const selectProps: ISelectProps = {
     group: extractRouterParam(group, 0),
     page: extractRouterParam(page, 0),
   };

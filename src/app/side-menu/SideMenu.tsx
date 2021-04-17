@@ -37,7 +37,7 @@ const SideMenu = ({ open, onClose: handleClose, classes }: Props): JSX.Element =
 
   const gameMenu: Array<MenuListItem> = games.map((game) => ({
     title: game.name,
-    url: `${ROUTES.games.url}/${game.id}`,
+    url: `${ROUTES.games.url}/${game.id}/textbook`,
     icon: <GamesIcon />,
   }));
 

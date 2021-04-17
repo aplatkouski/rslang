@@ -33,6 +33,7 @@ import TextBook, {
 import { fetchWords } from 'features/words/wordsSlice';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import GameGroups from './app/groups-page/GameGroups';
 import { requestStatus, ROUTES } from './constants';
 
 const App = (): JSX.Element => {
@@ -120,7 +121,16 @@ const App = (): JSX.Element => {
           exact
           path={`${ROUTES.difficult.url}/:group/:page`}
         />
-        <Route component={Game} exact path={`${ROUTES.games.url}/:gameId`} />
+        <Route
+          component={GameGroups}
+          exact
+          path={`${ROUTES.games.url}/:gameId/textbook`}
+        />
+        <Route
+          component={Game}
+          exact
+          path={`${ROUTES.games.url}/:gameId/:dictionary/:group/:page`}
+        />
         <Route
           component={DeletedWordsSection}
           exact

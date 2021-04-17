@@ -2,6 +2,7 @@ import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppParams, useAppSelector } from 'common/hooks';
 import { selectDeletedWordCountByGroupAndPages } from 'features/user-words/userWordsSlice';
 import React from 'react';
+import { ISelectProps } from 'types';
 import { PAGES_PER_GROUP, ROUTES } from '../../constants';
 import WordGridList from './WordGridList';
 import { selectActiveWordsByPage } from './wordsSlice';
@@ -9,7 +10,7 @@ import { selectActiveWordsByPage } from './wordsSlice';
 const TextBook = (): JSX.Element => {
   const { group, page } = useAppParams();
 
-  const selectProps = {
+  const selectProps: ISelectProps = {
     group: extractRouterParam(group, 0),
     page: extractRouterParam(page, 0),
   };

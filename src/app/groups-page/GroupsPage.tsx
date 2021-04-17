@@ -44,31 +44,27 @@ const GroupsPage = ({ classes, baseUrl, wordCount }: Props): JSX.Element => (
             flexWrap="wrap"
             justifyContent="space-evenly"
           >
-            {wordCount[group] ? (
-              Object.keys(wordCount[group])
-                .filter((page) => page !== 'total')
-                .map((page, pageIndex) => (
-                  <div key={page} className="page-wrap">
-                    {wordCount[group][page] ? (
-                      <Link
-                        component={NavLink}
-                        to={`${baseUrl}/${group}/${page}`}
-                        underline="none"
-                      >
-                        <button className="page-btn" type="button">
-                          {`Страница ${pageIndex + 1}`}
-                        </button>
-                      </Link>
-                    ) : (
-                      <button className="page-btn-disabled" type="button">
-                        {`Страница ${pageIndex + 1}`}
+            {Object.keys(wordCount[group])
+              .filter((page) => page !== 'total')
+              .map((page) => (
+                <div key={page} className="page-wrap">
+                  {wordCount[group][page] ? (
+                    <Link
+                      component={NavLink}
+                      to={`${baseUrl}/${group}/${page}`}
+                      underline="none"
+                    >
+                      <button className="page-btn" type="button">
+                        {`Страница ${+page + 1}`}
                       </button>
-                    )}
-                  </div>
-                ))
-            ) : (
-              <Typography>Данный раздел пуст</Typography>
-            )}
+                    </Link>
+                  ) : (
+                    <button className="page-btn-disabled" type="button">
+                      {`Страница ${+page + 1}`}
+                    </button>
+                  )}
+                </div>
+              ))}
           </Box>
         </AccordionDetails>
       </Accordion>

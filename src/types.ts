@@ -110,3 +110,8 @@ export interface IWordCountByGroupsAndPages {
     total: number;
   };
 }
+
+export interface ISelectProps {
+  group: number;
+  page: number;
+}
