@@ -1,5 +1,6 @@
 import { Button, Grid, WithStyles, withStyles } from '@material-ui/core';
 import { ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
+import FullScreenButton from 'app/full-screen-button/FullScreenButton';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import {
   choose,
@@ -11,7 +12,6 @@ import { selectWrongTranslations } from 'features/words/wordsSlice';
 import React, { useCallback, useState } from 'react';
 import Hotkeys from 'react-hot-keys';
 import { IWord } from 'types';
-import FullScreenButton from 'app/full-screen-button/FullScreenButton';
 import styles from './styles';
 import TranslateChips from './translate-chip/TranslateChips';
 import Volume from './volume/Volume';

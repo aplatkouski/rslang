@@ -1,18 +1,18 @@
 import { Box, Container, WithStyles, withStyles } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { useAppSelector, useAppDispatch } from 'common/hooks';
-import React, { useEffect, useState } from 'react';
+import Rating from '@material-ui/lab/Rating';
+import { useAppDispatch, useAppSelector } from 'common/hooks';
 import {
-  selectCurrentWord,
   selectAttempts,
-  selectIsEndGame,
+  selectCurrentWord,
   selectGameRounds,
+  selectIsEndGame,
   setAttempts,
 } from 'features/games/gamesSlice';
+import React, { useEffect, useState } from 'react';
 import SavannahGameRound from './savannah-game-round/SavannahGameRound';
-import Timer from './timer/Timer';
 import styles from './styles';
+import Timer from './timer/Timer';
 
 const TIMER: number = 5;
 

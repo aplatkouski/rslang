@@ -1,4 +1,5 @@
 import Footer from 'app/footer/Footer';
+import GroupsPage from 'app/groups-page/GroupsPage';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
 import TeamPage from 'app/ream-page/TeamPage';
@@ -10,10 +11,9 @@ import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlic
 import games from 'features/games';
 import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
-import GroupsPage from 'features/groups-page/GroupsPage';
-import LogInForm from 'features/log-in-form/LogInForm';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
+import LogInForm from 'features/user/LogInForm';
 import {
   delLogInErrMessage,
   getCurrUser,

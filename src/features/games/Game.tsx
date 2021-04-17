@@ -1,19 +1,19 @@
+import AudioCallGame from 'app/audio-call-game/AudioCallGame';
+import MiniGameResultsDialog from 'app/minigame-results-dialog/MiniGameResultsDialog';
+import MyGame from 'app/my-game/MyGame';
+import SavannahGame from 'app/savannah-game/SavannahGame';
 import { useAppDispatch, useAppParams, useAppSelector } from 'common/hooks';
-import AudioCallGame from 'features/audio-call-game/AudioCallGame';
-import MyGame from 'features/my-game/MyGame';
-import SavannahGame from 'features/savannah-game/SavannahGame';
-import MiniGameResultsDialog from 'features/minigame-results-dialog/MiniGameResultsDialog';
 import { selectActiveWordsForGame } from 'features/words/wordsSlice';
 import React, { useEffect, useState } from 'react';
 import CircularIndeterminate from './circular-indeterminate/CircularIndeterminate';
 import {
+  finishGames,
   selectCurrentWord,
   selectGamesById,
   selectGameWords,
   selectIsCurrentGame,
   selectIsEndGame,
   startNewGame,
-  finishGames,
   upsertAllStatistic,
 } from './gamesSlice';
 

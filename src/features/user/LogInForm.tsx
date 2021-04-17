@@ -10,14 +10,14 @@ import {
   InputLabel,
   Typography,
 } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { getErrLogInMessage, getLoginStatus, logIn } from 'features/user/userSlice';
 import React, { useRef } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { requestStatus } from '../../constants';
 
 import 'styles/animate.min.css';
+import { requestStatus } from '../../constants';
 
 interface Props {
   isOpen: boolean;

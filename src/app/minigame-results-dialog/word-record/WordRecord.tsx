@@ -2,8 +2,8 @@ import { Card, CardHeader, IconButton, WithStyles, withStyles } from '@material-
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
 import clsx from 'clsx';
-import React from 'react';
 import { selectWordById } from 'features/words/wordsSlice';
+import React from 'react';
 import { useAppSelector } from '../../../common/hooks';
 import { useSingleAudio } from '../hooks';
 import styles from './styles';

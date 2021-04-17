@@ -1,8 +1,8 @@
 import { Avatar, Backdrop, Typography, WithStyles, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect } from 'react';
-import { useTimer } from './useTimer';
 import styles from './styles';
+import { useTimer } from './useTimer';
 
 interface Props extends WithStyles<typeof styles> {
   timer: number;

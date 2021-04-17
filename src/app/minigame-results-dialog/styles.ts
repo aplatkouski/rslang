@@ -1,4 +1,4 @@
-import { red, green, yellow } from '@material-ui/core/colors';
+import { green, red, yellow } from '@material-ui/core/colors';
 import { createStyles, Theme } from '@material-ui/core/styles';
 
 const miniGameResultDialogStyles = (theme: Theme) =>

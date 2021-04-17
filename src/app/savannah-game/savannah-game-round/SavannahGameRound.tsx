@@ -1,28 +1,28 @@
 import {
+  Button,
   CardActions,
   Container,
-  Button,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import clsx from 'clsx';
-import Hotkeys from 'react-hot-keys';
-import useSound from 'use-sound';
 import FullScreenButton from 'app/full-screen-button/FullScreenButton';
 import SoundButton from 'app/sound-button/SoundButton';
 import loseGameSound from 'assets/sounds/lose.mp3';
 import winGameSound from 'assets/sounds/win.mp3';
+import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
-import shuffle from 'features/words/utils/shuffle';
 import {
   response,
+  selectAttempts,
   setAttempts,
   setEndGame,
-  selectAttempts,
 } from 'features/games/gamesSlice';
+import shuffle from 'features/words/utils/shuffle';
 import { selectWrongTranslations } from 'features/words/wordsSlice';
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Hotkeys from 'react-hot-keys';
+import useSound from 'use-sound';
 import { IWord } from '../../../types';
 import styles from './styles';
 

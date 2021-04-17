@@ -1,10 +1,10 @@
 import { List, ListItem, Typography, WithStyles, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import React from 'react';
 import { selectCurrentGameStatistic } from 'features/games/gamesSlice';
-import WordRecord from './word-record/WordRecord';
+import React from 'react';
 import { useAppSelector } from '../../common/hooks';
 import styles from './styles';
+import WordRecord from './word-record/WordRecord';
 
 type Title = 'Верно: ' | 'Неверно: ' | 'С ошибками: ';
 type Answer = 'correct' | 'error' | 'mistake';

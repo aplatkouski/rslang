@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
 import { Grid } from '@material-ui/core';
-import useSound from 'use-sound';
-import loseGameSound from 'assets/sounds/lose.mp3';
-import winGameSound from 'assets/sounds/win.mp3';
 import FullScreenButton from 'app/full-screen-button/FullScreenButton';
 import SoundButton from 'app/sound-button/SoundButton';
 import StartNewGameDlg from 'app/start-new-game-dlg/StartNewGameDlg';
+import loseGameSound from 'assets/sounds/lose.mp3';
+import winGameSound from 'assets/sounds/win.mp3';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { selectWrongTranslations } from 'features/words/wordsSlice';
-import {
-  GAME_WORDS_NUMBER,
-  GAME_ROUNDS,
-  GAME_TITLE,
-  GAME_RULES,
-  GAME_BUTTONS,
-} from './constants';
+import React, { useCallback, useEffect, useState } from 'react';
+import useSound from 'use-sound';
+import { response } from '../../features/games/gamesSlice';
 import * as t from '../../types';
-import * as gt from './types';
-import { response } from '../games/gamesSlice';
+import {
+  GAME_BUTTONS,
+  GAME_ROUNDS,
+  GAME_RULES,
+  GAME_TITLE,
+  GAME_WORDS_NUMBER,
+} from './constants';
 
 import './MyGame.scss';
+import * as gt from './types';
 
 interface Props {
   word: t.IWord;
