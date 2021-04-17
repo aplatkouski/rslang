@@ -15,14 +15,14 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import 'styles/animate.min.css';
 import { ROUTES } from '../../constants';
-import './SectorsPage.scss';
+import './GroupsPage.scss';
 import styles from './styles';
 
 interface Props extends WithStyles<typeof styles> {
   baseUrl?: string;
 }
 
-const SectionsPage = (props: Props): JSX.Element => {
+const GroupsPage = (props: Props): JSX.Element => {
   const { classes, baseUrl = ROUTES.textbook.url } = props;
   const activeWordCount = useAppSelector(selectActiveWordCountByGroupsAndPages);
 
@@ -36,7 +36,7 @@ const SectionsPage = (props: Props): JSX.Element => {
             id="panel1a-header"
           >
             <Typography
-              className={`${classes.sectorTitle} sector-title animate__animated animate__backInRight`}
+              className={`${classes.groupTitle} group-title animate__animated animate__backInRight`}
             >
               {`Раздел ${+group + 1}`}
             </Typography>
@@ -82,4 +82,4 @@ const SectionsPage = (props: Props): JSX.Element => {
   );
 };
 
-export default withStyles(styles, { withTheme: true })(SectionsPage);
+export default withStyles(styles, { withTheme: true })(GroupsPage);

@@ -10,8 +10,8 @@ import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlic
 import games from 'features/games';
 import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
+import GroupsPage from 'features/groups-page/GroupsPage';
 import LogInForm from 'features/log-in-form/LogInForm';
-import SectorsPage from 'features/sectors/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
 import {
@@ -99,7 +99,7 @@ const App = (): JSX.Element => {
       />
       <Switch>
         <Route component={MainPage} exact path={ROUTES.main.url} />
-        <Route component={SectorsPage} exact path={ROUTES.textbook.url} />
+        <Route component={GroupsPage} exact path={ROUTES.textbook.url} />
         <Route component={TeamPage} exact path={ROUTES.aboutTeam.url} />
         <Route component={games.GamesPage} exact path={ROUTES.games.url} />
         <Route component={TextBook} exact path={`${ROUTES.textbook.url}/:group/:page`} />

@@ -1,4 +1,3 @@
-export const PAGES_PER_SECTOR = 30;
 export const PAGES_PER_GROUP = 30;
 export const WORDS_PER_PAGE = 20;
 export const WORD_CARD_WIDTH = 320;
