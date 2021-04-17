@@ -1,5 +1,4 @@
 import Footer from 'app/footer/Footer';
-import GroupsPage from 'app/groups-page/GroupsPage';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
 import TeamPage from 'app/ream-page/TeamPage';
@@ -29,6 +28,8 @@ import TextBook, {
 import { fetchWords } from 'features/words/wordsSlice';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import StudiedWordsGroups from './app/groups-page/StudiedWordsGroups';
+import TextBookGroups from './app/groups-page/TextBookGroups';
 import { requestStatus, ROUTES } from './constants';
 
 const App = (): JSX.Element => {
@@ -99,7 +100,8 @@ const App = (): JSX.Element => {
       />
       <Switch>
         <Route component={MainPage} exact path={ROUTES.main.url} />
-        <Route component={GroupsPage} exact path={ROUTES.textbook.url} />
+        <Route component={TextBookGroups} exact path={ROUTES.textbook.url} />
+        <Route component={StudiedWordsGroups} exact path={ROUTES.studied.url} />
         <Route component={TeamPage} exact path={ROUTES.aboutTeam.url} />
         <Route component={games.GamesPage} exact path={ROUTES.games.url} />
         <Route component={TextBook} exact path={`${ROUTES.textbook.url}/:group/:page`} />

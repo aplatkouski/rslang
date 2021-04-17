@@ -30,8 +30,7 @@ const upperMenu: Array<MenuListItem> = [
     icon: <ErrorIcon />,
   },
   {
-    title: ROUTES.studied.title,
-    url: `${ROUTES.studied.url}/0/0`,
+    ...ROUTES.studied,
     icon: <MenuBookIcon />,
   },
   {

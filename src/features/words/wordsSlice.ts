@@ -7,12 +7,13 @@ import {
 import type { AppDispatch, RootState } from 'app/store';
 import {
   selectAllDeletedWordIds,
+  selectAllStudiedUserWordIds,
   selectDeletedWordIdsByChunk,
   selectDeletedWordIdsByGroup,
   selectDifficultWordIdsByChunk,
   selectStudiedWordIdsByPage,
 } from 'features/user-words/userWordsSlice';
-import { IStatus, IWord } from 'types';
+import { IStatus, IWord, IWordCountByGroupsAndPages } from 'types';
 import { api, GROUP_COUNT, PAGES_PER_GROUP, requestStatus } from '../../constants';
 import shuffle from './utils/shuffle';
 
@@ -128,6 +129,11 @@ export const selectAllActiveWords = createSelector(
   (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
 );
 
+export const selectAllStudiedWords = createSelector(
+  [selectAllActiveWords, selectAllStudiedUserWordIds],
+  (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
+);
+
 export const selectActiveWordsForGame = createSelector(
   [
     selectAllActiveWords,
@@ -168,30 +174,32 @@ export const selectWordsRequestStatus = (state: RootState) => ({
   error: state[name].error,
 });
 
+const wordCountByGroupsAndPagesCombiner = (words: Array<IWord>) => {
+  const result = {} as IWordCountByGroupsAndPages;
+  Object.keys(Array(GROUP_COUNT).fill(null)).forEach((groupIndex) => {
+    result[groupIndex] = {
+      total: 0,
+    };
+    Object.keys(Array(PAGES_PER_GROUP).fill(null)).forEach((pageIndex) => {
+      result[groupIndex][pageIndex] = 0;
+    });
+  });
+
+  words.forEach(({ group, page }) => {
+    result[group][page] += 1;
+    result[group].total += 1;
+  });
+  return result;
+};
+
 export const selectActiveWordCountByGroupsAndPages = createSelector(
   selectAllActiveWords,
-  (activeWords) => {
-    const result = {} as {
-      [groupNum: string]: {
-        [pageNum: string]: number;
-        total: number;
-      };
-    };
-    Object.keys(Array(GROUP_COUNT).fill(null)).forEach((groupIndex) => {
-      result[groupIndex] = {
-        total: 0,
-      };
-      Object.keys(Array(PAGES_PER_GROUP).fill(null)).forEach((pageIndex) => {
-        result[groupIndex][pageIndex] = 0;
-      });
-    });
+  wordCountByGroupsAndPagesCombiner
+);
 
-    activeWords.forEach(({ group, page }) => {
-      result[group][page] += 1;
-      result[group].total += 1;
-    });
-    return result;
-  }
+export const selectStudiedWordCountByGroupsAndPages = createSelector(
+  selectAllStudiedWords,
+  wordCountByGroupsAndPagesCombiner
 );
 
 export default wordsSlice.reducer;

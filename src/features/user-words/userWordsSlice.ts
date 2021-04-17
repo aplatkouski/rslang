@@ -312,6 +312,16 @@ export const selectAllNotDeletedUserWords = createSelector(
   (userWords) => userWords.filter((userWord) => !userWord.isDeleted)
 );
 
+export const selectAllStudiedUserWords = createSelector(
+  selectAllNotDeletedUserWords,
+  (userWords) => userWords.filter((userWord) => userWord.isStudied)
+);
+
+export const selectAllStudiedUserWordIds = createSelector(
+  selectAllStudiedUserWords,
+  (userWords) => userWords.map((userWord) => userWord.wordId)
+);
+
 export const selectStudiedUserWords = createSelector(
   [selectAllNotDeletedUserWords],
   (userWords) => userWords.filter((userWord) => userWord.isStudied)

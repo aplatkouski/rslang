@@ -103,3 +103,10 @@ export interface IChartData {
   studiedAt: string;
   words: number;
 }
+
+export interface IWordCountByGroupsAndPages {
+  [groupNum: string]: {
+    [pageNum: string]: number;
+    total: number;
+  };
+}
