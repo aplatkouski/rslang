@@ -11,7 +11,7 @@ import games from 'features/games';
 import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
 import LogInForm from 'features/log-in-form/LogInForm';
-import SectorsPage from 'features/sectors-page/SectorsPage';
+import SectorsPage from 'features/sectors/SectorsPage';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
 import {
