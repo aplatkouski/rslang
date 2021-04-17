@@ -33,7 +33,8 @@ const styles = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       maxWidth: theme.spacing(154),
-      margin: theme.spacing(3, 'auto'),
+      height: 'auto',
+      margin: theme.spacing(3, 0),
       '& h1': {
         fontSize: theme.spacing(5),
         [theme.breakpoints.down('sm')]: {
@@ -43,6 +44,7 @@ const styles = (theme: Theme) =>
     },
     background: {
       width: '100%',
+      height: 'auto',
       display: 'flex',
       justifyContent: 'center',
       backgroundColor: fade(theme.palette.primary.main, 0.1),
@@ -69,17 +71,24 @@ const styles = (theme: Theme) =>
         },
       },
     },
+    playerWrapper: {
+      position: 'relative',
+      paddingTop: '56.25%',
+      width: '80%',
+      height: 'auto',
+    },
     video: {
-      margin: theme.spacing(5),
-      [theme.breakpoints.down('sm')]: {
-        width: theme.spacing(52.5),
-      },
+      height: '100%',
+      width: '100%',
+      top: 0,
+      left: 0,
+      position: 'absolute',
     },
     team: {
-      width: '100%',
       display: 'flex',
-      height: theme.spacing(40),
+      flexDirection: 'column',
       justifyContent: 'space-evenly',
+      width: '100%',
       alignItems: 'center',
       backgroundColor: fade(theme.palette.primary.main, 0.2),
       borderRadius: theme.spacing(2),
@@ -96,11 +105,12 @@ const styles = (theme: Theme) =>
       },
     },
     info: {
-      width: theme.spacing(40),
-      margin: theme.spacing(4),
-      [theme.breakpoints.down('sm')]: {
-        width: theme.spacing(50),
-      },
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+    },
+    infoText: {
+      padding: theme.spacing(0, 4),
     },
   });
 

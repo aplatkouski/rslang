@@ -37,7 +37,7 @@ const useStyles = makeStyles(() =>
     bodyBlock: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: '100%',
     },
   })
 );

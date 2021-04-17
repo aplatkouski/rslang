@@ -47,16 +47,27 @@ const MainPage = ({ classes }: Props): JSX.Element => {
       <div className={classes.background}>
         <Container className={classes.container}>
           <Typography variant="h3">Как работает наше приложение</Typography>
-          <ReactPlayer className={classes.video} controls url={VIDEO_URL} />
+          <div className={classes.playerWrapper}>
+            <ReactPlayer
+              className={classes.video}
+              controls
+              height="100%"
+              style={{ margin: 0 }}
+              url={VIDEO_URL}
+              width="100%"
+            />
+          </div>
         </Container>
       </div>
       <Container className={classes.container}>
         <div className={classes.team}>
           <img alt="test" src={teamImg} />
           <div className={classes.info}>
-            <Typography variant="h5">Команда</Typography>
-            <Typography variant="subtitle1">
-              А узнать, кто трудился над этим приложением вы можете&ensp;
+            <Typography className={classes.infoText} variant="h5">
+              Команда
+            </Typography>
+            <Typography className={classes.infoText} variant="subtitle1">
+              А узнать, кто трудился над этим приложением, вы можете&ensp;
               <Link component={NavLink} to={ROUTES.aboutTeam.url} underline="none">
                 тут!
               </Link>
