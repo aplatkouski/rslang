@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { NavLink, useRouteMatch } from 'react-router-dom';
-import { ROUTES } from '../../constants';
+import { ROUTES } from '../../../constants';
 import styles from './styles';
 
 const breadcrumbNameMap: { [key: string]: string } = {

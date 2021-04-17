@@ -14,9 +14,9 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { useAppParams } from 'common/hooks';
 import Settings from 'features/settings/Settings';
 import React from 'react';
-import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
-import Burger from '../burger/Burger';
-import Paginator from '../paginator/Paginator';
+import Breadcrumbs from './breadcrumbs/Breadcrumbs';
+import Burger from './burger/Burger';
+import Paginator from './paginator/Paginator';
 import styles from './styles';
 
 interface Props extends WithStyles<typeof styles> {

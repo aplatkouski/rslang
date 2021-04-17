@@ -3,7 +3,7 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ROUTES } from '../../constants';
+import { ROUTES } from '../../../constants';
 import styles from './styles';
 
 interface Props extends WithStyles<typeof styles> {}

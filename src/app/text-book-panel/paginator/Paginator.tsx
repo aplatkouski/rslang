@@ -1,7 +1,7 @@
 import { Pagination, PaginationItem } from '@material-ui/lab';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { WORDS_PER_PAGE } from '../../constants';
+import { WORDS_PER_PAGE } from '../../../constants';
 
 interface Props {
   baseUrl: string;
