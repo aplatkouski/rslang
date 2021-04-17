@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container, useTheme } from '@material-ui/core';
 import {
   blue,
   cyan,
@@ -14,6 +14,7 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { useAppParams } from 'common/hooks';
 import Settings from 'features/settings/Settings';
 import React from 'react';
+import { IWordCountByPages } from 'types';
 import Breadcrumbs from './breadcrumbs/Breadcrumbs';
 import Burger from './burger/Burger';
 import Paginator from './paginator/Paginator';
@@ -22,24 +23,19 @@ import styles from './styles';
 interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
-  // eslint-disable-next-line react/require-default-props
-  countDeletedWordByPages?: {
-    [pag: string]: number;
-  };
+  // eslint-disable-next-line react/no-unused-prop-types
+  wordCountByPages?: IWordCountByPages;
 }
 
 const colors = [red, purple, indigo, blue, cyan, teal, green, lime, orange];
 
-const TextBookPanel = ({
-  classes,
-  baseUrl,
-  pageCount,
-  countDeletedWordByPages,
-}: Props): JSX.Element => {
-  const { group, page } = useAppParams();
+const TextBookPanel = (props: Props): JSX.Element => {
+  const { classes, baseUrl, pageCount, wordCountByPages } = props;
+  const { group } = useAppParams();
+  const theme = useTheme();
 
   const color = {
-    backgroundColor: colors[+group][50],
+    backgroundColor: colors[+group][theme.palette.type === 'light' ? 100 : 800],
   } as React.CSSProperties;
 
   return (
@@ -48,10 +44,8 @@ const TextBookPanel = ({
       <Breadcrumbs />
       <Paginator
         baseUrl={baseUrl}
-        count={pageCount}
-        countDeletedWordByPages={countDeletedWordByPages}
-        group={+group}
-        page={+page}
+        pageCount={pageCount}
+        wordCountByPages={wordCountByPages}
       />
       <Settings />
     </Container>

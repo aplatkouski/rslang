@@ -11,7 +11,7 @@ import { useAppSelector, useCols } from 'common/hooks';
 import WordCard from 'features/word-card/WordCard';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IWord } from 'types';
+import { IWord, IWordCountByPages } from 'types';
 import { requestStatus, ROUTES, WORD_CARD_WIDTH } from '../../constants';
 import styles from './styles';
 import { selectWordsRequestStatus } from './wordsSlice';
@@ -20,23 +20,16 @@ interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
   words: Array<IWord>;
-  // eslint-disable-next-line react/require-default-props
-  countDeletedWordByPages?: {
-    [page: string]: number;
-  };
+  // eslint-disable-next-line react/no-unused-prop-types
+  wordCountByPages?: IWordCountByPages;
 }
 
 interface Chunks {
   [chunk: string]: Array<IWord>;
 }
 
-const WordGridList = ({
-  baseUrl,
-  classes,
-  pageCount,
-  words,
-  countDeletedWordByPages,
-}: Props): JSX.Element => {
+const WordGridList = (props: Props): JSX.Element => {
+  const { baseUrl, classes, pageCount, wordCountByPages, words } = props;
   const history = useHistory();
   const request = useAppSelector(selectWordsRequestStatus);
 
@@ -64,8 +57,8 @@ const WordGridList = ({
     <Container ref={containerRef} className={classes.root} maxWidth="lg">
       <TextBookPanel
         baseUrl={baseUrl}
-        countDeletedWordByPages={countDeletedWordByPages}
         pageCount={pageCount}
+        wordCountByPages={wordCountByPages}
       />
       <CustomizedSnackbars request={request} />
       <GridList cellHeight="auto" className={classes.gridList} cols={cols}>

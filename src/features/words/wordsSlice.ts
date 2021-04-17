@@ -202,4 +202,19 @@ export const selectStudiedWordCountByGroupsAndPages = createSelector(
   wordCountByGroupsAndPagesCombiner
 );
 
+export const selectActiveWordCountByGroupAndPages = createSelector(
+  selectActiveWordsByGroup,
+  (activeWords) => {
+    const result = {} as { [pageNum: string]: number };
+    Object.keys(Array(PAGES_PER_GROUP).fill(null)).forEach((pageIndex) => {
+      result[pageIndex] = 0;
+    });
+
+    activeWords.forEach(({ page }) => {
+      result[page] += 1;
+    });
+    return result;
+  }
+);
+
 export default wordsSlice.reducer;

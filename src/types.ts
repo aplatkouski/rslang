@@ -104,6 +104,10 @@ export interface IChartData {
   words: number;
 }
 
+export interface IWordCountByPages {
+  [pageIndex: string]: number;
+}
+
 export interface IWordCountByGroupsAndPages {
   [groupNum: string]: {
     [pageNum: string]: number;

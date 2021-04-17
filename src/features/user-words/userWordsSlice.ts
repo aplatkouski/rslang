@@ -412,4 +412,19 @@ export const selectDifficultWordCountByGroupsAndChunks = createSelector(
   wordCountByGroupsAndChunksCombiner
 );
 
+export const selectStudiedWordCountByGroupAndPages = createSelector(
+  selectStudiedUserWordsByGroup,
+  (studiedWords) => {
+    const result = {} as { [pageNum: string]: number };
+    Object.keys(Array(PAGES_PER_GROUP).fill(null)).forEach((pageIndex) => {
+      result[pageIndex] = 0;
+    });
+
+    studiedWords.forEach(({ page }) => {
+      result[page] += 1;
+    });
+    return result;
+  }
+);
+
 export default userWordsSlice.reducer;
