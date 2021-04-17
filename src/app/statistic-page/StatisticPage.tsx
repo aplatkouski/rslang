@@ -9,9 +9,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import ChartStatistics from 'app/chart-statistics/ChartStatistics';
 import { useAppSelector } from 'common/hooks';
 import { selectBestSeriesByDate } from 'features/game-statistics/gameStatisticsSlice';
+import { selectAllGames } from 'features/games/gamesSlice';
+import {
+  selectWordCountByDateAsChartData,
+  selectWordCountCumulativeByDateAsChartData,
+} from 'features/user-words/userWordsSlice';
 import {
   selectCorrectAnswerPercentByDate,
   selectCorrectAnswerPercentByGamesAndDate,
@@ -19,7 +23,7 @@ import {
   selectStudiedWordsByGamesAndDate,
 } from 'features/word-statistics/wordStatisticsSlice';
 import React, { useEffect, useState } from 'react';
-import { selectAllGames } from '../../features/games/gamesSlice';
+import Chart from './chart/Chart';
 import styles from './styles';
 
 interface GameStat {
@@ -69,6 +73,9 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
     selectCorrectAnswerPercentByDate(state, { studiedAt: date })
   );
 
+  const studied = useAppSelector(selectWordCountByDateAsChartData);
+  const totalStudied = useAppSelector(selectWordCountCumulativeByDateAsChartData);
+
   return (
     <Container className={classes.container} maxWidth="lg">
       <Typography align="center" className={classes.header} component="h3" variant="h4">
@@ -109,7 +116,14 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
       <Typography align="center" className={classes.header} component="h3" variant="h4">
         Долгосрочная статистика
       </Typography>
-      <ChartStatistics />
+      <Chart
+        data={studied}
+        title="Статистика изученных (уникальных) слов за каждый день"
+      />
+      <Chart
+        data={totalStudied}
+        title="Статистика общего числа изученных слов за каждый день"
+      />
     </Container>
   );
 };
