@@ -1,16 +1,8 @@
-import * as t from 'types';
-
-export interface IWordRes {
-  wordId: string;
-  guessed: number;
-  notGuessed: number;
-}
-
-export type WordsRes = Array<IWordRes>;
+import { IWord } from 'types';
 
 export interface IMyGameStatus {
-  gameWords: t.WordsList | null;
-  currWord: t.IWord | null;
+  gameWords: Array<IWord> | null;
+  currWord: IWord | null;
   enoughWords: boolean;
   newGame: boolean;
   round: number;
@@ -19,7 +11,7 @@ export interface IMyGameStatus {
   hiddenLetter: string | null;
   showHiddenLetter: boolean;
   openStartGameModal: boolean;
-  userAnswer: t.IWord | null;
+  userAnswer: IWord | null;
   continue: boolean;
   sound: boolean;
 }

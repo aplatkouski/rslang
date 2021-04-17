@@ -1,23 +1,4 @@
-import { requestStatus, WORD_OPTIONAL_MODE } from './constants';
-
-export interface Page {
-  key: number;
-  title: string;
-  url: string;
-  show: boolean;
-}
-
-export interface Sector {
-  key: number;
-  title: string;
-  pages: Array<Page>;
-}
-
-export type SectorsState = Array<Sector>;
-
-export interface ISectorsInfo {
-  sectors: SectorsState;
-}
+import { requestStatus } from './constants';
 
 export interface Settings {
   isShowTranslations: boolean;
@@ -44,22 +25,6 @@ export interface IUserLogInData {
   password: string;
 }
 
-const wordOptionalModeValues = Object.values(WORD_OPTIONAL_MODE);
-type WordOptionalModeValues = typeof wordOptionalModeValues[number];
-export interface IWordOptions {
-  mode?: WordOptionalModeValues;
-  deleted?: boolean;
-}
-
-export interface IDefiniteWordOptions {
-  wordId: string;
-  options: IWordOptions;
-}
-
-export interface IAdditionalUserWordOptions {
-  optional: IWordOptions;
-}
-
 export interface IWord {
   id: string;
   group: number;
@@ -75,20 +40,6 @@ export interface IWord {
   wordTranslate: string;
   textMeaningTranslate: string;
   textExampleTranslate: string;
-  optional?: IWordOptions;
-  userWord?: IAdditionalUserWordOptions;
-}
-
-export type WordsList = Array<IWord>;
-
-export interface IWordsStatus {
-  loading: boolean;
-  loaded: boolean;
-  error?: string;
-}
-
-export interface IWords extends IWordsStatus {
-  data: WordsList;
 }
 
 export interface IStatus {
