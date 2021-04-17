@@ -2,7 +2,7 @@
 
 .game-field {
   position: relative;
-  height: 100%;
+  flex: 1 0 auto;
   padding: 10px;
   background: radial-gradient(40% 50%, #faecd5, #cae4d8);
 }

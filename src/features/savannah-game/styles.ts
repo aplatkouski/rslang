@@ -4,7 +4,9 @@ const gameStyles = (theme: Theme) => {
   return createStyles({
     root: {
       position: 'relative',
-      height: '100%',
+      flexGrow: 1,
+      flexShrink: 0,
+      flexBasis: 'auto',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

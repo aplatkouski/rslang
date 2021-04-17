@@ -89,6 +89,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'space-evenly',
       width: '100%',
+      padding: theme.spacing(3, 0),
       alignItems: 'center',
       backgroundColor: fade(theme.palette.primary.main, 0.2),
       borderRadius: theme.spacing(2),

@@ -1,4 +1,3 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
@@ -32,19 +31,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { requestStatus, ROUTES } from './constants';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    bodyBlock: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    },
-  })
-);
-
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const classes = useStyles();
 
   const [drawerState, setDrawerState] = useState(false);
   const [isOpenLogInModal, setIsOpenLogInModal] = useState(false);
@@ -97,53 +85,44 @@ const App = (): JSX.Element => {
 
   return (
     <BrowserRouter>
-      <div className={classes.bodyBlock}>
-        <SideMenu onClose={handleToggleSideMenu} open={drawerState} />
-        <LogInForm
-          isOpen={isOpenLogInModal}
-          onClose={handleCloseLogInModal}
-          onRegister={handleRegister}
-        />
-        <RegistrationForm
-          isOpen={isOpenRegisterModal}
-          onClose={handleCloseRegisterModal}
-        />
+      <SideMenu onClose={handleToggleSideMenu} open={drawerState} />
+      <LogInForm
+        isOpen={isOpenLogInModal}
+        onClose={handleCloseLogInModal}
+        onRegister={handleRegister}
+      />
+      <RegistrationForm isOpen={isOpenRegisterModal} onClose={handleCloseRegisterModal} />
 
-        <Navbar
-          onOpenLogInModal={handleOpenLogInModal}
-          onToggleSideMenu={handleToggleSideMenu}
+      <Navbar
+        onOpenLogInModal={handleOpenLogInModal}
+        onToggleSideMenu={handleToggleSideMenu}
+      />
+      <Switch>
+        <Route component={MainPage} exact path={ROUTES.main.url} />
+        <Route component={SectorsPage} exact path={ROUTES.textbook.url} />
+        <Route component={TeamPage} exact path={ROUTES.aboutTeam.url} />
+        <Route component={games.GamesPage} exact path={ROUTES.games.url} />
+        <Route component={TextBook} exact path={`${ROUTES.textbook.url}/:group/:page`} />
+        <Route
+          component={StudiedWordsSection}
+          exact
+          path={`${ROUTES.studied.url}/:group/:page`}
         />
-        <Switch>
-          <Route component={MainPage} exact path={ROUTES.main.url} />
-          <Route component={SectorsPage} exact path={ROUTES.textbook.url} />
-          <Route component={TeamPage} exact path={ROUTES.aboutTeam.url} />
-          <Route component={games.GamesPage} exact path={ROUTES.games.url} />
-          <Route
-            component={TextBook}
-            exact
-            path={`${ROUTES.textbook.url}/:group/:page`}
-          />
-          <Route
-            component={StudiedWordsSection}
-            exact
-            path={`${ROUTES.studied.url}/:group/:page`}
-          />
-          <Route
-            component={DifficultWordsSection}
-            exact
-            path={`${ROUTES.difficult.url}/:group/:page`}
-          />
-          <Route component={Game} exact path={`${ROUTES.games.url}/:gameId`} />
-          <Route
-            component={DeletedWordsSection}
-            exact
-            path={`${ROUTES.deleted.url}/:group/:page`}
-          />
-          <Route component={StatisticPage} exact path={ROUTES.statistics.url} />
-          <Redirect to={ROUTES.main.url} />
-        </Switch>
-        <Footer />
-      </div>
+        <Route
+          component={DifficultWordsSection}
+          exact
+          path={`${ROUTES.difficult.url}/:group/:page`}
+        />
+        <Route component={Game} exact path={`${ROUTES.games.url}/:gameId`} />
+        <Route
+          component={DeletedWordsSection}
+          exact
+          path={`${ROUTES.deleted.url}/:group/:page`}
+        />
+        <Route component={StatisticPage} exact path={ROUTES.statistics.url} />
+        <Redirect to={ROUTES.main.url} />
+      </Switch>
+      <Footer />
     </BrowserRouter>
   );
 };

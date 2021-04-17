@@ -6,7 +6,16 @@ const gameCardStyles = (theme: Theme) => {
   return createStyles({
     gameField: {
       position: 'relative',
-      height: '100%',
+      flexGrow: 1,
+      flexShrink: 0,
+      flexBasis: 'auto',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: `linear-gradient(to top, ${fade(
+        theme.palette.secondary.dark,
+        0.6
+      )}, ${fade(theme.palette.secondary.dark, 0.8)})`,
     },
     root: {
       width: '100%',
@@ -14,10 +23,6 @@ const gameCardStyles = (theme: Theme) => {
       display: 'flex',
       justifyContent: 'center',
       padding: theme.spacing(2, 0),
-      background: `linear-gradient(to top, ${fade(
-        theme.palette.secondary.dark,
-        0.6
-      )}, ${fade(theme.palette.secondary.dark, 0.8)})`,
     },
     button: {
       color: defaultColor,
