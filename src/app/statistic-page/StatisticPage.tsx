@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
-import ChartStatistics from 'app/chartStatistics/ChartStatistics';
+import ChartStatistics from 'app/chart-statistics/ChartStatistics';
 import { useAppSelector } from 'common/hooks';
 import { selectBestSeriesByDate } from 'features/game-statistics/gameStatisticsSlice';
 import {
