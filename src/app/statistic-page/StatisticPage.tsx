@@ -116,14 +116,16 @@ const StatisticPage = ({ classes }: Props): JSX.Element => {
       <Typography align="center" className={classes.header} component="h3" variant="h4">
         Долгосрочная статистика
       </Typography>
-      <Chart
-        data={studied}
-        title="Статистика изученных (уникальных) слов за каждый день"
-      />
-      <Chart
-        data={totalStudied}
-        title="Статистика общего числа изученных слов за каждый день"
-      />
+      <div className={classes.chartsBlock}>
+        <Chart
+          data={studied}
+          title="Статистика изученных (уникальных) слов за каждый день"
+        />
+        <Chart
+          data={totalStudied}
+          title="Статистика общего числа изученных слов за каждый день"
+        />
+      </div>
     </Container>
   );
 };

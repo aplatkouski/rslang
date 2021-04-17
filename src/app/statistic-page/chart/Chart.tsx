@@ -14,15 +14,15 @@ interface ChartProps extends Props {
 
 const Chart = ({ classes, data, title }: ChartProps): JSX.Element => {
   return data.length ? (
-    <div className={classes.chart}>
+    <div className={classes.chartBlock}>
       <Typography className={classes.chartTitle} variant="subtitle1">
         {title}
       </Typography>
       <LineChart
         data={data}
         height={400}
-        margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-        width={480}
+        margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+        width={400}
       >
         <Tooltip />
         <CartesianGrid stroke="#f5f5f5" />

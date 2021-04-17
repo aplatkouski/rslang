@@ -8,7 +8,7 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
     },
     table: {
-      maxWidth: theme.spacing(80),
+      maxWidth: theme.spacing(100),
       minWidth: theme.spacing(58),
       '& tr:last-child': {
         backgroundColor: theme.palette.action.hover,
@@ -19,7 +19,16 @@ const styles = (theme: Theme) =>
     },
     tablecontainer: {
       margin: theme.spacing(4, 'auto'),
-      width: 'auto',
+      width: '100%',
+      overflow: 'auto',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    chartsBlock: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
     },
   });
 
