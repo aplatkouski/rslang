@@ -1,4 +1,4 @@
-import { Pagination, PaginationItem } from '@material-ui/lab';
+import { Pagination, PaginationItem, PaginationRenderItemParams } from '@material-ui/lab';
 import { useAppParams } from 'common/hooks';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -27,8 +27,7 @@ const Paginator = ({ baseUrl, pageCount, wordCountByPages }: Props): JSX.Element
     }
   }, [wordCountByPages]);
 
-  // @ts-ignore
-  const renderItem = (item) => {
+  const renderItem = (item: PaginationRenderItemParams) => {
     const isFirstPage =
       item.type === 'previous' &&
       (item.page === 0 || (wordCountByPages && page === minMaxPages.min));
@@ -42,6 +41,23 @@ const Paginator = ({ baseUrl, pageCount, wordCountByPages }: Props): JSX.Element
 
     const isDisabled = isFirstPage || isLastPage || isEmptyPage;
 
+    let to = `${baseUrl}/${group}/${item.page - 1}/`;
+    if (wordCountByPages) {
+      if (item.type === 'previous') {
+        let checkedPage = +page - 1;
+        while (checkedPage >= 0 && !wordCountByPages[checkedPage]) {
+          checkedPage -= 1;
+        }
+        to = `${baseUrl}/${group}/${checkedPage}/`;
+      } else if (item.type === 'next') {
+        let checkedPage = +page + 1;
+        while (checkedPage < pageCount && !wordCountByPages[checkedPage]) {
+          checkedPage += 1;
+        }
+        to = `${baseUrl}/${group}/${checkedPage}/`;
+      }
+    }
+
     return (
       <PaginationItem
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -49,7 +65,7 @@ const Paginator = ({ baseUrl, pageCount, wordCountByPages }: Props): JSX.Element
         component={NavLink}
         disabled={isDisabled}
         selected={item.selected}
-        to={`${baseUrl}/${group}/${item.page - 1}/`}
+        to={to}
       />
     );
   };
