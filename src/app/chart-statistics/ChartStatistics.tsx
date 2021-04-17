@@ -1,4 +1,4 @@
-import Chart from 'app/charts/Chart';
+import Chart from 'app/chart/Chart';
 import { useAppSelector } from 'common/hooks';
 import {
   selectWordCountByDateAsChartData,
