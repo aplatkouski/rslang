@@ -6,8 +6,9 @@ import {
 } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from 'app/store';
 import { fetchUserData } from 'features/user/utils';
-import { IChartData, IStatus, IUserWord } from 'types';
+import { IChartData, IStatus, IUserWord, IWordCountByGroupsAndPages } from 'types';
 import {
+  GROUP_COUNT,
   PAGES_PER_GROUP,
   requestMethods,
   requestStatus,
@@ -299,7 +300,9 @@ export const selectUserWordRequestStatus = (state: RootState) => ({
 });
 
 export const selectAllDeletedUserWords = createSelector(selectAllUserWords, (userWords) =>
-  userWords.filter((word) => word.isDeleted)
+  userWords
+    .filter((word) => word.isDeleted)
+    .sort((a, b) => a.wordId.localeCompare(b.wordId))
 );
 
 export const selectAllDeletedWordIds = createSelector(
@@ -309,7 +312,15 @@ export const selectAllDeletedWordIds = createSelector(
 
 export const selectAllNotDeletedUserWords = createSelector(
   [selectAllUserWords],
-  (userWords) => userWords.filter((userWord) => !userWord.isDeleted)
+  (userWords) =>
+    userWords
+      .filter((userWord) => !userWord.isDeleted)
+      .sort((a, b) => a.wordId.localeCompare(b.wordId))
+);
+
+export const selectAllDifficultUserWords = createSelector(
+  selectAllNotDeletedUserWords,
+  (userWords) => userWords.filter((word) => word.isDifficult)
 );
 
 export const selectAllStudiedUserWords = createSelector(
@@ -367,6 +378,38 @@ export const selectWordCountCumulativeByDateAsChartData = createSelector(
       };
     });
   }
+);
+
+const wordCountByGroupsAndChunksCombiner = (userWords: Array<IUserWord>) => {
+  const result = {} as IWordCountByGroupsAndPages;
+  const lastChunkNums = {} as { [groupNum: string]: number };
+  Object.keys(Array(GROUP_COUNT).fill(null)).forEach((groupIndex) => {
+    result[groupIndex] = {
+      total: 0,
+    };
+    lastChunkNums[groupIndex] = 0;
+  });
+
+  userWords.forEach(({ group }) => {
+    result[group].total += 1;
+
+    const lastChunkNum = lastChunkNums[group];
+
+    if (!result[group][lastChunkNum]) result[group][lastChunkNum] = 0;
+    result[group][lastChunkNum] += 1;
+    if (result[group][lastChunkNum] === WORDS_PER_PAGE) lastChunkNums[group] += 1;
+  });
+  return result;
+};
+
+export const selectDeletedWordCountByGroupsAndChunks = createSelector(
+  selectAllDeletedUserWords,
+  wordCountByGroupsAndChunksCombiner
+);
+
+export const selectDifficultWordCountByGroupsAndChunks = createSelector(
+  selectAllDifficultUserWords,
+  wordCountByGroupsAndChunksCombiner
 );
 
 export default userWordsSlice.reducer;

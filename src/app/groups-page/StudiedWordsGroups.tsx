@@ -6,9 +6,9 @@ import GroupsPage from './GroupsPage';
 
 const StudiedWordsGroups = (): JSX.Element => {
   const { pathname } = useLocation();
-  const studiedWordCount = useAppSelector(selectStudiedWordCountByGroupsAndPages);
+  const wordCount = useAppSelector(selectStudiedWordCountByGroupsAndPages);
 
-  return <GroupsPage baseUrl={pathname} wordCount={studiedWordCount} />;
+  return <GroupsPage baseUrl={pathname} wordCount={wordCount} />;
 };
 
 export default StudiedWordsGroups;

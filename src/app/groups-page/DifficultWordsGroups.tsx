@@ -1,14 +1,14 @@
 import { useAppSelector } from 'common/hooks';
-import { selectActiveWordCountByGroupsAndPages } from 'features/words/wordsSlice';
+import { selectDifficultWordCountByGroupsAndChunks } from 'features/user-words/userWordsSlice';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import GroupsPage from './GroupsPage';
 
-const TextBookGroups = (): JSX.Element => {
+const DifficultWordsGroups = (): JSX.Element => {
   const { pathname } = useLocation();
-  const wordCount = useAppSelector(selectActiveWordCountByGroupsAndPages);
+  const wordCount = useAppSelector(selectDifficultWordCountByGroupsAndChunks);
 
   return <GroupsPage baseUrl={pathname} wordCount={wordCount} />;
 };
 
-export default TextBookGroups;
+export default DifficultWordsGroups;

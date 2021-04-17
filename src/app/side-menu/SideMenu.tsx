@@ -23,27 +23,14 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const upperMenu: Array<MenuListItem> = [
-  { title: ROUTES.textbook.title, url: ROUTES.textbook.url, icon: <LocalLibraryIcon /> },
-  {
-    title: ROUTES.difficult.title,
-    url: `${ROUTES.difficult.url}/0/0`,
-    icon: <ErrorIcon />,
-  },
-  {
-    ...ROUTES.studied,
-    icon: <MenuBookIcon />,
-  },
-  {
-    title: ROUTES.deleted.title,
-    url: `${ROUTES.deleted.url}/0/0`,
-    icon: <DeleteSweepIcon />,
-  },
-  { title: ROUTES.statistics.title, url: ROUTES.statistics.url, icon: <EventNoteIcon /> },
+  { ...ROUTES.textbook, icon: <LocalLibraryIcon /> },
+  { ...ROUTES.difficult, icon: <ErrorIcon /> },
+  { ...ROUTES.studied, icon: <MenuBookIcon /> },
+  { ...ROUTES.deleted, icon: <DeleteSweepIcon /> },
+  { ...ROUTES.statistics, icon: <EventNoteIcon /> },
 ];
 
-const lowerMenu: Array<MenuListItem> = [
-  { title: ROUTES.aboutTeam.title, url: ROUTES.aboutTeam.url, icon: <PeopleIcon /> },
-];
+const lowerMenu: Array<MenuListItem> = [{ ...ROUTES.aboutTeam, icon: <PeopleIcon /> }];
 
 const SideMenu = ({ open, onClose: handleClose, classes }: Props): JSX.Element => {
   const games = useAppSelector(selectAllGames);
