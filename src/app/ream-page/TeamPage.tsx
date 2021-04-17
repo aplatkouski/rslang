@@ -1,11 +1,11 @@
-import React from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { Avatar, Container, Divider, Grid, Link, Typography } from '@material-ui/core';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import GitHubLogo from 'assets/icons/github-logo-dark.svg';
 import clsx from 'clsx';
-import SvgImg from './svgImg/SvgImg';
+import React from 'react';
 import { info } from './profileInfo';
 import styles from './styles';
+import SvgImg from './svgImg/SvgImg';
 
 type Props = WithStyles<typeof styles>;
 

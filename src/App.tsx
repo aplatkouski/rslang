@@ -1,10 +1,10 @@
 import Footer from 'app/footer/Footer';
 import MainPage from 'app/main-page/MainPage';
 import Navbar from 'app/navbar/Navbar';
+import TeamPage from 'app/ream-page/TeamPage';
 import RegistrationForm from 'app/registration-form/RegistrationForm';
 import SideMenu from 'app/side-menu/SideMenu';
 import StatisticPage from 'app/statistic-page/StatisticPage';
-import TeamPage from 'app/TeamPage/TeamPage';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlice';
 import games from 'features/games';
