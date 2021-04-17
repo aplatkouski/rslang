@@ -11,7 +11,8 @@ const styles = (theme: Theme) =>
     },
     footer: {
       color: 'white',
-      backgroundColor: '#5A38FD',
+      marginTop: 'auto',
+      backgroundColor: theme.palette.primary.main,
       flexShrink: 0,
       padding: theme.spacing(0, 2),
       boxShadow: `0 -2px 2px -2px ${theme.palette.text.secondary}`,

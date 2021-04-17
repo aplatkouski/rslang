@@ -3,7 +3,6 @@ import { WithStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { IChartData } from 'types';
-
 import styles from './styles';
 
 type Props = WithStyles<typeof styles>;

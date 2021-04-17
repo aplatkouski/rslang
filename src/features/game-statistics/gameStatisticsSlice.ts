@@ -28,11 +28,13 @@ export const fetchGameStatistics = createAsyncThunk<
 >(
   `${name}/fetch`,
   async (_, { getState }) =>
-    fetchUserData<Array<t.IGameStatistic>>({
-      method: requestMethods.GET,
-      path: 'statistic/games',
-      currentUser: getState().user.current,
-    }),
+    (
+      await fetchUserData<Array<t.IGameStatistic>>({
+        method: requestMethods.GET,
+        path: 'statistic/games',
+        currentUser: getState().user.current,
+      })
+    ).map(({ date, ...rest }) => ({ ...rest, date: date.substring(0, 10) })),
   {
     condition: (_, { getState }) =>
       selectGameStatisticRequestStatus(getState()).status !== requestStatus.pending,
@@ -46,14 +48,15 @@ export const saveNewGameStatistic = createAsyncThunk<
     dispatch: AppDispatch;
     state: RootState;
   }
->(`${name}/save`, async (gameStatistic, { getState }) =>
-  fetchUserData<t.IGameStatistic>({
+>(`${name}/save`, async (gameStatistic, { getState }) => {
+  const { date, ...rest } = await fetchUserData<t.IGameStatistic>({
     method: requestMethods.POST,
     path: 'statistic/games',
     body: gameStatistic,
     currentUser: getState().user.current,
-  })
-);
+  });
+  return { ...rest, date: date.substring(0, 10) };
+});
 
 export const removeGameStatistic = createAsyncThunk<
   string,

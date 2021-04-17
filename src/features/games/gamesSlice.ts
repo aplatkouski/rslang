@@ -122,7 +122,8 @@ export const upsertWordStatistics = createAsyncThunk<
     const game = state[name];
     const currentStats = game.current!.wordStatistics;
     const wordStatistics = selectAllWordStatistics(state);
-    currentStats.forEach((currentStat) => {
+    for (let i = 0; i < currentStats.length; i += 1) {
+      const currentStat = currentStats[i];
       const existingStat = wordStatistics.find(
         (stat) =>
           stat.gameId === currentStat.gameId &&
@@ -130,7 +131,8 @@ export const upsertWordStatistics = createAsyncThunk<
           stat.wordId === currentStat.wordId
       );
       if (existingStat) {
-        dispatch(
+        // eslint-disable-next-line no-await-in-loop
+        await dispatch(
           updateWordStatistic({
             ...existingStat,
             correctAnswerTotal:
@@ -140,9 +142,10 @@ export const upsertWordStatistics = createAsyncThunk<
           })
         );
       } else {
-        dispatch(saveNewWordStatistic(currentStat));
+        // eslint-disable-next-line no-await-in-loop
+        await dispatch(saveNewWordStatistic(currentStat));
       }
-    });
+    }
   },
   {
     condition: (_, { getState }) => {

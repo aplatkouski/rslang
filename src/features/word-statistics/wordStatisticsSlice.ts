@@ -29,11 +29,16 @@ export const fetchWordStatistics = createAsyncThunk<
 >(
   `${name}/fetch`,
   async (_, { getState }) =>
-    fetchUserData<Array<t.IWordStatistic>>({
-      method: requestMethods.GET,
-      path: 'statistic/words',
-      currentUser: getState().user.current,
-    }),
+    (
+      await fetchUserData<Array<t.IWordStatistic>>({
+        method: requestMethods.GET,
+        path: 'statistic/words',
+        currentUser: getState().user.current,
+      })
+    ).map(({ studiedAt, ...rest }) => ({
+      ...rest,
+      studiedAt: studiedAt && studiedAt.substring(0, 10),
+    })),
   {
     condition: (_, { getState }) =>
       selectWordStatisticRequestStatus(getState()).status !== requestStatus.pending,
@@ -47,14 +52,18 @@ export const saveNewWordStatistic = createAsyncThunk<
     dispatch: AppDispatch;
     state: RootState;
   }
->(`${name}/save`, async (wordStatistic, { getState }) =>
-  fetchUserData<t.IWordStatistic>({
+>(`${name}/save`, async (wordStatistic, { getState }) => {
+  const { studiedAt, ...rest } = await fetchUserData<t.IWordStatistic>({
     method: requestMethods.POST,
     path: 'statistic/words',
     body: wordStatistic,
     currentUser: getState().user.current,
-  })
-);
+  });
+  return {
+    ...rest,
+    studiedAt: studiedAt && studiedAt.substring(0, 10),
+  };
+});
 
 export const removeWordStatistic = createAsyncThunk<
   string,
@@ -121,26 +130,6 @@ export const {
   selectAll: selectAllWordStatistics,
 } = wordStatisticsAdapter.getSelectors<RootState>((state) => state[name]);
 
-interface ReportWordCountByDate {
-  [studiedAt: string]: number;
-}
-
-export const selectWordCountByDate = createSelector(
-  [selectAllWordStatistics],
-  (wordStatistics): ReportWordCountByDate => {
-    const totals = {} as { [key: string]: Set<string> };
-    wordStatistics.forEach((statistic) => {
-      if (!totals[statistic.studiedAt]) {
-        totals[statistic.studiedAt] = new Set<string>();
-      }
-      totals[statistic.studiedAt].add(statistic.wordId);
-    });
-    return Object.fromEntries(
-      Object.entries(totals).map(([studiedAt, words]) => [studiedAt, words.size])
-    );
-  }
-);
-
 interface ReportCorrectVsWrongAnswers {
   correctAnswerTotal: number;
   wrongAnswerTotal: number;
@@ -187,7 +176,10 @@ const selectWordStatisticsByGroupAndDate = createSelector(
     (_: RootState, { studiedAt }: SelectorProps<'group' | 'studiedAt'>) => studiedAt,
   ],
   (wordStatistics, studiedAt) =>
-    wordStatistics.filter((statistic) => !statistic.studiedAt.localeCompare(studiedAt))
+    wordStatistics.filter(
+      (statistic) =>
+        statistic.studiedAt && statistic.studiedAt.localeCompare(studiedAt) === 0
+    )
 );
 
 const selectWordStatisticsByPage = createSelector(
@@ -205,7 +197,10 @@ const selectWordStatisticsByPageAndDate = createSelector(
       studiedAt,
   ],
   (wordStatistics, studiedAt) =>
-    wordStatistics.filter((statistic) => !statistic.studiedAt.localeCompare(studiedAt))
+    wordStatistics.filter(
+      (statistic) =>
+        statistic.studiedAt && statistic.studiedAt.localeCompare(studiedAt) === 0
+    )
 );
 
 export const selectCorrectVsWrongByGroup = createSelector(
@@ -251,7 +246,8 @@ export const selectCorrectVsWrongGroupByGameAndDate = createSelector(
       const total = totals.find(
         (totalByGameAndDate) =>
           statistic.gameId === totalByGameAndDate.gameId &&
-          !statistic.studiedAt.localeCompare(totalByGameAndDate.studiedAt)
+          statistic.studiedAt &&
+          statistic.studiedAt.localeCompare(totalByGameAndDate.studiedAt) === 0
       );
       if (total) {
         total.correctAnswerTotal += statistic.correctAnswerTotal;
@@ -308,6 +304,7 @@ export const selectWordStatisticsByDate = createSelector(
   (wordStatistics, deletedWordsIds, studiedAt) => {
     return wordStatistics.filter(
       (wordStatistic) =>
+        wordStatistic.studiedAt &&
         wordStatistic.studiedAt.localeCompare(studiedAt) === 0 &&
         !deletedWordsIds.includes(wordStatistic.wordId)
     );

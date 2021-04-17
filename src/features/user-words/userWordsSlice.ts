@@ -34,11 +34,16 @@ export const fetchUserWords = createAsyncThunk<
 >(
   `${name}/fetch`,
   async (_, { getState }) =>
-    fetchUserData<Array<IUserWord>>({
-      method: requestMethods.GET,
-      path: 'words',
-      currentUser: getState().user.current,
-    }),
+    (
+      await fetchUserData<Array<IUserWord>>({
+        method: requestMethods.GET,
+        path: 'words',
+        currentUser: getState().user.current,
+      })
+    ).map(({ addedAt, ...rest }) => ({
+      ...rest,
+      addedAt: addedAt && addedAt.substring(0, 10),
+    })),
   {
     condition: (_, { getState }) =>
       selectUserWordRequestStatus(getState()).status !== requestStatus.pending,
@@ -74,13 +79,17 @@ export const upsertUserWord = createAsyncThunk<
   }
 >(`${name}/upsert`, async (userWord, { getState }) => {
   const { wordId, ...body } = userWord;
-  return fetchUserData<IUserWord>({
+  const { addedAt, ...rest } = await fetchUserData<IUserWord>({
     method: requestMethods.PUT,
     path: 'words',
     id: wordId,
     body,
     currentUser: getState().user.current,
   });
+  return {
+    ...rest,
+    addedAt: addedAt && addedAt.substring(0, 10),
+  };
 });
 
 const userWordsSlice = createSlice({
@@ -142,8 +151,13 @@ export const selectUserWordsByPage = createSelector(
   ],
   (userWords, page) => userWords.filter((word) => word.page === page)
 );
+
+export const selectNotDeletedUserWords = createSelector(selectAllUserWords, (userWords) =>
+  userWords.filter((word) => !word.isDeleted)
+);
+
 export const selectStudiedUserWordsCountByDate = createSelector(
-  [selectAllUserWords],
+  selectNotDeletedUserWords,
   (userWords) => {
     const studied = userWords.filter((userWord) => userWord.isStudied);
     const totals = {} as { [key: string]: Set<string> };
@@ -161,24 +175,6 @@ export const selectStudiedUserWordsCountByDate = createSelector(
       })
     );
     return result.sort((a, b) => a.studiedAt.localeCompare(b.studiedAt));
-  }
-);
-
-export const selectStudiedWordsTotalCountByDate = createSelector(
-  [selectStudiedUserWordsCountByDate],
-  (studiedWords) => {
-    const result: Array<IChartData> = [];
-    studiedWords.forEach((item, idx) => {
-      if (idx === 0) {
-        result.push(item);
-        return;
-      }
-      result.push({
-        studiedAt: item.studiedAt,
-        words: item.words + result[idx - 1].words,
-      });
-    });
-    return result;
   }
 );
 
@@ -304,6 +300,58 @@ export const selectUserWordRequestStatus = (state: RootState) => ({
 
 export const selectAllDeletedWordIds = createSelector(selectAllUserWords, (userWords) =>
   userWords.filter((word) => word.isDeleted).map((word) => word.wordId)
+);
+
+export const selectAllNotDeletedUserWords = createSelector(
+  [selectAllUserWords],
+  (userWords) => userWords.filter((userWord) => !userWord.isDeleted)
+);
+
+export const selectStudiedUserWords = createSelector(
+  [selectAllNotDeletedUserWords],
+  (userWords) => userWords.filter((userWord) => userWord.isStudied)
+);
+
+export const selectWordCountByDate = createSelector(
+  selectStudiedUserWords,
+  (userWords) => {
+    const totals = {} as { [addedAt: string]: Set<string> };
+    userWords.forEach(({ addedAt, wordId }) => {
+      if (addedAt) {
+        if (!totals[addedAt]) totals[addedAt] = new Set<string>();
+        totals[addedAt].add(wordId);
+      }
+    });
+    return totals;
+  }
+);
+
+export const selectWordCountByDateAsChartData = createSelector(
+  [selectWordCountByDate],
+  (totals): Array<IChartData> => {
+    const sortedTotals = Object.entries(totals).map(([studiedAt, words]) => ({
+      studiedAt,
+      words: words.size,
+    }));
+    sortedTotals.sort((a, b) => a.studiedAt.localeCompare(b.studiedAt));
+    return sortedTotals;
+  }
+);
+
+export const selectWordCountCumulativeByDateAsChartData = createSelector(
+  [selectWordCountByDateAsChartData],
+  (totals): Array<IChartData> => {
+    let prevValue = 0;
+    const sortedTotals = [...totals];
+    sortedTotals.sort((a, b) => a.studiedAt.localeCompare(b.studiedAt));
+    return sortedTotals.map(({ studiedAt, words }) => {
+      prevValue = words + prevValue;
+      return {
+        studiedAt,
+        words: prevValue,
+      };
+    });
+  }
 );
 
 export default userWordsSlice.reducer;
