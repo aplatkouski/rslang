@@ -29,6 +29,7 @@ const TextBook = (): JSX.Element => {
     <WordGridList
       baseUrl={ROUTES.textbook.url}
       pageCount={PAGES_PER_GROUP}
+      showStats
       wordCountByPages={activeWordCountByGroupAndPages}
       words={activeWords}
     />

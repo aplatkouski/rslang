@@ -4,6 +4,7 @@ const gameCardStyles = (theme: Theme) =>
   createStyles({
     determinate: {
       height: theme.spacing(1),
+      width: '100%',
     },
     colorPrimary: {
       backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],

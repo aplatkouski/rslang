@@ -26,6 +26,7 @@ import {
   selectUserWordByWordId,
   upsertUserWord,
 } from 'features/user-words/userWordsSlice';
+import { selectCorrectVsWrongByWordId } from 'features/word-statistics/wordStatisticsSlice';
 import React, { memo, useCallback } from 'react';
 import { IWord } from 'types';
 import { api } from '../../constants';
@@ -45,6 +46,9 @@ const WordCard = ({ classes, word }: Props) => {
   const { isShowTranslations, isShowButtons } = useAppSelector(selectSettings);
   const userWord = useAppSelector((state) =>
     selectUserWordByWordId(state, { wordId: word.id })
+  );
+  const answerTotal = useAppSelector((state) =>
+    selectCorrectVsWrongByWordId(state, { wordId: word.id })
   );
 
   const dispatch = useAppDispatch();
@@ -176,7 +180,7 @@ const WordCard = ({ classes, word }: Props) => {
           </Typography>
         }
       />
-      <LearningProgress wordId={word.id} />
+      <LearningProgress answerTotal={answerTotal} />
       <CardMedia
         className={classes.media}
         image={`${api}/${word.image}`}

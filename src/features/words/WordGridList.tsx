@@ -7,11 +7,17 @@ import {
 } from '@material-ui/core';
 import CustomizedSnackbars from 'app/show-status/CustomizedSnackbars';
 import TextBookPanel from 'app/text-book-panel/TextBookPanel';
-import { useAppSelector, useCols } from 'common/hooks';
+import extractRouterParam from 'common/get-router-number-parameter';
+import { useAppParams, useAppSelector, useCols } from 'common/hooks';
+import LearningProgress from 'features/word-card/learning-progress/LearningProgress';
 import WordCard from 'features/word-card/WordCard';
+import {
+  selectCorrectVsWrongByGroup,
+  selectCorrectVsWrongByPage,
+} from 'features/word-statistics/wordStatisticsSlice';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IWord, IWordCountByPages } from 'types';
+import { ISelectProps, IWord, IWordCountByPages } from 'types';
 import { requestStatus, ROUTES, WORD_CARD_WIDTH } from '../../constants';
 import styles from './styles';
 import { selectWordsRequestStatus } from './wordsSlice';
@@ -19,9 +25,11 @@ import { selectWordsRequestStatus } from './wordsSlice';
 interface Props extends WithStyles<typeof styles> {
   baseUrl: string;
   pageCount: number;
-  words: Array<IWord>;
+  // eslint-disable-next-line react/no-unused-prop-types
+  showStats?: boolean;
   // eslint-disable-next-line react/no-unused-prop-types
   wordCountByPages?: IWordCountByPages;
+  words: Array<IWord>;
 }
 
 interface Chunks {
@@ -29,9 +37,29 @@ interface Chunks {
 }
 
 const WordGridList = (props: Props): JSX.Element => {
-  const { baseUrl, classes, pageCount, wordCountByPages, words } = props;
+  const {
+    baseUrl,
+    classes,
+    pageCount,
+    showStats = false,
+    wordCountByPages,
+    words,
+  } = props;
   const history = useHistory();
   const request = useAppSelector(selectWordsRequestStatus);
+
+  const { group, page } = useAppParams();
+
+  const selectProps: ISelectProps = {
+    group: extractRouterParam(group, 0),
+    page: extractRouterParam(page, 0),
+  };
+  const answerTotalByGroup = useAppSelector((state) =>
+    selectCorrectVsWrongByGroup(state, selectProps)
+  );
+  const answerTotalByPage = useAppSelector((state) =>
+    selectCorrectVsWrongByPage(state, selectProps)
+  );
 
   useEffect(() => {
     if (request.status === requestStatus.fulfilled && !words.length)
@@ -55,11 +83,13 @@ const WordGridList = (props: Props): JSX.Element => {
 
   return (
     <Container ref={containerRef} className={classes.root} maxWidth="lg">
+      {showStats && <LearningProgress answerTotal={answerTotalByGroup} />}
       <TextBookPanel
         baseUrl={baseUrl}
         pageCount={pageCount}
         wordCountByPages={wordCountByPages}
       />
+      {showStats && <LearningProgress answerTotal={answerTotalByPage} />}
       <CustomizedSnackbars request={request} />
       <GridList cellHeight="auto" className={classes.gridList} cols={cols}>
         {Object.keys(Array(cols).fill(null)).map(

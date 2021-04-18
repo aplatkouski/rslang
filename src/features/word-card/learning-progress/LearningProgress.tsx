@@ -1,18 +1,16 @@
 import { LinearProgress, Tooltip, WithStyles } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React, { memo } from 'react';
-import { useAppSelector } from '../../../common/hooks';
-import { selectCorrectVsWrongByWordId } from '../../word-statistics/wordStatisticsSlice';
 import styles from './styles';
 
 interface IProps extends WithStyles<typeof styles> {
-  wordId: string;
+  answerTotal: {
+    correctAnswerTotal: number;
+    wrongAnswerTotal: number;
+  };
 }
-const LearningProgress = ({ classes, wordId }: IProps) => {
-  const {
-    correctAnswerTotal: correct,
-    wrongAnswerTotal: wrong,
-  } = useAppSelector((state) => selectCorrectVsWrongByWordId(state, { wordId }));
+const LearningProgress = ({ classes, answerTotal }: IProps) => {
+  const { correctAnswerTotal: correct, wrongAnswerTotal: wrong } = answerTotal;
   const value = correct + wrong ? Math.round((correct / (correct + wrong)) * 100) : 0;
   return (
     <Tooltip
