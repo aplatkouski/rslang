@@ -13,7 +13,6 @@ import StatisticPage from 'app/statistic-page/StatisticPage';
 import { useAppDispatch, useAppSelector } from 'common/hooks';
 import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlice';
 import games from 'features/games';
-import Game from 'features/games/Game';
 import { fetchGames } from 'features/games/gamesSlice';
 import { getSettingsFromLocalStorage } from 'features/settings/settingsSlice';
 import { fetchUserWords } from 'features/user-words/userWordsSlice';
@@ -35,6 +34,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import GameGroups from './app/groups-page/GameGroups';
 import { requestStatus, ROUTES } from './constants';
+import GameDeleted from './features/games/GameDeleted';
+import GameDifficult from './features/games/GameDifficult';
+import GameStudied from './features/games/GameStudied';
+import GameTextbook from './features/games/GameTextbook';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -127,9 +130,24 @@ const App = (): JSX.Element => {
           path={`${ROUTES.games.url}/:gameId/textbook`}
         />
         <Route
-          component={Game}
+          component={GameTextbook}
           exact
-          path={`${ROUTES.games.url}/:gameId/:dictionary/:group/:page`}
+          path={`${ROUTES.games.url}/:gameId/textbook/:group/:page`}
+        />
+        <Route
+          component={GameDeleted}
+          exact
+          path={`${ROUTES.games.url}/:gameId/deleted/:group/:page`}
+        />
+        <Route
+          component={GameDifficult}
+          exact
+          path={`${ROUTES.games.url}/:gameId/difficult/:group/:page`}
+        />
+        <Route
+          component={GameStudied}
+          exact
+          path={`${ROUTES.games.url}/:gameId/studied/:group/:page`}
         />
         <Route
           component={DeletedWordsSection}

@@ -323,12 +323,17 @@ export const selectAllDifficultUserWords = createSelector(
   (userWords) => userWords.filter((word) => word.isDifficult)
 );
 
+export const selectAllDifficultWordIds = createSelector(
+  selectAllDifficultUserWords,
+  (userWords) => userWords.map((word) => word.wordId)
+);
+
 export const selectAllStudiedUserWords = createSelector(
   selectAllNotDeletedUserWords,
   (userWords) => userWords.filter((userWord) => userWord.isStudied)
 );
 
-export const selectAllStudiedUserWordIds = createSelector(
+export const selectAllStudiedWordIds = createSelector(
   selectAllStudiedUserWords,
   (userWords) => userWords.map((userWord) => userWord.wordId)
 );

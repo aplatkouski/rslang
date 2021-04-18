@@ -7,7 +7,8 @@ import {
 import type { AppDispatch, RootState } from 'app/store';
 import {
   selectAllDeletedWordIds,
-  selectAllStudiedUserWordIds,
+  selectAllDifficultWordIds,
+  selectAllStudiedWordIds,
   selectDeletedWordIdsByChunk,
   selectDeletedWordIdsByGroup,
   selectDifficultWordIdsByChunk,
@@ -129,9 +130,41 @@ export const selectAllActiveWords = createSelector(
   (words, deletedWordIds) => words.filter((word) => !deletedWordIds.includes(word.id))
 );
 
+const allWordsForGameCombiner = (
+  words: Array<IWord>,
+  group: number,
+  page: number,
+  count: number
+) => {
+  const wordsForGame = [];
+  const filter = (word: IWord) => word.group === group && word.page === page;
+  while (words.length && count > wordsForGame.length && group >= 0 && page >= 0) {
+    wordsForGame.push(...words.filter(filter));
+    page -= 1;
+    if (page < 0) {
+      group -= 1;
+      page = PAGES_PER_GROUP - 1;
+    }
+  }
+  return wordsForGame.slice(0, count);
+};
+
 export const selectAllStudiedWords = createSelector(
-  [selectAllActiveWords, selectAllStudiedUserWordIds],
+  [selectAllActiveWords, selectAllStudiedWordIds],
   (words, studiedWordIds) => words.filter((word) => studiedWordIds.includes(word.id))
+);
+
+export const selectStudiedWordsForGame = createSelector(
+  [
+    selectAllStudiedWords,
+    (_: RootState, { group }: SelectorProps<'group'>) => group,
+    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
+    (
+      _: RootState,
+      { count = 10 }: SelectorProps<'group' | 'page'> & { count?: number }
+    ) => count,
+  ],
+  allWordsForGameCombiner
 );
 
 export const selectActiveWordsForGame = createSelector(
@@ -144,19 +177,37 @@ export const selectActiveWordsForGame = createSelector(
       { count = 10 }: SelectorProps<'group' | 'page'> & { count?: number }
     ) => count,
   ],
-  (activeWords, group, page, count) => {
-    const wordsForGame = [];
-    const filter = (word: IWord) => word.group === group && word.page === page;
-    while (activeWords.length && count > wordsForGame.length && group >= 0 && page >= 0) {
-      wordsForGame.push(...activeWords.filter(filter));
-      page -= 1;
-      if (page < 0) {
-        group -= 1;
-        page = PAGES_PER_GROUP - 1;
-      }
-    }
-    return wordsForGame.slice(0, count);
-  }
+  allWordsForGameCombiner
+);
+
+export const selectAllDifficultWords = createSelector(
+  [selectAllActiveWords, selectAllDifficultWordIds],
+  (words, difficultWordIds) => words.filter((word) => difficultWordIds.includes(word.id))
+);
+
+export const selectDifficultWordsForGame = createSelector(
+  [
+    selectAllDifficultWords,
+    (_: RootState, { group }: SelectorProps<'group'>) => group,
+    (_: RootState, { page = 29 }: SelectorProps<'group' | 'page'>) => page,
+    (_: RootState, { count = 10 }: SelectorProps<'group'> & { count?: number }) => count,
+  ],
+  allWordsForGameCombiner
+);
+
+export const selectAllDeletedWords = createSelector(
+  [selectAllWords, selectAllDeletedWordIds],
+  (words, deletedWordsIds) => words.filter((word) => deletedWordsIds.includes(word.id))
+);
+
+export const selectDeletedWordsForGame = createSelector(
+  [
+    selectAllDeletedWords,
+    (_: RootState, { group }: SelectorProps<'group'>) => group,
+    (_: RootState, { page = 29 }: SelectorProps<'group' | 'page'>) => page,
+    (_: RootState, { count = 10 }: SelectorProps<'group'> & { count?: number }) => count,
+  ],
+  allWordsForGameCombiner
 );
 
 export const selectWrongTranslations = createSelector(

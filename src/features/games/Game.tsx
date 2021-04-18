@@ -2,11 +2,9 @@ import AudioCallGame from 'app/audio-call-game/AudioCallGame';
 import MiniGameResultsDialog from 'app/minigame-results-dialog/MiniGameResultsDialog';
 import MyGame from 'app/my-game/MyGame';
 import SavannahGame from 'app/savannah-game/SavannahGame';
-import extractRouterParam from 'common/get-router-number-parameter';
 import { useAppDispatch, useAppParams, useAppSelector } from 'common/hooks';
-import { selectActiveWordsForGame } from 'features/words/wordsSlice';
 import React, { useEffect, useState } from 'react';
-import { ISelectProps } from 'types';
+import { IWord } from 'types';
 import CircularIndeterminate from './circular-indeterminate/CircularIndeterminate';
 import {
   finishGames,
@@ -19,17 +17,15 @@ import {
   upsertAllStatistic,
 } from './gamesSlice';
 
-const Game = (): JSX.Element => {
-  const { gameId, group, page } = useAppParams();
+interface Props {
+  words: Array<IWord>;
+}
+
+const Game = ({ words }: Props): JSX.Element => {
+  const { gameId } = useAppParams();
   const game = useAppSelector((state) => selectGamesById(state, gameId));
   const isCurrentGame = useAppSelector(selectIsCurrentGame);
   const isEndGame = useAppSelector(selectIsEndGame);
-
-  const selectProps: ISelectProps = {
-    group: extractRouterParam(group, 0),
-    page: extractRouterParam(page, 29),
-  };
-  const words = useAppSelector((state) => selectActiveWordsForGame(state, selectProps));
 
   const gameWords = useAppSelector(selectGameWords);
   const currentWord = useAppSelector(selectCurrentWord);
