@@ -3,11 +3,10 @@
 [![Build Status](https://travis-ci.com/aplatkouski/rslang.svg?branch=develop)](https://travis-ci.com/aplatkouski/rslang)
 [![dependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg)](https://david-dm.org/aplatkouski/rslang)
 [![devDependencies Status](https://status.david-dm.org/gh/aplatkouski/rslang.svg?type=dev)](https://david-dm.org/aplatkouski/rslang?type=dev)
+[![Known Vulnerabilities](https://snyk.io/test/github/aplatkouski/rslang/badge.svg)](https://snyk.io/test/github/aplatkouski/rslang)
 
 RS Lang – приложение для изучения иностранных слов, включающее электронный учебник с базой слов для изучения, мини-игры
 для их повторения, страницу статистики для отслеживания индивидуального прогресса.
-
-**Deadline**: 07.04.2021 23:59
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using
 the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
