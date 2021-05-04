@@ -1,0 +1,128 @@
+{
+  "name": "rslang-team-27-aplatkouski",
+  "version": "0.0.1",
+  "description": "RSLang is an online study application that allows students to study English language via learning tools and games.",
+  "private": true,
+  "homepage": "https://rslang-team-27-aplatkouski.herokuapp.com/",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Artsiom Platkouski",
+      "email": "komukc.apt@gmail.com",
+      "url": "https://www.linkedin.com/in/artsiom-platkouski/"
+    },
+    {
+      "name": "Natallia Fedartsova",
+      "email": "fedartsova@tut.by",
+      "url": "https://github.com/natallia-js"
+    },
+    {
+      "name": "Vital Raicheu",
+      "email": "rvitaly1978@gmail.com",
+      "url": "https://github.com/RVitaly1978"
+    },
+    {
+      "name": "Vital Zabauski",
+      "email": "vzabavski123@gmail.com",
+      "url": "https://github.com/vzabavski"
+    },
+    {
+      "name": "Dmitry Bogdan",
+      "email": "nxtspc@gmail.com",
+      "url": "https://github.com/DmitryBogdan90"
+    }
+  ],
+  "keywords": [
+    "online study",
+    "learn English",
+    "language-learning website"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:aplatkouski/rslang.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aplatkouski/rslang/issues"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "~4.0.0-alpha.58",
+    "@reduxjs/toolkit": "^1.5.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.20.6",
+    "@types/react": "^16.14.5",
+    "@types/react-dom": "^16.9.12",
+    "@types/react-redux": "^7.1.16",
+    "@types/react-router-dom": "^5.1.7",
+    "clsx": "^1.1.1",
+    "node-sass": "^5.0.0",
+    "react": "^17.0.2",
+    "react-circular-progressbar": "^2.0.4",
+    "react-dom": "^17.0.2",
+    "react-hot-keys": "^2.6.2",
+    "react-player": "^2.9.0",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "recharts": "^2.0.9",
+    "typescript": "~3.8.2",
+    "use-sound": "^2.0.1",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "build": "react-scripts build",
+    "build:profile": "npm run build -- --profile",
+    "deploy": "gh-pages -d build",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --ignore-path .eslintignore",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:scss": "stylelint --syntax scss 'src/**/*.scss' --ignore-path .gitignore",
+    "lint:scss:fix": "npm run lint:scss -- --fix",
+    "postinstall": "husky install",
+    "postpublish": "pinst --enable",
+    "predeploy": "npm run build",
+    "prepublishOnly": "pinst --disable",
+    "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
+    "prettier:write": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html,json,md}' --ignore-path .gitignore --ignore-path .eslintignore",
+    "start": "react-scripts start",
+    "stylelint:check-conflicts": "stylelint-config-prettier-check",
+    "test": "react-scripts test",
+    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache --watchAll=false",
+    "test:nowatch": "npm test -- --watchAll=false"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 2 chrome versions"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@types/uuid": "^8.3.0",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "gh-pages": "^3.1.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "pinst": "^2.1.6",
+    "prettier": "^2.2.1",
+    "stylelint": "^13.12.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-twbs-bootstrap": "^2.2.0",
+    "typescript-eslint-language-service": "^4.1.4"
+  }
+}

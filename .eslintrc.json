@@ -1,0 +1,148 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "jest/globals": true,
+    "node": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "extends": [
+    "react-app",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:eslint-comments/recommended",
+    "plugin:promise/recommended",
+    "plugin:prettier/recommended",
+    "prettier",
+    "prettier/prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 11,
+    "project": ["tsconfig.json"],
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "jest", "promise"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never",
+        "json": "always",
+        "scss": "always",
+        "svg": "always"
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@material-ui/*/*/*", "!@material-ui/core/test-utils/*"]
+      }
+    ],
+    "promise/catch-or-return": "warn",
+    "promise/prefer-await-to-callbacks": "warn",
+    "promise/prefer-await-to-then": "warn",
+    "react/jsx-handler-names": [
+      "error",
+      {
+        "checkLocalVariables": true
+      }
+    ],
+    "react/jsx-indent": [
+      "error",
+      2,
+      {
+        "checkAttributes": true,
+        "indentLogicalExpressions": true
+      }
+    ],
+    "react/jsx-indent-props": ["error", 2],
+    "react/jsx-max-props-per-line": [
+      "error",
+      {
+        "maximum": 1,
+        "when": "multiline"
+      }
+    ],
+    "react/jsx-max-depth": [
+      "warn",
+      {
+        "max": 5
+      }
+    ],
+    "react/jsx-no-constructed-context-values": "error",
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-pascal-case": "error",
+    "react/jsx-filename-extension": [
+      "warn",
+      {
+        "extensions": [".jsx", ".tsx"]
+      }
+    ],
+    "react/jsx-sort-props": [
+      "warn",
+      {
+        "reservedFirst": true
+      }
+    ],
+    "react/jsx-tag-spacing": [
+      "error",
+      {
+        "closingSlash": "never",
+        "beforeSelfClosing": "always",
+        "afterOpening": "never",
+        "beforeClosing": "allow"
+      }
+    ],
+    "react/jsx-sort-default-props": "error",
+    "react/jsx-props-no-spreading": [
+      "error",
+      {
+        "html": "ignore",
+        "explicitSpread": "ignore"
+      }
+    ],
+    "react/jsx-props-no-multi-spaces": "error",
+    "react/prop-types": "off",
+    "react/require-default-props": "off"
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    },
+    "propWrapperFunctions": ["forbidExtraProps", "exact", "Object.freeze"],
+    "import/ignore": ["node_modules", "\\.(scss|css|svg|json)$"],
+    "jest": {
+      "version": 26
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/features/**/*Slice.ts?(x)"],
+      "rules": {
+        "no-param-reassign": "off"
+      }
+    },
+    {
+      "files": ["src/features/**/*styles.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    }
+  ]
+}
