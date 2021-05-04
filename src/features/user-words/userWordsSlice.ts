@@ -157,28 +157,6 @@ export const selectNotDeletedUserWords = createSelector(selectAllUserWords, (use
   userWords.filter((word) => !word.isDeleted)
 );
 
-export const selectStudiedUserWordsCountByDate = createSelector(
-  selectNotDeletedUserWords,
-  (userWords) => {
-    const studied = userWords.filter((userWord) => userWord.isStudied);
-    const totals = {} as { [key: string]: Set<string> };
-    const result: Array<IChartData> = [];
-    studied.forEach((word) => {
-      if (!totals[String(word.addedAt)]) {
-        totals[String(word.addedAt)] = new Set<string>();
-      }
-      totals[String(word.addedAt)].add(word.wordId);
-    });
-    Object.entries(totals).map(([studiedAt, words]) =>
-      result.push({
-        studiedAt: studiedAt.substring(0, 10),
-        words: words.size,
-      })
-    );
-    return result.sort((a, b) => a.studiedAt.localeCompare(b.studiedAt));
-  }
-);
-
 export const selectWordsIdsByPage = createSelector(selectUserWordsByPage, (userWords) =>
   userWords.map((userWord) => userWord.wordId)
 );
@@ -201,15 +179,6 @@ export const selectDifficultUserWordsByGroup = createSelector(
 export const selectStudiedUserWordsByGroup = createSelector(
   selectNotDeletedUserWordsByGroup,
   (userWords) => userWords.filter((word) => word.isStudied)
-);
-
-export const selectStudiedUserWordsByPage = createSelector(
-  [
-    selectStudiedUserWordsByGroup,
-    (_: RootState, { page }: SelectorProps<'group' | 'page'>) => page,
-  ],
-  (studiedUserWords, page) =>
-    studiedUserWords.filter((studiedWord) => studiedWord.page === page)
 );
 
 export const selectDeletedWordIdsByGroup = createSelector(
@@ -240,34 +209,6 @@ export const selectDeletedUserWordsByChunk = createSelector(
 export const selectDeletedWordPageCountByGroup = createSelector(
   selectDeletedUserWordsByGroup,
   (userWords) => Math.ceil(userWords.length / WORDS_PER_PAGE)
-);
-
-export const selectDeletedWordCountByGroupAndPages = createSelector(
-  selectDeletedUserWordsByGroup,
-  (userWords) => {
-    const deletedWordsByGroupAndPages = Object.fromEntries(
-      Object.entries(Array(PAGES_PER_GROUP).fill(0))
-    );
-
-    userWords.forEach((userWord) => {
-      deletedWordsByGroupAndPages[userWord.page] += 1;
-    });
-    return deletedWordsByGroupAndPages;
-  }
-);
-
-export const selectNotStudiedWordCountByGroupAndPages = createSelector(
-  [selectStudiedUserWordsByGroup],
-  (studiedWords) => {
-    const deletedWordsByGroupAndPages = Object.fromEntries(
-      Object.entries(Array(PAGES_PER_GROUP).fill(WORDS_PER_PAGE))
-    );
-
-    studiedWords.forEach((userWord) => {
-      deletedWordsByGroupAndPages[userWord.page] -= 1;
-    });
-    return deletedWordsByGroupAndPages;
-  }
 );
 
 export const selectDifficultUserWordsByChunk = createSelector(

@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppThunk, RootState } from 'app/store';
 import userAltImg from 'assets/img/UnknownUser.png';
-import { ICredentials, IStatus, IUser, IUserLogInData } from 'types';
+import { fetchGameStatistics } from 'features/game-statistics/gameStatisticsSlice';
+import { fetchUserWords } from 'features/user-words/userWordsSlice';
+import { fetchWordStatistics } from 'features/word-statistics/wordStatisticsSlice';
+import { IStatus, IUser, IUserLogInData } from 'types';
 import {
   api,
   GET_USER_API,
@@ -12,9 +15,6 @@ import {
   SERVER_OK_STATUS,
   WRONG_AUTHENTICATION_DATA_MESSAGE,
 } from '../../constants';
-import { fetchGameStatistics } from '../game-statistics/gameStatisticsSlice';
-import { fetchUserWords } from '../user-words/userWordsSlice';
-import { fetchWordStatistics } from '../word-statistics/wordStatisticsSlice';
 
 interface IState extends IStatus {
   current?: IUser;
@@ -192,13 +192,5 @@ export const getCurrUser = (state: RootState): IUser => state.user.current || fa
 export const getErrLogInMessage = (state: RootState) => state.user.error;
 
 export const getLoginStatus = (state: RootState) => state.user.status;
-
-export const selectCredentials = (state: RootState): ICredentials => {
-  const { token: userToken, userId } = state.user.current || fakeUse;
-  return {
-    userToken,
-    userId,
-  };
-};
 
 export default userSlice.reducer;

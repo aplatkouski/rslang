@@ -77,11 +77,6 @@ export interface IGameStatistic {
   date: string;
 }
 
-export interface ICredentials {
-  userId: string;
-  userToken: string;
-}
-
 export interface IWordStatistic {
   id: string;
   wordId: string;
